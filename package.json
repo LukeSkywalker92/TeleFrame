@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/LukeSkywalker92/teleframe#readme",
   "dependencies": {
+    "dotenv": "^6.0.0",
     "telegraf": "^3.23.0"
   }
 }
