@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/LukeSkywalker92/teleframe/issues"
   },
-  "homepage": "https://github.com/LukeSkywalker92/teleframe#readme"
+  "homepage": "https://github.com/LukeSkywalker92/teleframe#readme",
+  "dependencies": {
+    "telegraf": "^3.23.0"
+  }
 }
