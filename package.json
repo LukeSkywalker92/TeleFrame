@@ -1,0 +1,19 @@
+{
+  "name": "teleframe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LukeSkywalker92/teleframe.git"
+  },
+  "author": "Lukas Scheffler",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LukeSkywalker92/teleframe/issues"
+  },
+  "homepage": "https://github.com/LukeSkywalker92/teleframe#readme"
+}
