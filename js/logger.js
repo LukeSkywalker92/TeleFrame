@@ -1,5 +1,14 @@
-const { createLogger, format, transports } = require('winston');
-const { combine, timestamp, label, printf } = format;
+const {
+  createLogger,
+  format,
+  transports
+} = require('winston');
+const {
+  combine,
+  timestamp,
+  label,
+  printf
+} = format;
 
 const myFormat = printf(info => {
   return `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`;
@@ -7,7 +16,9 @@ const myFormat = printf(info => {
 
 const logger = createLogger({
   format: combine(
-    label({ label: 'Main' }),
+    label({
+      label: 'Main'
+    }),
     timestamp(),
     format.colorize(),
     myFormat
@@ -17,7 +28,9 @@ const logger = createLogger({
 
 const rendererLogger = createLogger({
   format: combine(
-    label({ label: 'Renderer' }),
+    label({
+      label: 'Renderer'
+    }),
     timestamp(),
     format.colorize(),
     myFormat

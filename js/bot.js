@@ -21,7 +21,7 @@ bot.on('photo', (ctx) => {
       console.log(link);
       download.image({
           url: link,
-          dest: moment().format('x')+'.jpg' // Save to /path/to/dest/photo.jpg
+          dest: moment().format('x') + '.jpg' // Save to /path/to/dest/photo.jpg
         })
         .then(({
           filename,
