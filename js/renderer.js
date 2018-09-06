@@ -62,7 +62,6 @@ function loadImage(src) {
     } else {
       img.style.height = "100%";
     }
-    $(img).fadeOut(0);
     $(img).fadeIn(config.fadeTime);
     $(currentImage).fadeOut(config.fadeTime, function() {
       container.removeChild(currentImage);

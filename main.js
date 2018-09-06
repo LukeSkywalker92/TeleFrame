@@ -30,6 +30,8 @@ function createWindow() {
     width: 800,
     height: 600
   })
+
+  win.setFullScreen(config.fullscreen);
   // und Laden der index.html der App.
   win.loadFile('index.html')
 

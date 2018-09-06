@@ -2,8 +2,10 @@ var config = {
   fadeTime: 1500,
   interval: 10 * 1000,
   botToken: '',
-  imageFolder: 'images',
-  imageCount: 5
+  imageFolder: '/var/teleframe/images',
+  imageCount: 30,
+  newPhotoMessage: 'Neues Foto von',
+  fullscreen: true
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
