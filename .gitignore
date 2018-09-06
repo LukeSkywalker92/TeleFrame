@@ -63,3 +63,5 @@ typings/
 config/config.js
 
 images
+
+*.DS_Store

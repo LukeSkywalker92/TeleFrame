@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=TeleFrame
+Description=Frame Splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/TeleFrame
+ScriptFile=/usr/share/plymouth/themes/TeleFrame/TeleFrame.script
