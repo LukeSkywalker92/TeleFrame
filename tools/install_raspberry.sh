@@ -115,7 +115,7 @@ else
 fi
 
 echo -e "\e[96mInstalling electron globally ...\e[90m"
-if sudo npm install electron -g; then
+if sudo npm install -g electron --unsafe-perm=true --allow-root; then
 	echo -e "\e[92mElectron installation Done!\e[0m"
 else
 	echo -e "\e[91mUnable to install electron!"
