@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
-    "scripts": {
-      "start": "electron ."
-    },
+  "scripts": {
+    "start": "electron ."
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LukeSkywalker92/teleframe.git"
@@ -21,6 +21,7 @@
     "electron": "^2.0.8",
     "image-downloader": "^3.4.1",
     "moment": "^2.22.2",
-    "telegraf": "^3.23.0"
+    "telegraf": "^3.23.0",
+    "winston": "^3.1.0"
   }
 }

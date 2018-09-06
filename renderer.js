@@ -1,3 +1,12 @@
+const {remote} = require('electron');
+const logger = remote.getGlobal('rendererLogger');
+
+logger.info('Renderer started ...')
+
+
+
+
+
 function resizeToMax(id){
     myImage = new Image()
     var img = document.getElementById(id);

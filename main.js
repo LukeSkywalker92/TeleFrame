@@ -1,4 +1,10 @@
 const {app, BrowserWindow} = require('electron')
+const{logger, rendererLogger} = require('./js/logger')
+
+global.rendererLogger = rendererLogger;
+logger.info('Main app started ...');
+
+
 
   // Behalten Sie eine globale Referenz auf das Fensterobjekt.
   // Wenn Sie dies nicht tun, wird das Fenster automatisch geschlossen,
@@ -14,7 +20,7 @@ const {app, BrowserWindow} = require('electron')
     win.loadFile('index.html')
 
     // Öffnen der DevTools.
-    win.webContents.openDevTools()
+    //win.webContents.openDevTools()
 
     // Ausgegeben, wenn das Fenster geschlossen wird.
     win.on('closed', () => {
