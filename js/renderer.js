@@ -1,23 +1,29 @@
-const {remote} = require('electron');
+const {
+  remote
+} = require('electron');
 const logger = remote.getGlobal('rendererLogger');
 const config = remote.getGlobal('config');
 const $ = require('jquery')
 
-console.log()
-
 logger.info('Renderer started ...')
 
+var images = remote.getGlobal('images')
 var container = document.getElementById('container');
 
-setTimeout(function() {
-  loadImage('1536172841515.jpg');
-}, config.interval);
-
-setTimeout(function() {
-  loadImage('1536235826291.jpg');
-}, config.interval * 2);
+var i = 0;
 
 
+setInterval(function() {
+  if (images.length == 0) {} else {
+    imagepath = images[i];
+    loadImage(imagepath)
+    if (i >= images.length - 1) {
+      i = 0;
+    } else {
+      i++;
+    }
+  }
+}, config.interval)
 
 
 function loadImage(src) {

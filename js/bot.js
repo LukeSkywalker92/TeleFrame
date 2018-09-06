@@ -4,10 +4,11 @@ const download = require('image-downloader')
 const moment = require('moment');
 
 var Bot = class {
-  constructor(botToken, app, logger) {
+  constructor(botToken, imageFolder, app, logger) {
     this.bot = new Telegraf(botToken)
     this.telegram = new Telegram(botToken)
     this.logger = logger
+    this.imageFolder = imageFolder
 
     //Welcome message on bot start
     this.bot.start((ctx) => ctx.reply('Welcome'))
@@ -22,13 +23,13 @@ var Bot = class {
           logger.info(link);
           download.image({
               url: link,
-              dest: moment().format('x') + '.jpg' // Save to /path/to/dest/photo.jpg
+              dest: this.imageFolder + '/' + moment().format('x') + '.jpg'
             })
             .then(({
               filename,
               image
             }) => {
-              this.logger.info('File saved to', filename)
+              this.logger.info('File saved to ' + filename)
             })
             .catch((err) => {
               this.logger.error(err)

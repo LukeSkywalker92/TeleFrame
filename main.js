@@ -2,12 +2,15 @@ const {app,BrowserWindow} = require('electron')
 const {logger,rendererLogger} = require('./js/logger')
 const config = require('./config/config')
 const telebot = require('./js/bot')
+const imagewatcher = require('./js/imageWatchdog')
 
 global.config = config;
 global.rendererLogger = rendererLogger;
+global.images = []
 logger.info('Main app started ...');
 
-var bot = new telebot(config.botToken, app, logger);
+var bot = new telebot(config.botToken, config.imageFolder, app, logger);
+var imageWatchdog = new imagewatcher(config.imageFolder, global.images, logger)
 
 // Behalten Sie eine globale Referenz auf das Fensterobjekt.
 // Wenn Sie dies nicht tun, wird das Fenster automatisch geschlossen,
