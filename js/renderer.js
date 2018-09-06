@@ -1,14 +1,21 @@
 const {
-  remote
+  remote,
+  ipcRenderer
 } = require('electron');
+const $ = require('jquery')
+const swal = require('sweetalert')
 const logger = remote.getGlobal('rendererLogger');
 const config = remote.getGlobal('config');
-const $ = require('jquery')
 
 logger.info('Renderer started ...')
 
 var images = remote.getGlobal('images')
 var container = document.getElementById('container');
+
+ipcRenderer.on('newImage', function(event, arg) {
+  newImage(arg.sender)
+});
+
 
 var i = 0;
 
@@ -25,6 +32,20 @@ setInterval(function() {
   }
 }, config.interval)
 
+
+
+
+function newImage(sender) {
+  images = remote.getGlobal('images');
+  swal(' ', {
+    title: config.newPhotoMessage + ' ' + sender,
+    buttons: false,
+    timer: 5000,
+    icon: "success"
+  }).then((value) => {
+    i = 0;
+  });
+}
 
 function loadImage(src) {
   var currentImage = container.firstElementChild;

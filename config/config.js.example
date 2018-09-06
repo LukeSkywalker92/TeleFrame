@@ -2,7 +2,8 @@ var config = {
   fadeTime: 1500,
   interval: 10 * 1000,
   botToken: '',
-  imageFolder: 'images'
+  imageFolder: 'images',
+  imageCount: 5
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/

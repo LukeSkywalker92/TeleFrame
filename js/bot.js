@@ -4,17 +4,19 @@ const download = require('image-downloader')
 const moment = require('moment');
 
 var Bot = class {
-  constructor(botToken, imageFolder, app, logger) {
-    this.bot = new Telegraf(botToken)
-    this.telegram = new Telegram(botToken)
-    this.logger = logger
-    this.imageFolder = imageFolder
+  constructor(botToken, imageFolder, imageWatchdog, logger) {
+    var self = this;
+    this.bot = new Telegraf(botToken);
+    this.telegram = new Telegram(botToken);
+    this.logger = logger;
+    this.imageFolder = imageFolder;
+    this.imageWatchdog = imageWatchdog;
 
     //Welcome message on bot start
-    this.bot.start((ctx) => ctx.reply('Welcome'))
+    this.bot.start((ctx) => ctx.reply('Welcome'));
 
     //Help message
-    this.bot.help((ctx) => ctx.reply('Send me an image.'))
+    this.bot.help((ctx) => ctx.reply('Send me an image.'));
 
     //Download incoming photo
     this.bot.on('photo', (ctx) => {
@@ -29,25 +31,30 @@ var Bot = class {
               filename,
               image
             }) => {
-              this.logger.info('File saved to ' + filename)
+              this.logger.info('File saved to ' + filename);
+              this.newImage(filename, ctx.message.from.first_name);
             })
             .catch((err) => {
-              this.logger.error(err)
+              this.logger.error(err);
             })
         }
       )
     });
 
     //Some small conversation
-    this.bot.hears('hi', (ctx) => ctx.reply('Hey there'))
+    this.bot.hears('hi', (ctx) => ctx.reply('Hey there'));
 
-    this.logger.info('Bot created!')
+    this.logger.info('Bot created!');
   }
 
   startBot() {
     //Start bot
-    this.bot.startPolling()
-    this.logger.info('Bot started!')
+    this.bot.startPolling();
+    this.logger.info('Bot started!');
+  }
+
+  newImage(src, sender) {
+    this.imageWatchdog.newImage(src, sender);
   }
 
 
