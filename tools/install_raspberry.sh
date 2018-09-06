@@ -98,7 +98,7 @@ if [ -d "$HOME/TeleFrame" ] ; then
 fi
 
 echo -e "\e[96mCloning TeleFrame ...\e[90m"
-if git clone --depth=1 https://github.com/LukeSkywalker92/teleframe.git; then
+if git clone --depth=1 https://github.com/LukeSkywalker92/TeleFrame.git; then
 	echo -e "\e[92mCloning TeleFrame Done!\e[0m"
 else
 	echo -e "\e[91mUnable to clone TeleFrame."
