@@ -3,13 +3,25 @@ body {
   margin: 0;
 }
 
+h1 {
+  color: white;
+  font-family: Verdana;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .container: {
   width: 100%;
   height: 100%;
+  position: relative;
 }
 
 .image {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

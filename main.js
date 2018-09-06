@@ -1,16 +1,13 @@
-const {
-  app,
-  BrowserWindow
-} = require('electron')
-const {
-  logger,
-  rendererLogger
-} = require('./js/logger')
+const {app,BrowserWindow} = require('electron')
+const {logger,rendererLogger} = require('./js/logger')
+const config = require('./config/config')
+const telebot = require('./js/bot')
 
+global.config = config;
 global.rendererLogger = rendererLogger;
 logger.info('Main app started ...');
 
-
+var bot = new telebot(config.botToken, app, logger);
 
 // Behalten Sie eine globale Referenz auf das Fensterobjekt.
 // Wenn Sie dies nicht tun, wird das Fenster automatisch geschlossen,
@@ -24,12 +21,13 @@ function createWindow() {
     width: 800,
     height: 600
   })
-
   // und Laden der index.html der App.
   win.loadFile('index.html')
 
   // Öffnen der DevTools.
-  win.webContents.openDevTools()
+  //win.webContents.openDevTools()
+
+  bot.startBot()
 
   // Ausgegeben, wenn das Fenster geschlossen wird.
   win.on('closed', () => {

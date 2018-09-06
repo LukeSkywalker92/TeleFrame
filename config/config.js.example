@@ -1,0 +1,8 @@
+var config = {
+  fadeTime: 1500,
+  interval: 10 * 1000,
+  botToken: ''
+};
+
+/*************** DO NOT EDIT THE LINE BELOW ***************/
+if (typeof module !== "undefined") {module.exports = config;}
