@@ -22,7 +22,6 @@ var Bot = class {
     this.bot.on('photo', (ctx) => {
       this.telegram.getFileLink(ctx.message.photo[ctx.message.photo.length - 1].file_id).then(
         link => {
-          logger.info(link);
           download.image({
               url: link,
               dest: this.imageFolder + '/' + moment().format('x') + '.jpg'
@@ -31,7 +30,6 @@ var Bot = class {
               filename,
               image
             }) => {
-              this.logger.info('File saved to ' + filename);
               this.newImage(filename, ctx.message.from.first_name);
             })
             .catch((err) => {

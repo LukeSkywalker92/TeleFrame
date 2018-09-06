@@ -16,10 +16,10 @@ echo '   )_(   (_______/(_______/(_______/|/       |/   \__/|/     \||/     \|(_
 echo -e "\e[0m"
 
 # Define the tested version of Node.js.
-NODE_TESTED="v5.1.0"
+NODE_TESTED="v6.9.1"
 
 # Determine which Pi is running.
-ARM=$(uname -m) 
+ARM=$(uname -m)
 
 # Check the Raspberry Pi version.
 if [ "$ARM" != "armv7l" ]; then
@@ -87,25 +87,25 @@ fi
 
 # Install MagicMirror
 cd ~
-if [ -d "$HOME/MagicMirror" ] ; then
-	echo -e "\e[93mIt seems like MagicMirror is already installed."
+if [ -d "$HOME/TeleFrame" ] ; then
+	echo -e "\e[93mIt seems like TeleFrame is already installed."
 	echo -e "To prevent overwriting, the installer will be aborted."
-	echo -e "Please rename the \e[1m~/MagicMirror\e[0m\e[93m folder and try again.\e[0m"
+	echo -e "Please rename the \e[1m~/TeleFrame\e[0m\e[93m folder and try again.\e[0m"
 	echo ""
-	echo -e "If you want to upgrade your installation run \e[1m\e[97mgit pull\e[0m from the ~/MagicMirror directory."
+	echo -e "If you want to upgrade your installation run \e[1m\e[97mgit pull\e[0m from the ~/TeleFrame directory."
 	echo ""
 	exit;
 fi
 
-echo -e "\e[96mCloning MagicMirror ...\e[90m"
-if git clone --depth=1 https://github.com/MichMich/MagicMirror.git; then
-	echo -e "\e[92mCloning MagicMirror Done!\e[0m"
+echo -e "\e[96mCloning TeleFrame ...\e[90m"
+if git clone --depth=1 https://github.com/LukeSkywalker92/teleframe.git; then
+	echo -e "\e[92mCloning TeleFrame Done!\e[0m"
 else
-	echo -e "\e[91mUnable to clone MagicMirror."
+	echo -e "\e[91mUnable to clone TeleFrame."
 	exit;
 fi
 
-cd ~/MagicMirror  || exit
+cd ~/TeleFrame  || exit
 echo -e "\e[96mInstalling dependencies ...\e[90m"
 if npm install; then
 	echo -e "\e[92mDependencies installation Done!\e[0m"
@@ -114,8 +114,21 @@ else
 	exit;
 fi
 
+echo -e "\e[96mInstalling electron globally ...\e[90m"
+if sudo npm install electron -g; then
+	echo -e "\e[92mElectron installation Done!\e[0m"
+else
+	echo -e "\e[91mUnable to install electron!"
+	exit;
+fi
+
 # Use sample config for start MagicMirror
-cp config/config.js.sample config/config.js
+cp config/config.js.example config/config.js
+
+# Create image directory
+echo -e "\e[96mCreating image directory ...\e[90m"
+sudo mkdir /var/TeleFrame
+sudo mkdir /var/TeleFrame/images
 
 # Check if plymouth is installed (default with PIXEL desktop environment), then install custom splashscreen.
 echo -e "\e[96mCheck plymouth installation ...\e[0m"
@@ -124,16 +137,16 @@ if command_exists plymouth; then
 	echo -e "\e[90mSplashscreen: Checking themes directory.\e[0m"
 	if [ -d $THEME_DIR ]; then
 		echo -e "\e[90mSplashscreen: Create theme directory if not exists.\e[0m"
-		if [ ! -d $THEME_DIR/MagicMirror ]; then
-			sudo mkdir $THEME_DIR/MagicMirror
+		if [ ! -d $THEME_DIR/TeleFrame ]; then
+			sudo mkdir $THEME_DIR/TeleFrame
 		fi
 
-		if sudo cp ~/MagicMirror/splashscreen/splash.png $THEME_DIR/MagicMirror/splash.png && sudo cp ~/MagicMirror/splashscreen/MagicMirror.plymouth $THEME_DIR/MagicMirror/MagicMirror.plymouth && sudo cp ~/MagicMirror/splashscreen/MagicMirror.script $THEME_DIR/MagicMirror/MagicMirror.script; then
+		if sudo cp ~/TeleFrame/splashscreen/splash.png $THEME_DIR/TeleFrame/splash.png && sudo cp ~/TeleFrame/splashscreen/TeleFrame.plymouth $THEME_DIR/TeleFrame/TeleFrame.plymouth && sudo cp ~/TeleFrame/splashscreen/TeleFrame.script $THEME_DIR/TeleFrame/TeleFrame.script; then
 			echo -e "\e[90mSplashscreen: Theme copied successfully.\e[0m"
-			if sudo plymouth-set-default-theme -R MagicMirror; then
-				echo -e "\e[92mSplashscreen: Changed theme to MagicMirror successfully.\e[0m"
+			if sudo plymouth-set-default-theme -R TeleFrame; then
+				echo -e "\e[92mSplashscreen: Changed theme to TeleFrame successfully.\e[0m"
 			else
-				echo -e "\e[91mSplashscreen: Couldn't change theme to MagicMirror!\e[0m"
+				echo -e "\e[91mSplashscreen: Couldn't change theme to TeleFrame!\e[0m"
 			fi
 		else
 			echo -e "\e[91mSplashscreen: Copying theme failed!\e[0m"
@@ -150,11 +163,11 @@ read -p "Do you want use pm2 for auto starting of your MagicMirror (y/N)?" choic
 if [[ $choice =~ ^[Yy]$ ]]; then
     sudo npm install -g pm2
     sudo su -c "env PATH=$PATH:/usr/bin pm2 startup linux -u pi --hp /home/pi"
-    pm2 start ~/MagicMirror/installers/pm2_MagicMirror.json
+    pm2 start ~/TeleFrame/installers/pm2_TeleFrame.json
     pm2 save
 fi
 
 echo " "
-echo -e "\e[92mWe're ready! Run \e[1m\e[97mDISPLAY=:0 npm start\e[0m\e[92m from the ~/MagicMirror directory to start your MagicMirror.\e[0m"
+echo -e "\e[92mWe're ready! Run \e[1m\e[97mDISPLAY=:0 npm start\e[0m\e[92m from the ~/TeleFrame directory to start your TeleFrame.\e[0m"
 echo " "
 echo " "
