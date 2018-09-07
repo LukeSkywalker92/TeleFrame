@@ -127,8 +127,7 @@ cp config/config.js.example config/config.js
 
 # Create image directory
 echo -e "\e[96mCreating image directory ...\e[90m"
-sudo mkdir /var/TeleFrame
-sudo mkdir /var/TeleFrame/images
+mkdir images
 
 # Check if plymouth is installed (default with PIXEL desktop environment), then install custom splashscreen.
 echo -e "\e[96mCheck plymouth installation ...\e[0m"
