@@ -9,6 +9,7 @@ const {
 const config = require('./config/config')
 const telebot = require('./js/bot')
 const imagewatcher = require('./js/imageWatchdog')
+const schedules = require('./js/schedules');
 
 global.config = config;
 global.rendererLogger = rendererLogger;
@@ -39,6 +40,10 @@ function createWindow() {
 
   var imageWatchdog = new imagewatcher(config.imageFolder, config.imageCount, global.images, emitter, logger);
   var bot = new telebot(config.botToken, config.imageFolder, imageWatchdog, logger);
+
+  if (config.toggleMonitor) {
+    var scheduler = new schedules(config, logger);
+  }
 
   // Öffnen der DevTools.
   //win.webContents.openDevTools()
