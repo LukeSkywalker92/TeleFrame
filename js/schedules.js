@@ -1,4 +1,5 @@
 var schedule = require('node-schedule');
+const exec = require("child_process").exec;
 
 var schedules = class {
   constructor(config, logger) {
@@ -20,11 +21,11 @@ var schedules = class {
   }
 
   turnMonitorOn() {
-    console.log('on');
+    exec("tvservice --preferred && sudo chvt 6 && sudo chvt 7", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
   }
 
   turnMonitorOff() {
-    console.log('off');
+    exec("tvservice -o", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
   }
 }
 
