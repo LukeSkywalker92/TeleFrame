@@ -5,7 +5,7 @@
 ## Table Of Contents
 
 - [Installation](#installation)
-  - [Raspberry Pi](#automatic-installation)
+  - [Raspberry Pi](#automatic-installation-(raspberry-pi-only!))
   - [General](#manual-installation)
 - [Configuration](#configuration)
 - [Updating](#updating)
