@@ -5,7 +5,9 @@ var config = {
   imageFolder: 'images',
   imageCount: 30,
   newPhotoMessage: 'Neues Foto von',
-  fullscreen: true
+  fullscreen: true,
+  turnOnHour: 9,
+  turnOffHour: 22
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/

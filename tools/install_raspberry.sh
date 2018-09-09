@@ -125,6 +125,9 @@ fi
 # Use sample config for start MagicMirror
 cp config/config.js.example config/config.js
 
+read -p "Please tell me your telegram bot token. Token:  " token
+sed -i "s/\(botToken *: *\).*/\1'$token',/" config/config.js
+
 # Create image directory
 echo -e "\e[96mCreating image directory ...\e[90m"
 mkdir images
