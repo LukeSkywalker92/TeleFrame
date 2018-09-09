@@ -5,8 +5,8 @@
 ## Table Of Contents
 
 - [Installation](#installation)
-  - [Raspberry Pi](#Automatic-Installation-(Raspberry-Pi-only!))
-  - [General](#general)
+  - [Raspberry Pi](#automatic-installation)
+  - [General](#manual-installation)
 - [Configuration](#configuration)
 - [Updating](#updating)
 - [Building a TeleFrame](#building-a-teleframe)
