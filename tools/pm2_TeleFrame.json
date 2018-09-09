@@ -1,7 +1,7 @@
 {
   "apps" : [{
     "name"        : "TeleFrame",
-    "script"      : "/home/pi/TeleFrame/tools/ft.sh",
+    "script"      : "/home/pi/TeleFrame/tools/tf.sh",
     "watch"       : ["/home/pi/TeleFrame/config/config.js"]
   }]
 }
