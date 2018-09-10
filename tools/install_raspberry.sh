@@ -167,14 +167,14 @@ fi
 
 # Autohide mouse cursor
 if [[ $mousechoice =~ ^[Yy]$ ]]; then
-    sudo /bin/su -c "echo '@unclutter -display :0 -idle 3 -root -noevents' >> ~/.config/lxsession/LXDE-pi/autostart"
+    sudo echo "@unclutter -display :0 -idle 3 -root -noevents" >> ~/.config/lxsession/LXDE-pi/autostart
 fi
 
 # Disable screensaver
 if [[ $screensaverchoice =~ ^[Yy]$ ]]; then
-    sudo /bin/su -c "echo '@xset s noblank' >> ~/.config/lxsession/LXDE-pi/autostart"
-		sudo /bin/su -c "echo '@xset s off' >> ~/.config/lxsession/LXDE-pi/autostart"
-		sudo /bin/su -c "echo '@xset -dpms' >> ~/.config/lxsession/LXDE-pi/autostart"
+    sudo echo "@xset s noblank" >> ~/.config/lxsession/LXDE-pi/autostart
+		sudo echo "@xset s off" >> ~/.config/lxsession/LXDE-pi/autostart
+		sudo echo "@xset -dpms" >> ~/.config/lxsession/LXDE-pi/autostart
 		sudo /bin/su -c "echo 'xserver-command=X -s 0 -dpms' >> /etc/lightdm/lightdm.conf"
 fi
 
