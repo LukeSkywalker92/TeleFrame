@@ -29,6 +29,12 @@ if [ "$ARM" != "armv7l" ]; then
 	exit;
 fi
 
+# Get user wishes
+read -p "Do you want to disable the screensaver (y/N)? " screensaverchoice
+read -p "Do you want to your mouse pointer do be autohided (y/N)? " mousechoice
+read -p "Do you want use pm2 for auto starting of your TeleFrame (y/N)? " pmchoice
+read -p "Please tell me your telegram bot token. Token:  " token
+
 # Define helper methods.
 function version_gt() { test "$(echo "$@" | tr " " "\n" | sort -V | head -n 1)" != "$1"; }
 function command_exists () { type "$1" &> /dev/null ;}
@@ -39,7 +45,7 @@ sudo apt-get update || echo -e "\e[91mUpdate failed, carrying on installation ..
 
 # Installing helper tools
 echo -e "\e[96mInstalling helper tools ...\e[90m"
-sudo apt-get --assume-yes install curl wget git build-essential unzip || exit
+sudo apt-get --assume-yes install curl wget git build-essential unzip unclutter x11-xserver-utils || exit
 
 # Check if we need to install or upgrade Node.js.
 echo -e "\e[96mCheck current Node installation ...\e[0m"
@@ -124,8 +130,7 @@ fi
 
 # Use sample config for start MagicMirror
 cp config/config.js.example config/config.js
-
-read -p "Please tell me your telegram bot token. Token:  " token
+# Put token into config
 sed -i "s/\(botToken *: *\).*/\1'$token',/" config/config.js
 
 # Create image directory
@@ -160,9 +165,21 @@ else
 	echo -e "\e[93mplymouth is not installed.\e[0m";
 fi
 
+# Autohide mouse cursor
+if [[ $mousechoice =~ ^[Yy]$ ]]; then
+    sudo echo "@unclutter -display :0 -idle 3 -root -noevents" >> ~/.config/lxsession/LXDE-pi/autostart
+fi
+
+# Disable screensaver
+if [[ $screensaverchoice =~ ^[Yy]$ ]]; then
+    sudo echo "@xset s noblank" >> ~/.config/lxsession/LXDE-pi/autostart
+		sudo echo "@xset s off" >> ~/.config/lxsession/LXDE-pi/autostart
+		sudo echo "@xset -dpms" >> ~/.config/lxsession/LXDE-pi/autostart
+		sudo echo "xserver-command=X -s 0 -dpms" >> /etc/lightdm/lightdm.conf
+fi
+
 # Use pm2 control like a service MagicMirror
-read -p "Do you want use pm2 for auto starting of your TeleFrame (y/N)?" choice
-if [[ $choice =~ ^[Yy]$ ]]; then
+if [[ $pmchoice =~ ^[Yy]$ ]]; then
     sudo npm install -g pm2
     sudo su -c "env PATH=$PATH:/usr/bin pm2 startup linux -u pi --hp /home/pi"
     pm2 start ~/TeleFrame/tools/pm2_TeleFrame.json
