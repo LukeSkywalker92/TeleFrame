@@ -28,9 +28,10 @@ bash -c "$(curl -sL https://raw.githubusercontent.com/LukeSkywalker92/TeleFrame/
 ### Manual Installation
 
 1. Download and install the latest *Node.js* version.
-2. Clone the repository and check out the master branch: `git clone https://github.com/LukeSkywalker92/TeleFrame.git`
-3. Enter the repository: `cd TeleFrame/`
-4. Install and run the app with: `npm install && npm start`
+2. Install *Electron* globally with `npm install -g electron`.
+3. Clone the repository and check out the master branch: `git clone https://github.com/LukeSkywalker92/TeleFrame.git`
+4. Enter the repository: `cd TeleFrame/`
+5. Install and run the app with: `npm install && npm start`
 
 Also note that:
 
