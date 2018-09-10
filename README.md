@@ -70,7 +70,7 @@ If you want to update your TeleFrame to the latest version, use your terminal to
 git pull && npm install
 ```
 
-If you changed nothing more than the config or the modules, this should work without any problems.
+If you changed nothing more than the config, this should work without any problems.
 Type `git status` to see your changes, if there are any, you can reset them with `git reset --hard`. After that, git pull should be possible.
 
 ## Building a TeleFrame
