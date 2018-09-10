@@ -29,7 +29,7 @@ h1 {
 }
 
 @font-face {
-    font-family: 'Lato';
-    font-style: normal;
-    font-weight: 400;
-    src: local('Lato-Regular'), url(Lato-Regular.ttf) format('truetype');
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lato-Regular'), url(Lato-Regular.ttf) format('truetype');

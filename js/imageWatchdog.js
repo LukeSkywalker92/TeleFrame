@@ -4,7 +4,7 @@ const fs = require('fs');
 
 
 var ImageWatchdog = class {
-  constructor (imageFolder, imageCount, images, emitter, logger) {
+  constructor(imageFolder, imageCount, images, emitter, logger) {
     this.imageFolder = imageFolder;
     this.imageCount = imageCount;
     this.images = images;
@@ -13,7 +13,7 @@ var ImageWatchdog = class {
 
     fs.readdir(this.imageFolder, (err, files) => {
       for (var i = 0; i < this.imageCount; i++) {
-        this.images.push(this.imageFolder+'/'+files.pop())
+        this.images.push(this.imageFolder + '/' + files.pop())
       }
     })
   }
@@ -21,10 +21,14 @@ var ImageWatchdog = class {
   newImage(src, sender) {
     this.images.unshift(src);
     this.images.pop();
-    this.emitter.send('newImage', {sender: sender});
+    this.emitter.send('newImage', {
+      sender: sender
+    });
   }
 
 }
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
-if (typeof module !== "undefined") {module.exports = ImageWatchdog;}
+if (typeof module !== "undefined") {
+  module.exports = ImageWatchdog;
+}
