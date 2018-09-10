@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# This is an installer script for MagicMirror2. It works well enough
+# This is an installer script for TeleFrame. It works well enough
 # that it can detect if you have Node installed, run a binary script
-# and then download and run MagicMirror2.
+# and then download and run TeleFrame.
 
 echo -e "\e[0m"
 echo '_________ _______  _        _______  _______  _______  _______  _______  _______ '
