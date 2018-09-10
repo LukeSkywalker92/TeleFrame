@@ -11,6 +11,7 @@ var ImageWatchdog = class {
     this.logger = logger;
     this.emitter = emitter;
 
+    //get paths of already downloaded images
     fs.readdir(this.imageFolder, (err, files) => {
       for (var i = 0; i < this.imageCount; i++) {
         this.images.push(this.imageFolder + '/' + files.pop())
@@ -19,8 +20,10 @@ var ImageWatchdog = class {
   }
 
   newImage(src, sender) {
+    //handle new incoming image
     this.images.unshift(src);
     this.images.pop();
+    //notify frontend, that new image arrived
     this.emitter.send('newImage', {
       sender: sender
     });

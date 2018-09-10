@@ -52,6 +52,7 @@ var Bot = class {
   }
 
   newImage(src, sender) {
+    //tell imageWatchdog that a new image arrived
     this.imageWatchdog.newImage(src, sender);
   }
 

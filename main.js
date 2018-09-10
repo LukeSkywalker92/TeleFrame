@@ -36,11 +36,15 @@ function createWindow() {
   // und Laden der index.html der App.
   win.loadFile('index.html')
 
+  //get instance of webContents for sending messages to the frontend
   const emitter = win.webContents
 
+  //create imageWatchdog and bot
   var imageWatchdog = new imagewatcher(config.imageFolder, config.imageCount, global.images, emitter, logger);
   var bot = new telebot(config.botToken, config.imageFolder, imageWatchdog, logger);
 
+  //generate scheduler, when times for turning monitor off and on
+  //are given in the config file
   if (config.toggleMonitor) {
     var scheduler = new schedules(config, logger);
   }

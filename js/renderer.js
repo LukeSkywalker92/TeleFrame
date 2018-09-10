@@ -12,14 +12,13 @@ logger.info('Renderer started ...')
 var images = remote.getGlobal('images')
 var container = document.getElementById('container');
 
+//handle new incoming image
 ipcRenderer.on('newImage', function(event, arg) {
   newImage(arg.sender)
 });
 
-
+//start slideshow of images
 var i = 0;
-
-
 setInterval(function() {
   if (images.length == 0) {} else {
     imagepath = images[i];
@@ -32,9 +31,7 @@ setInterval(function() {
   }
 }, config.interval)
 
-
-
-
+//notify user of incoming image and restart slideshow with the newest image
 function newImage(sender) {
   images = remote.getGlobal('images');
   swal(' ', {
@@ -47,11 +44,16 @@ function newImage(sender) {
   });
 }
 
+//load imge to slideshow
 function loadImage(src) {
   var currentImage = container.firstElementChild;
   var img = document.createElement('img');
   img.src = src;
   img.className = 'image';
+
+  //calculate aspect ratio to show complete image on the screen and
+  //fade in new image while fading out the old image as soon as
+  //the new imageis loaded
   img.onload = function() {
     screenAspectRatio = remote.getCurrentWindow().webContents
       .getOwnerBrowserWindow().getBounds().width / remote.getCurrentWindow()
