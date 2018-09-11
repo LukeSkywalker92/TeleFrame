@@ -24,7 +24,7 @@ ARM=$(uname -m)
 # Check the Raspberry Pi version.
 if [ "$ARM" != "armv7l" ]; then
 	echo -e "\e[91mSorry, your Raspberry Pi is not supported."
-	echo -e "\e[91mPlease run MagicMirror on a Raspberry Pi 2 or 3."
+	echo -e "\e[91mPlease run TeleFrame on a Raspberry Pi 2 or 3."
 	echo -e "\e[91mIf this is a Pi Zero, you are in the same boat as the original Raspberry Pi. You must run in server only mode."
 	exit;
 fi
@@ -86,7 +86,7 @@ if $NODE_INSTALL; then
 
 	# Fetch the latest version of Node.js from the selected branch
 	# The NODE_STABLE_BRANCH variable will need to be manually adjusted when a new branch is released. (e.g. 7.x)
-	# Only tested (stable) versions are recommended as newer versions could break MagicMirror.
+	# Only tested (stable) versions are recommended as newer versions could break TeleFrame.
 
 	NODE_STABLE_BRANCH="9.x"
 	curl -sL https://deb.nodesource.com/setup_$NODE_STABLE_BRANCH | sudo -E bash -
@@ -94,7 +94,7 @@ if $NODE_INSTALL; then
 	echo -e "\e[92mNode.js installation Done!\e[0m"
 fi
 
-# Install MagicMirror
+# Install TeleFrame
 cd ~
 if [ -d "$HOME/TeleFrame" ] ; then
 	echo -e "\e[93mIt seems like TeleFrame is already installed."
@@ -131,7 +131,7 @@ else
 	exit;
 fi
 
-# Use sample config for start MagicMirror
+# Use sample config for start TeleFrame
 cp config/config.js.example config/config.js
 # Put token into config
 sed -i "s/\(botToken *: *\).*/\1'$token',/" config/config.js
@@ -181,7 +181,7 @@ if [[ $screensaverchoice =~ ^[Yy]$ ]]; then
 		sudo /bin/su -c "echo 'xserver-command=X -s 0 -dpms' >> /etc/lightdm/lightdm.conf"
 fi
 
-# Use pm2 control like a service MagicMirror
+# Use pm2 control like a service TeleFrame
 if [[ $pmchoice =~ ^[Yy]$ ]]; then
     sudo npm install -g pm2
     sudo su -c "env PATH=$PATH:/usr/bin pm2 startup linux -u pi --hp /home/pi"
