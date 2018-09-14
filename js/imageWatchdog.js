@@ -12,27 +12,17 @@ var ImageWatchdog = class {
     this.emitter = emitter;
 
     //get paths of already downloaded images
-
-    fs.readFile(this.imageFolder + '/' + "images.json", (err, data) => {
-      if (err) throw err;
-      this.images = JSON.parse(data);
-      console.log(this.images);
-    });
-
-
-/*    fs.readdir(this.imageFolder, (err, files) => {
-      var numberOfFiles = this.imageCount;
-      if (files.length < numberOfFiles) {
-        numberOfFiles = files.length;
-      }
-      for (var i = 0; i < numberOfFiles; i++) {
-        this.images.push({
-          'src': this.imageFolder + '/' + files.pop(),
-          'sender': '',
-          'caption': ''
-        })
-      }
-    }) */
+    if (fs.existsSync(this.imageFolder + '/' + "images.json")) {
+      fs.readFile(this.imageFolder + '/' + "images.json", (err, data) => {
+        if (err) throw err;
+        var jsonData = JSON.parse(data);
+        for (var image in jsonData) {
+          this.images.push(jsonData[image]);
+        }
+      });
+    } else {
+      this.saveImageArray()
+    }
   }
 
   newImage(src, sender, caption) {
@@ -53,16 +43,14 @@ var ImageWatchdog = class {
   }
 
   saveImageArray() {
+    var self = this;
     // stringify JSON Object
     var jsonContent = JSON.stringify(this.images);
-    console.log(jsonContent);
-
     fs.writeFile(this.imageFolder + '/' + "images.json", jsonContent, 'utf8', function(err) {
       if (err) {
-        this.logger.error("An error occured while writing JSON Object to File.");
+        self.logger.error("An error occured while writing JSON Object to File.");
         return console.log(err);
       }
-      this.logger.info("JSON file has been saved.");
     });
   }
 
