@@ -9,7 +9,7 @@ const config = remote.getGlobal('config');
 
 logger.info('Renderer started ...')
 
-var images = remote.getGlobal('images')
+var images = remote.getGlobal('images');
 var container = document.getElementById('container');
 
 //handle new incoming image
@@ -21,7 +21,7 @@ ipcRenderer.on('newImage', function(event, arg) {
 var i = 0;
 setInterval(function() {
   if (images.length == 0) {} else {
-    imagepath = images[i];
+    imagepath = images[i].src;
     loadImage(imagepath)
     if (i >= images.length - 1) {
       i = 0;

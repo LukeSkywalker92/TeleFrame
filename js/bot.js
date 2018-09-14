@@ -30,7 +30,7 @@ var Bot = class {
               filename,
               image
             }) => {
-              this.newImage(filename, ctx.message.from.first_name);
+              this.newImage(filename, ctx.message.from.first_name, ctx.message.caption);
             })
             .catch((err) => {
               this.logger.error(err);
@@ -51,9 +51,9 @@ var Bot = class {
     this.logger.info('Bot started!');
   }
 
-  newImage(src, sender) {
+  newImage(src, sender, caption) {
     //tell imageWatchdog that a new image arrived
-    this.imageWatchdog.newImage(src, sender);
+    this.imageWatchdog.newImage(src, sender, caption);
   }
 
 

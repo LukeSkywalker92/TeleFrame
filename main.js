@@ -13,7 +13,7 @@ const schedules = require('./js/schedules');
 
 global.config = config;
 global.rendererLogger = rendererLogger;
-global.images = []
+global.images = [];
 logger.info('Main app started ...');
 
 
