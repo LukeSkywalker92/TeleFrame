@@ -6,6 +6,7 @@ var config = {
   imageCount: 30,
   newPhotoMessage: 'Neues Foto von',
   fullscreen: true,
+  toggleMonitor: true,
   turnOnHour: 9,
   turnOffHour: 22
 };
