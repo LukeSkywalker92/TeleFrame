@@ -21,7 +21,7 @@ ipcRenderer.on('newImage', function(event, arg) {
 var i = 0;
 setInterval(function() {
   if (images.length == 0) {} else {
-    imagepath = images[i].src;
+    imagepath = images[i];
     loadImage(imagepath)
     if (i >= images.length - 1) {
       i = 0;
@@ -45,11 +45,16 @@ function newImage(sender) {
 }
 
 //load imge to slideshow
-function loadImage(src) {
+function loadImage(image) {
   var currentImage = container.firstElementChild;
+  var div = document.createElement('div');
   var img = document.createElement('img');
-  img.src = src;
+  var sender = document.createElement('span');
+  img.src = image.src;
   img.className = 'image';
+  div.className = 'imgcontainer';
+  sender.className = 'sender';
+  sender.innerHTML = image.sender;
 
   //calculate aspect ratio to show complete image on the screen and
   //fade in new image while fading out the old image as soon as
@@ -61,14 +66,24 @@ function loadImage(src) {
     imageAspectRatio = img.naturalWidth / img.naturalHeight;
     if (imageAspectRatio > screenAspectRatio) {
       img.style.width = "100%";
+      div.style.width = "100%";
     } else {
       img.style.height = "100%";
+      div.style.height = "100%";
     }
-    $(img).fadeIn(config.fadeTime);
+    $(div).fadeIn(config.fadeTime);
     $(currentImage).fadeOut(config.fadeTime, function() {
       container.removeChild(currentImage);
     });
   }
-  container.appendChild(img);
+  div.appendChild(img);
+  if(config.showSender) {
+      div.appendChild(sender);
+  }
+  container.appendChild(div);
+
+  setTimeout(function () {
+    $(sender).fadeOut(config.fadeTime/2)
+  }, config.interval/2);
 
 }
