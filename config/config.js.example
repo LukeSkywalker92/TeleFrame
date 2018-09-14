@@ -1,11 +1,13 @@
 var config = {
   botToken: '',
   imageFolder: 'images',
+  fullscreen: true,
   fadeTime: 1500,
   interval: 10 * 1000,
   imageCount: 30,
   newPhotoMessage: 'Neues Foto von',
-  fullscreen: true,
+  showSender: true,
+  showCaption: true,
   toggleMonitor: true,
   turnOnHour: 9,
   turnOffHour: 22

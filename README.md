@@ -54,11 +54,15 @@ The following properties can be configured:
 | --- | --- |
 | `botToken` | The token of the Telegram Bot, which will recieve the images. How to create a bot and get the token is explained [here](https://core.telegram.org/bots#6-botfather). |
 | `imageFolder` | The folder where the images are stored. |
+| `fullscreen` | When set to true, TeleFrame will run in fullscreen mode. |
 | `fadeTime` | The fading time between two images. |
 | `interval` | The time that an image is shown. |
 | `imageCount` | Defines how many different images are shown in the slideshow. |
 | `newPhotoMessage` | Message that is shown when the bot recieved a new image. |
+| `showSender` | When set to true, TeleFrame will show the name of the sender when the image is shown. |
+| `showCaption` | When set to true, TeleFrame will show the caption of the image when the image is shown. |
 | `fullscreen` | When set to true, TeleFrame will run in fullscreen mode. |
+| `toggleMonitor` | When set to true, TeleFrame will switch the monitor off and on at the defined hours. |
 | `turnOnHour` | Defines when the monitor shuld be turned on. |
 | `turnOffHour` | Defines when the monitor shuld be turned off. |
 
