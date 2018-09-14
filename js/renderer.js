@@ -4,6 +4,7 @@ const {
 } = require('electron');
 const $ = require('jquery');
 const swal = require('sweetalert');
+const randomColor = require('randomcolor');
 const logger = remote.getGlobal('rendererLogger');
 const config = remote.getGlobal('config');
 
@@ -51,6 +52,14 @@ function loadImage(image) {
   var img = document.createElement('img');
   var sender = document.createElement('span');
   var caption = document.createElement('span');
+  var backgroundColor = randomColor({
+    luminosity: 'bright',
+    alpha: 1
+  });
+  var fontColor = randomColor({
+    luminosity: 'light',
+    alpha: 1
+  });
   img.src = image.src;
   img.className = 'image';
   div.className = 'imgcontainer';
@@ -59,6 +68,11 @@ function loadImage(image) {
   caption.id = 'caption';
   sender.innerHTML = image.sender;
   caption.innerHTML = image.caption;
+  sender.style.backgroundColor = backgroundColor;
+  caption.style.backgroundColor = backgroundColor;
+  sender.style.color = fontColor;
+  caption.style.color = fontColor;
+
 
   //calculate aspect ratio to show complete image on the screen and
   //fade in new image while fading out the old image as soon as
@@ -81,17 +95,17 @@ function loadImage(image) {
     });
   }
   div.appendChild(img);
-  if(config.showSender) {
-      div.appendChild(sender);
+  if (config.showSender) {
+    div.appendChild(sender);
   }
-  if(config.showCaption && image.caption !== undefined) {
+  if (config.showCaption && image.caption !== undefined) {
     div.appendChild(caption);
   }
   container.appendChild(div);
 
-  setTimeout(function () {
-    $(sender).fadeOut(config.fadeTime/2)
-    $(caption).fadeOut(config.fadeTime/2)
-  }, config.interval/2);
+  setTimeout(function() {
+    $(sender).fadeOut(config.fadeTime / 2)
+    $(caption).fadeOut(config.fadeTime / 2)
+  }, config.interval / 2);
 
 }

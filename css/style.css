@@ -29,27 +29,23 @@ h1 {
 }
 
 .sender {
-  color: white;
   position: absolute;
   left: 0%;
   top: 2%;
-  background-color: #ff3232;
   padding: 10 20;
   font-family: 'Bowlby';
   font-size: xx-large;
 }
 
 .caption {
-  color: white;
   position: absolute;
   right: 0%;
   bottom: 2%;
-  background-color: #ff3232;
-  width: 80%;
-  height: 10%;
+  width: auto;
+  height: auto;
   padding: 10 20;
   font-family: 'Bowlby';
-  font-size: xx-large;
+  font-size: large;
 }
 
 .image {
