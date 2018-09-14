@@ -39,6 +39,19 @@ h1 {
   font-size: xx-large;
 }
 
+.caption {
+  color: white;
+  position: absolute;
+  right: 0%;
+  bottom: 2%;
+  background-color: #ff3232;
+  width: 80%;
+  height: 10%;
+  padding: 10 20;
+  font-family: 'Bowlby';
+  font-size: xx-large;
+}
+
 .image {
   /*position: absolute;
   top: 50%;

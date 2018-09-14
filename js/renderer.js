@@ -2,8 +2,8 @@ const {
   remote,
   ipcRenderer
 } = require('electron');
-const $ = require('jquery')
-const swal = require('sweetalert')
+const $ = require('jquery');
+const swal = require('sweetalert');
 const logger = remote.getGlobal('rendererLogger');
 const config = remote.getGlobal('config');
 
@@ -50,11 +50,15 @@ function loadImage(image) {
   var div = document.createElement('div');
   var img = document.createElement('img');
   var sender = document.createElement('span');
+  var caption = document.createElement('span');
   img.src = image.src;
   img.className = 'image';
   div.className = 'imgcontainer';
   sender.className = 'sender';
+  caption.className = 'caption';
+  caption.id = 'caption';
   sender.innerHTML = image.sender;
+  caption.innerHTML = image.caption;
 
   //calculate aspect ratio to show complete image on the screen and
   //fade in new image while fading out the old image as soon as
@@ -80,10 +84,14 @@ function loadImage(image) {
   if(config.showSender) {
       div.appendChild(sender);
   }
+  if(config.showCaption && image.caption !== undefined) {
+    div.appendChild(caption);
+  }
   container.appendChild(div);
 
   setTimeout(function () {
     $(sender).fadeOut(config.fadeTime/2)
+    $(caption).fadeOut(config.fadeTime/2)
   }, config.interval/2);
 
 }
