@@ -38,6 +38,7 @@ h1 {
 .caption {
   position: absolute;
   width: auto;
+  max-width: 90%;
   height: auto;
   padding: 10 20;
   font-family: 'Roboto-Bold', 'NotoColorEmoji';

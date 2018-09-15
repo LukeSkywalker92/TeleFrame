@@ -94,13 +94,21 @@ function loadImage(image) {
   //generate some randomness for positions of sender and caption
   if (Math.random() >= 0.5) {
     sender.style.left = 0;
+    sender.style.borderTopRightRadius = '10px';
+    sender.style.borderBottomRightRadius = '10px';
   } else {
     sender.style.right = 0;
+    sender.style.borderTopLeftRadius = '10px';
+    sender.style.borderBottomLeftRadius = '10px';
   }
   if (Math.random() >= 0.5) {
     caption.style.left = 0;
+    caption.style.borderTopRightRadius = '10px';
+    caption.style.borderBottomRightRadius = '10px';
   } else {
     caption.style.right = 0;
+    caption.style.borderTopLeftRadius = '10px';
+    caption.style.borderBottomLeftRadius = '10px';
   }
   if (Math.random() >= 0.5) {
     sender.style.top = '2%';
