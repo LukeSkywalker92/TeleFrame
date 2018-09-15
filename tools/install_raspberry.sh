@@ -51,7 +51,7 @@ echo -e "\e[96mInstalling helper tools ...\e[90m"
 sudo apt-get --assume-yes install curl wget git build-essential unzip unclutter x11-xserver-utils || exit
 
 # Enable the Open GL driver to decrease Electron's CPU usage
-sudo /bin/su -c "echo 'dtoverlay=vc4-kms-v3d' >> /boot/config.txt"
+sudo /bin/su -c "echo 'dtoverlay=vc4-fkms-v3d' >> /boot/config.txt"
 
 # Check if we need to install or upgrade Node.js.
 echo -e "\e[96mCheck current Node installation ...\e[0m"
