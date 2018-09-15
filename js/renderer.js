@@ -5,6 +5,7 @@ const {
 const $ = require('jquery');
 const swal = require('sweetalert');
 const randomColor = require('randomcolor');
+const chroma = require('chroma-js');
 const logger = remote.getGlobal('rendererLogger');
 const config = remote.getGlobal('config');
 
@@ -47,11 +48,14 @@ function newImage(sender) {
 
 //load imge to slideshow
 function loadImage(image) {
+  //get current container and create needed elements
   var currentImage = container.firstElementChild;
   var div = document.createElement('div');
   var img = document.createElement('img');
   var sender = document.createElement('span');
   var caption = document.createElement('span');
+
+  //create background and font colors for sender and caption
   var backgroundColor = randomColor({
     luminosity: 'dark',
     alpha: 1
@@ -60,6 +64,20 @@ function loadImage(image) {
     luminosity: 'light',
     alpha: 1
   });
+  //when contrast between background color and font color is too small to
+  //make the text readable, recreate colors
+  while (chroma.contrast(backgroundColor, fontColor) < 4.5) {
+    backgroundColor = randomColor({
+      luminosity: 'dark',
+      alpha: 1
+    });
+    fontColor = randomColor({
+      luminosity: 'light',
+      alpha: 1
+    });
+  }
+
+  //set class names and style attributes
   img.src = image.src;
   img.className = 'image';
   div.className = 'imgcontainer';
@@ -73,18 +91,17 @@ function loadImage(image) {
   sender.style.color = fontColor;
   caption.style.color = fontColor;
 
+  //generate some randomness for positions of sender and caption
   if (Math.random() >= 0.5) {
     sender.style.left = 0;
   } else {
     sender.style.right = 0;
   }
-
   if (Math.random() >= 0.5) {
     caption.style.left = 0;
   } else {
     caption.style.right = 0;
   }
-
   if (Math.random() >= 0.5) {
     sender.style.top = '2%';
     caption.style.bottom = '2%';
@@ -122,6 +139,7 @@ function loadImage(image) {
   }
   container.appendChild(div);
 
+  //fade out sender and caption at half time of the shown image
   setTimeout(function() {
     $(sender).fadeOut(config.fadeTime / 2)
     $(caption).fadeOut(config.fadeTime / 2)
