@@ -1,7 +1,7 @@
 body {
   background-color: black;
   margin: 0;
-  font-family: 'Lato', 'Helvetica Neue', Helvetica, sans-serif;
+  font-family: 'Lato', 'NotoColorEmoji', 'Helvetica Neue', Helvetica, sans-serif;
   cursor: none;
 }
 
@@ -30,22 +30,19 @@ h1 {
 
 .sender {
   position: absolute;
-  left: 0%;
-  top: 2%;
   padding: 10 20;
-  font-family: 'Bowlby';
+  font-family: 'Bowlby', 'NotoColorEmoji';
   font-size: xx-large;
 }
 
 .caption {
   position: absolute;
-  right: 0%;
-  bottom: 2%;
   width: auto;
+  max-width: 90%;
   height: auto;
   padding: 10 20;
-  font-family: 'Bowlby';
-  font-size: large;
+  font-family: 'Roboto-Bold', 'NotoColorEmoji';
+  font-size: xx-large;
 }
 
 .image {
@@ -68,4 +65,18 @@ h1 {
   font-style: normal;
   font-weight: 400;
   src: local('BowlbyOneSC-Regular'), url(../fonts/BowlbyOneSC-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto-Bold';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto-Bold'), url(../fonts/Roboto-Bold.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'NotoColorEmoji';
+  font-style: normal;
+  font-weight: 400;
+  src: local('NotoColorEmoji'), url(../fonts/NotoColorEmoji.ttf) format('truetype');
 }
