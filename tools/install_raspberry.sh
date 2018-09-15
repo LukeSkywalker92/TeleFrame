@@ -33,6 +33,9 @@ fi
 read -p "Do you want to disable the screensaver (y/N)? " screensaverchoice
 read -p "Do you want to your mouse pointer do be autohided (y/N)? " mousechoice
 read -p "Do you want use pm2 for auto starting of your TeleFrame (y/N)? " pmchoice
+if [[ $pmchoice =~ ^[Yy]$ ]]; then
+    read -p "Do you want pm2 to wait for internet connection before auto starting your TeleFrame (y/N)? " pmchoiceInternet
+fi
 read -p "Please tell me your telegram bot token. Token:  " token
 
 # Define helper methods.
@@ -185,7 +188,11 @@ fi
 if [[ $pmchoice =~ ^[Yy]$ ]]; then
     sudo npm install -g pm2
     sudo su -c "env PATH=$PATH:/usr/bin pm2 startup linux -u pi --hp /home/pi"
-    pm2 start ~/TeleFrame/tools/pm2_TeleFrame.json
+		if [[ $pmchoiceInternet =~ ^[Yy]$ ]]; then
+    	pm2 start ~/TeleFrame/tools/pm2_TeleFrame_waitForInternet.json
+		else
+			pm2 start ~/TeleFrame/tools/pm2_TeleFrame.json
+		fi
     pm2 save
 fi
 
