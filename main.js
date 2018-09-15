@@ -28,7 +28,7 @@ let win
 function createWindow() {
   // Erstellen des Browser-Fensters.
   win = new BrowserWindow({
-    width: 800,
+    width: 1024,
     height: 600
   })
 

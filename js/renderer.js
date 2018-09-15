@@ -53,7 +53,7 @@ function loadImage(image) {
   var sender = document.createElement('span');
   var caption = document.createElement('span');
   var backgroundColor = randomColor({
-    luminosity: 'bright',
+    luminosity: 'dark',
     alpha: 1
   });
   var fontColor = randomColor({
@@ -73,6 +73,25 @@ function loadImage(image) {
   sender.style.color = fontColor;
   caption.style.color = fontColor;
 
+  if (Math.random() >= 0.5) {
+    sender.style.left = 0;
+  } else {
+    sender.style.right = 0;
+  }
+
+  if (Math.random() >= 0.5) {
+    caption.style.left = 0;
+  } else {
+    caption.style.right = 0;
+  }
+
+  if (Math.random() >= 0.5) {
+    sender.style.top = '2%';
+    caption.style.bottom = '2%';
+  } else {
+    sender.style.bottom = '2%';
+    caption.style.top = '2%';
+  }
 
   //calculate aspect ratio to show complete image on the screen and
   //fade in new image while fading out the old image as soon as
