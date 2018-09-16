@@ -27,6 +27,7 @@
     "randomcolor": "^0.5.3",
     "sweetalert": "^2.1.0",
     "telegraf": "^3.23.0",
+    "velocity-animate": "^1.5.2",
     "winston": "^3.1.0"
   }
 }
