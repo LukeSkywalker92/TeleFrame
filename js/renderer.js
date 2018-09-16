@@ -3,9 +3,11 @@ const {
   ipcRenderer
 } = require('electron');
 const $ = require('jquery');
+window.jQuery = $;
 const swal = require('sweetalert');
 const randomColor = require('randomcolor');
 const chroma = require('chroma-js');
+const velocity = require('velocity-animate');
 const logger = remote.getGlobal('rendererLogger');
 const config = remote.getGlobal('config');
 
@@ -133,9 +135,14 @@ function loadImage(image) {
       img.style.height = "100%";
       div.style.height = "100%";
     }
-    $(div).fadeIn(config.fadeTime);
-    $(currentImage).fadeOut(config.fadeTime, function() {
-      container.removeChild(currentImage);
+    $(div).velocity("fadeIn", {
+      duration: config.fadeTime
+    });
+    $(currentImage).velocity("fadeOut", {
+      duration: config.fadeTime,
+      complete: function() {
+        container.removeChild(currentImage);
+      }
     });
   }
   div.appendChild(img);
@@ -149,8 +156,12 @@ function loadImage(image) {
 
   //fade out sender and caption at half time of the shown image
   setTimeout(function() {
-    $(sender).fadeOut(config.fadeTime / 2)
-    $(caption).fadeOut(config.fadeTime / 2)
+    $(sender).velocity('fadeOut', {
+      duration: config.fadeTime / 2
+    });
+    $(caption).velocity('fadeOut', {
+      duration: config.fadeTime / 2
+    });
   }, config.interval / 2);
 
 }
