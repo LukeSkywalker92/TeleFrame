@@ -6,6 +6,7 @@ var schedules = class {
     this.turnOnHour = config.turnOnHour;
     this.turnOffHour = config.turnOffHour;
     this.logger = logger;
+    this.opts = {timeout: 15000};
     var self = this;
 
     //generate schedule for turning the monitor on
@@ -24,17 +25,28 @@ var schedules = class {
 
   //execute command for turning the monitor on
   turnMonitorOn() {
-    exec("tvservice --preferred && sudo chvt 6 && sudo chvt 7", opts, function(error, stdout, stderr) {
-      self.checkForExecError(error, stdout, stderr, res);
+    var self = this;
+    exec("tvservice --preferred && sudo chvt 6 && sudo chvt 7", self.opts, function(error, stdout, stderr) {
+      self.checkForExecError(error, stdout, stderr);
     });
   }
 
   //execute command for turning the monitor off
   turnMonitorOff() {
-    exec("tvservice -o", opts, function(error, stdout, stderr) {
-      self.checkForExecError(error, stdout, stderr, res);
+    exec("tvservice -o", self.opts, function(error, stdout, stderr) {
+      self.checkForExecError(error, stdout, stderr);
     });
   }
+
+  //check for execution error
+  checkForExecError(error, stdout, stderr, res) {
+		console.log(stdout);
+		console.log(stderr);
+		if (error) {
+			console.log(error);
+			return;
+		}
+	}
 }
 
 if (typeof module !== "undefined") {

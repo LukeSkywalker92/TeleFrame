@@ -33,6 +33,9 @@ fi
 read -p "Do you want to disable the screensaver (y/N)? " screensaverchoice
 read -p "Do you want to your mouse pointer do be autohided (y/N)? " mousechoice
 read -p "Do you want use pm2 for auto starting of your TeleFrame (y/N)? " pmchoice
+if [[ $pmchoice =~ ^[Yy]$ ]]; then
+    read -p "Do you want pm2 to wait for internet connection before auto starting your TeleFrame (y/N)? " pmchoiceInternet
+fi
 read -p "Please tell me your telegram bot token. Token:  " token
 
 # Define helper methods.
@@ -48,7 +51,7 @@ echo -e "\e[96mInstalling helper tools ...\e[90m"
 sudo apt-get --assume-yes install curl wget git build-essential unzip unclutter x11-xserver-utils || exit
 
 # Enable the Open GL driver to decrease Electron's CPU usage
-sudo /bin/su -c "echo 'dtoverlay=vc4-kms-v3d' >> /boot/config.txt"
+sudo /bin/su -c "echo 'dtoverlay=vc4-fkms-v3d' >> /boot/config.txt"
 
 # Check if we need to install or upgrade Node.js.
 echo -e "\e[96mCheck current Node installation ...\e[0m"
@@ -184,8 +187,12 @@ fi
 # Use pm2 control like a service TeleFrame
 if [[ $pmchoice =~ ^[Yy]$ ]]; then
     sudo npm install -g pm2
-    sudo su -c "env PATH=$PATH:/usr/bin pm2 startup linux -u pi --hp /home/pi"
-    pm2 start ~/TeleFrame/tools/pm2_TeleFrame.json
+    sudo su -c "env PATH=$PATH:/usr/bin pm2 startup systemd -u pi --hp /home/pi"
+		if [[ $pmchoiceInternet =~ ^[Yy]$ ]]; then
+    	pm2 start ~/TeleFrame/tools/pm2_TeleFrame_waitForInternet.json
+		else
+			pm2 start ~/TeleFrame/tools/pm2_TeleFrame.json
+		fi
     pm2 save
 fi
 
