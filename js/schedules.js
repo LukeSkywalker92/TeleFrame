@@ -33,6 +33,7 @@ var schedules = class {
 
   //execute command for turning the monitor off
   turnMonitorOff() {
+var self = this;
     exec("tvservice -o", self.opts, function(error, stdout, stderr) {
       self.checkForExecError(error, stdout, stderr);
     });
