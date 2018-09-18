@@ -39,6 +39,16 @@ var Bot = class {
       )
     });
 
+    this.bot.catch((err) => {
+      var self = this;
+      this.logger.error(err)
+      this.bot.stop(function() {
+        setTimeout(function() {
+          self.startBot();
+        }, 1000);
+      });
+    })
+
     //Some small conversation
     this.bot.hears('hi', (ctx) => ctx.reply('Hey there'));
 
