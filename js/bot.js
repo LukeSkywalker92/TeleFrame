@@ -40,13 +40,7 @@ var Bot = class {
     });
 
     this.bot.catch((err) => {
-      var self = this;
       this.logger.error(err)
-      this.bot.stop(function() {
-        setTimeout(function() {
-          self.startBot();
-        }, 1000);
-      });
     })
 
     //Some small conversation
@@ -57,7 +51,8 @@ var Bot = class {
 
   startBot() {
     //Start bot
-    this.bot.startPolling();
+    var self = this;
+    this.bot.startPolling(30, 100, null, () => setTimeout(() => self.startBot(), 30000));
     this.logger.info('Bot started!');
   }
 
