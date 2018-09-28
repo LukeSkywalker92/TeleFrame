@@ -19,7 +19,7 @@
 
 Note that you will need to install the lastest full version of Raspbian, **don't use the Lite version**.
 
-Execute the following command on your Raspberry Pi to install MagicMirror²:
+Execute the following command on your Raspberry Pi to install TeleFrame:
 
 ```bash
 bash -c "$(curl -sL https://raw.githubusercontent.com/LukeSkywalker92/TeleFrame/master/tools/install_raspberry.sh)"
