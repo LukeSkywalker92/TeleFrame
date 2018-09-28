@@ -1,8 +1,8 @@
 ![TeleFrame](.github/header.png)
 
-**TeleFrame** is an open source digital image frame that displays images, which were send to an Telegram Bot.
-
 ![TeleFrame in action](.github/TeleFrame.gif)
+
+**TeleFrame** is an open source digital image frame that displays images, which were send to an Telegram Bot.
 
 ## Table Of Contents
 
