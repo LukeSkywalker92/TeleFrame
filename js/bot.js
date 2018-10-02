@@ -4,13 +4,14 @@ const download = require('image-downloader')
 const moment = require('moment');
 
 var Bot = class {
-	constructor(botToken, imageFolder, imageWatchdog, logger) {
+	constructor(botToken, imageFolder, imageWatchdog, showVideo, logger) {
 		var self = this;
 		this.bot = new Telegraf(botToken);
 		this.telegram = new Telegram(botToken);
 		this.logger = logger;
 		this.imageFolder = imageFolder;
 		this.imageWatchdog = imageWatchdog;
+		this.showVideo = showVideo;
 
 		//get bot name
 		this.bot.telegram.getMe().then((botInfo) => {
@@ -42,6 +43,29 @@ var Bot = class {
 						})
 				}
 			)
+		});
+
+		//Download incoming video
+		this.bot.on('video', (ctx) => {
+			if (this.showVideo) {
+				this.telegram.getFileLink(ctx.message.video.file_id).then(
+					link => {
+						download.image({
+								url: link,
+								dest: this.imageFolder + '/' + moment().format('x') + '.mp4'
+							})
+							.then(({
+								filename,
+								image
+							}) => {
+								this.newImage(filename, ctx.message.from.first_name, ctx.message.caption);
+							})
+							.catch((err) => {
+								this.logger.error(err);
+							})
+					}
+				)
+			}
 		});
 
 		this.bot.catch((err) => {

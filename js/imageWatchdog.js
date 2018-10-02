@@ -36,8 +36,15 @@ var ImageWatchdog = class {
       this.images.pop();
     }
     //notify frontend, that new image arrived
+		var type;
+		if (src.split('.').pop() == 'mp4') {
+			type = 'video';
+		} else {
+			type = 'image';
+		}
     this.emitter.send('newImage', {
-      sender: sender
+      sender: sender,
+			type: type
     });
     this.saveImageArray();
   }
