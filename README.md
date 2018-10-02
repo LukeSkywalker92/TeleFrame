@@ -2,7 +2,7 @@
 
 ![TeleFrame in action](.github/TeleFrame.gif)
 
-**TeleFrame** is an open source digital image frame that displays images, which were send to an Telegram Bot.
+**TeleFrame** is an open source digital image frame that displays images and videos, which were send to an Telegram Bot.
 
 ## Table Of Contents
 
@@ -55,12 +55,14 @@ The following properties can be configured:
 | **Option** | **Description** |
 | --- | --- |
 | `botToken` | The token of the Telegram Bot, which will recieve the images. How to create a bot and get the token is explained [here](https://core.telegram.org/bots#6-botfather). |
+| `showVideos` | When set to true, videos that are send to the bot are also shown. |
 | `imageFolder` | The folder where the images are stored. |
 | `fullscreen` | When set to true, TeleFrame will run in fullscreen mode. |
 | `fadeTime` | The fading time between two images. |
 | `interval` | The time that an image is shown. |
 | `imageCount` | Defines how many different images are shown in the slideshow. |
 | `newPhotoMessage` | Message that is shown when the bot recieved a new image. |
+| `newVideoMessage` | Message that is shown when the bot recieved a new video. |
 | `showSender` | When set to true, TeleFrame will show the name of the sender when the image is shown. |
 | `showCaption` | When set to true, TeleFrame will show the caption of the image when the image is shown. |
 | `fullscreen` | When set to true, TeleFrame will run in fullscreen mode. |
