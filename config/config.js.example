@@ -1,11 +1,13 @@
 var config = {
   botToken: '',
+	showVideos: true,
   imageFolder: 'images',
   fullscreen: true,
   fadeTime: 1500,
   interval: 10 * 1000,
   imageCount: 30,
   newPhotoMessage: 'Neues Foto von',
+	newVideoMessage: 'New video from',
   showSender: true,
   showCaption: true,
   toggleMonitor: true,
