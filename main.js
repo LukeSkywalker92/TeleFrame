@@ -18,7 +18,7 @@ global.images = [];
 
 logger.info('Main app started ...');
 
-
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
@@ -50,7 +50,7 @@ function createWindow() {
   // Open the DevTools.
   // win.webContents.openDevTools()
 
-  bot.startBot()
+  //bot.startBot()
 
   // Emitted when the window is closed.
   win.on('closed', () => {
