@@ -2,6 +2,10 @@
 
 ![TeleFrame in action](.github/TeleFrame.gif)
 
+<p align="center">
+	<a href="https://david-dm.org/LukeSkywalker92/TeleFrame"><img src="https://david-dm.org/LukeSkywalker92/TeleFrame.svg" alt="david-dm"></a>
+</p>
+
 **TeleFrame** is an open source digital image frame that displays images and videos, which were send to an Telegram Bot.
 
 ## Table Of Contents
