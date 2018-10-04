@@ -39,7 +39,7 @@ function createWindow() {
 
   // create imageWatchdog and bot
   var imageWatchdog = new imagewatcher(config.imageFolder, config.imageCount, global.images, emitter, logger);
-  var bot = new telebot(config.botToken, config.imageFolder, imageWatchdog, logger);
+  var bot = new telebot(config.botToken, config.imageFolder, imageWatchdog, config.showVideos, logger);
 
   // generate scheduler, when times for turning monitor off and on
   // are given in the config file
