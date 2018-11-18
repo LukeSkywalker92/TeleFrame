@@ -16,6 +16,7 @@ var Bot = class {
 		//get bot name
 		this.bot.telegram.getMe().then((botInfo) => {
 			this.bot.options.username = botInfo.username;
+			this.logger.info('Using bot with name ' + this.bot.options.username + '.');
 		})
 
 		//Welcome message on bot start

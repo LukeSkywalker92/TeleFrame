@@ -50,7 +50,7 @@ function createWindow() {
   // Open the DevTools.
   // win.webContents.openDevTools()
 
-  //bot.startBot()
+  bot.startBot()
 
   // Emitted when the window is closed.
   win.on('closed', () => {
