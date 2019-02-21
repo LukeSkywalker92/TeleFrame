@@ -1,12 +1,26 @@
+/*
+Script for only running the telegram bot to save the images and videos to
+the images folder specified in the config
+*/
+
+const {
+  logger,
+  rendererLogger
+} = require('./js/logger')
+const config = require('./config/config')
+const telebot = require('./js/bot')
 const fs = require('fs');
 
+
+logger.info('Running bot only version of TeleFrame ...');
+
+
 var ImageWatchdog = class {
-  constructor(imageFolder, imageCount, images, emitter, logger) {
+  constructor(imageFolder, imageCount, logger) {
     this.imageFolder = imageFolder;
     this.imageCount = imageCount;
-    this.images = images;
     this.logger = logger;
-    this.emitter = emitter;
+    this.images = []
 
     //get paths of already downloaded images
     if (fs.existsSync(this.imageFolder + '/' + "images.json")) {
@@ -32,17 +46,12 @@ var ImageWatchdog = class {
     if (this.images.length >= this.imageCount) {
       this.images.pop();
     }
-    //notify frontend, that new image arrived
-		var type;
-		if (src.split('.').pop() == 'mp4') {
-			type = 'video';
-		} else {
-			type = 'image';
-		}
-    this.emitter.send('newImage', {
-      sender: sender,
-			type: type
-    });
+    var type;
+    if (src.split('.').pop() == 'mp4') {
+      type = 'video';
+    } else {
+      type = 'image';
+    }
     this.saveImageArray();
   }
 
@@ -60,7 +69,8 @@ var ImageWatchdog = class {
 
 }
 
-/*************** DO NOT EDIT THE LINE BELOW ***************/
-if (typeof module !== "undefined") {
-  module.exports = ImageWatchdog;
-}
+// create imageWatchdog and bot
+const imageWatchdog = new ImageWatchdog(config.imageFolder, config.imageCount, logger);
+var bot = new telebot(config.botToken, config.imageFolder, imageWatchdog, config.showVideos, logger);
+
+bot.startBot()

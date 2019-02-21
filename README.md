@@ -17,6 +17,7 @@
   - [General](#manual-installation)
 - [Configuration](#configuration)
 - [Updating](#updating)
+- [Bot only mode (no GUI)](#bot-only-mode-no-gui)
 - [Building a TeleFrame](#building-a-teleframe)
 
 ## Installation
@@ -86,6 +87,15 @@ git pull && npm install
 
 If you changed nothing more than the config, this should work without any problems.
 Type `git status` to see your changes, if there are any, you can reset them with `git reset --hard`. After that, git pull should be possible.
+
+## Bot only mode (no GUI)
+
+To run only the bot (without GUI), that saves the recieved images and videos into the folder specified in the config you need to run
+
+```bash
+npm run botonly
+```
+in the TeleFrame folder.
 
 ## Building a TeleFrame
 
