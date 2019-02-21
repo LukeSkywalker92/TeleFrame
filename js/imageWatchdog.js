@@ -1,7 +1,4 @@
-const testFolder = './tests/';
 const fs = require('fs');
-
-
 
 var ImageWatchdog = class {
   constructor(imageFolder, imageCount, images, emitter, logger) {
