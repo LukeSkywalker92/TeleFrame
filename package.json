@@ -1,10 +1,11 @@
 {
   "name": "teleframe",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "botonly": "node botonly.js"
   },
   "repository": {
     "type": "git",
