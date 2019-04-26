@@ -12,10 +12,12 @@
 
 ## Table Of Contents
 
+- [Table Of Contents](#table-of-contents)
 - [Installation](#installation)
-  - [Raspberry Pi](#automatic-installation-raspberry-pi-only)
-  - [General](#manual-installation)
+  - [Automatic Installation (Raspberry Pi only!)](#automatic-installation-raspberry-pi-only)
+  - [Manual Installation](#manual-installation)
 - [Configuration](#configuration)
+- [Whitelist Chats](#whitelist-chats)
 - [Updating](#updating)
 - [Bot only mode (no GUI)](#bot-only-mode-no-gui)
 - [Building a TeleFrame](#building-a-teleframe)
@@ -62,6 +64,7 @@ The following properties can be configured:
 | **Option** | **Description** |
 | --- | --- |
 | `botToken` | The token of the Telegram Bot, which will recieve the images. How to create a bot and get the token is explained [here](https://core.telegram.org/bots#6-botfather). |
+| `whitelistChats` | Use this to only allow certain users to send photos to your Teleframe. See hints below. |
 | `showVideos` | When set to true, videos that are send to the bot are also shown. |
 | `imageFolder` | The folder where the images are stored. |
 | `fullscreen` | When set to true, TeleFrame will run in fullscreen mode. |
@@ -76,6 +79,10 @@ The following properties can be configured:
 | `toggleMonitor` | When set to true, TeleFrame will switch the monitor off and on at the defined hours. |
 | `turnOnHour` | Defines when the monitor shuld be turned on. |
 | `turnOffHour` | Defines when the monitor shuld be turned off. |
+
+## Whitelist Chats
+
+When you start your teleframe and send a "Hi" to the bot it will send you back the current chat id. Paste this id or several of them into the `whitelistChats` config option to only allow only pictures from these ids (eg `[1234567, 89101010]`). Leave empty (`[]`) for no whitelist.
 
 ## Updating
 
