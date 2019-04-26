@@ -4,7 +4,14 @@ const download = require("image-downloader");
 const moment = require("moment");
 
 var Bot = class {
-  constructor(botToken, imageFolder, imageWatchdog, showVideo, logger) {
+  constructor(
+    botToken,
+    imageFolder,
+    imageWatchdog,
+    showVideo,
+    whitelistChats,
+    logger
+  ) {
     var self = this;
     this.bot = new Telegraf(botToken);
     this.telegram = new Telegram(botToken);
@@ -12,6 +19,7 @@ var Bot = class {
     this.imageFolder = imageFolder;
     this.imageWatchdog = imageWatchdog;
     this.showVideo = showVideo;
+    this.whitelistChats = whitelistChats;
 
     //get bot name
     this.bot.telegram.getMe().then((botInfo) => {
@@ -29,6 +37,24 @@ var Bot = class {
 
     //Download incoming photo
     this.bot.on("photo", (ctx) => {
+      if (
+        !(
+          this.whitelistChats.length > 0 &&
+          this.whitelistChats.indexOf(ctx.update.message.from.id) !== -1
+        )
+      ) {
+        console.log(
+          "Whitelist triggered:",
+          ctx.update.message.from.id,
+          this.whitelistChats,
+          this.whitelistChats.indexOf(ctx.update.message.from.id)
+        );
+        ctx.reply(
+          "Hey there, this bot is whitelisted, pls add your chat id to the config file"
+        );
+        return;
+      }
+
       this.telegram
         .getFileLink(ctx.message.photo[ctx.message.photo.length - 1].file_id)
         .then((link) => {
@@ -52,6 +78,24 @@ var Bot = class {
 
     //Download incoming video
     this.bot.on("video", (ctx) => {
+      if (
+        !(
+          this.whitelistChats.length > 0 &&
+          this.whitelistChats.indexOf(ctx.update.message.from.id) !== -1
+        )
+      ) {
+        console.log(
+          "Whitelist triggered:",
+          ctx.update.message.from.id,
+          this.whitelistChats,
+          this.whitelistChats.indexOf(ctx.update.message.from.id)
+        );
+        ctx.reply(
+          "Hey there, this bot is whitelisted, pls add your chat id to the config file"
+        );
+        return;
+      }
+
       if (this.showVideo) {
         this.telegram.getFileLink(ctx.message.video.file_id).then((link) => {
           download
@@ -78,7 +122,12 @@ var Bot = class {
     });
 
     //Some small conversation
-    this.bot.hears("hi", (ctx) => ctx.reply("Hey there"));
+    this.bot.hears("hi", (ctx) => {
+      ctx.reply(
+        `Hey there ${ctx.chat.first_name} \n Your ChatID is ${ctx.chat.id}`
+      );
+      console.log(ctx.chat);
+    });
 
     this.logger.info("Bot created!");
   }
