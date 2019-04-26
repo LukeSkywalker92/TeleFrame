@@ -79,6 +79,7 @@ The following properties can be configured:
 | `toggleMonitor` | When set to true, TeleFrame will switch the monitor off and on at the defined hours. |
 | `turnOnHour` | Defines when the monitor shuld be turned on. |
 | `turnOffHour` | Defines when the monitor shuld be turned off. |
+| `keys` | Defines an object with 4 strings specifying the keyboard shortcuts for play, next, previous and pause. |
 
 ## Whitelist Chats
 

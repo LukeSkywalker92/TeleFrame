@@ -8,19 +8,19 @@ var InputHandler = class {
   }
 
   init() {
-    globalShortcut.register("right", () => {
+    globalShortcut.register(config.keys.next, () => {
       this.emitter.send("next");
     });
 
-    globalShortcut.register("left", () => {
+    globalShortcut.register(config.keys.previous, () => {
       this.emitter.send("previous");
     });
 
-    globalShortcut.register("k", () => {
+    globalShortcut.register(config.keys.pause, () => {
       this.emitter.send("pause");
     });
 
-    globalShortcut.register("l", () => {
+    globalShortcut.register(config.keys.play, () => {
       this.emitter.send("play");
     });
   }
