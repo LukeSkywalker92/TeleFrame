@@ -3,6 +3,7 @@ const { logger, rendererLogger } = require("./js/logger");
 const config = require("./config/config");
 const telebot = require("./js/bot");
 const imagewatcher = require("./js/imageWatchdog");
+const inputhandler = require("./js/inputHandler");
 const schedules = require("./js/schedules");
 
 //create global variables
@@ -39,6 +40,7 @@ function createWindow() {
     emitter,
     logger
   );
+
   var bot = new telebot(
     config.botToken,
     config.imageFolder,
@@ -48,6 +50,8 @@ function createWindow() {
     logger
   );
 
+  var inputHandler = new inputhandler(config, emitter, logger);
+  inputHandler.init();
   // generate scheduler, when times for turning monitor off and on
   // are given in the config file
   if (config.toggleMonitor) {
@@ -56,7 +60,6 @@ function createWindow() {
 
   // Open the DevTools.
   // win.webContents.openDevTools()
-
   bot.startBot();
 
   // Emitted when the window is closed.
