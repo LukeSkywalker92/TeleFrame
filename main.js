@@ -44,6 +44,7 @@ function createWindow() {
     config.imageFolder,
     imageWatchdog,
     config.showVideos,
+    config.whitelistChats,
     logger
   );
 
