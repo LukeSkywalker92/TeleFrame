@@ -122,7 +122,7 @@ var Bot = class {
     });
 
     //Some small conversation
-    this.bot.hears("hi", (ctx) => {
+    this.bot.hears(/hi/i, (ctx) => {
       ctx.reply(
         `Hey there ${ctx.chat.first_name} \n Your ChatID is ${ctx.chat.id}`
       );
