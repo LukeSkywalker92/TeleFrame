@@ -8,6 +8,11 @@ var InputHandler = class {
   }
 
   init() {
+    if(config.keys === null) {
+      this.logger.warn("Keyboard controls are disabeled")
+      return;
+    }
+
     globalShortcut.register(config.keys.next, () => {
       this.emitter.send("next");
     });
