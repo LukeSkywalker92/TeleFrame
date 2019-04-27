@@ -62,6 +62,7 @@ typings/
 
 config/config.js
 
-images
+images/*
+!images/.gitkeep
 
 *.DS_Store
