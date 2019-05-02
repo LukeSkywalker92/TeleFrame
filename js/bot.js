@@ -3,6 +3,11 @@ const Telegram = require("telegraf/telegram");
 const download = require("image-downloader");
 const moment = require("moment");
 
+const fs = require(`fs`);
+const path = require(`path`);
+
+const { globalShortcut } = require("electron");
+
 var Bot = class {
   constructor(
     botToken,
@@ -139,11 +144,46 @@ var Bot = class {
       setTimeout(() => self.startBot(), 30000)
     );
     this.logger.info("Bot started!");
+    /*
+    this.sendMessage("Bot ready!")
+      .then(() => {
+        console.log("success");
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+      */
   }
 
   newImage(src, sender, caption) {
     //tell imageWatchdog that a new image arrived
     this.imageWatchdog.newImage(src, sender, caption);
+  }
+
+  sendMessage(message) {
+    return this.bot.telegram.sendMessage(this.whitelistChats[0], message);
+  }
+
+  sendAudio(filename) {
+    fs.readFile(
+      filename,
+      function(err, data) {
+        if (!err) {
+          this.bot.telegram
+            .sendVoice(this.whitelistChats[0], {
+              source: data
+            })
+            .then(() => {
+              console.log("success");
+            })
+            .catch((err) => {
+              console.log("error", err);
+            });
+        } else {
+          console.log(err);
+        }
+      }.bind(this)
+    );
   }
 };
 

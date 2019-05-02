@@ -50,7 +50,7 @@ function createWindow() {
     logger
   );
 
-  var inputHandler = new inputhandler(config, emitter, logger);
+  var inputHandler = new inputhandler(config, emitter, bot, logger);
   inputHandler.init();
   // generate scheduler, when times for turning monitor off and on
   // are given in the config file

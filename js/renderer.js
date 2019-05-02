@@ -16,6 +16,20 @@ var currentTimeout;
 var isPaused = false;
 
 //handle new incoming image
+
+ipcRenderer.on("recordStarted", function(event, arg) {
+  // Should set record screen
+  swal("Currently recording audio...", {
+    title: "Recording",
+    buttons: false
+  });
+});
+
+ipcRenderer.on("recordStopped", function(event, arg) {
+  // Should set record screen
+  swal.close();
+});
+
 ipcRenderer.on("newImage", function(event, arg) {
   newImage(arg.sender, arg.type);
 });
