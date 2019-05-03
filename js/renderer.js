@@ -18,16 +18,31 @@ var isPaused = false;
 //handle new incoming image
 
 ipcRenderer.on("recordStarted", function(event, arg) {
-  // Should set record screen
-  swal("Currently recording audio...", {
-    title: "Recording",
+  // TODO: add spinner here
+  swal(config.voiceReply.recordingMessage, {
+    title: config.voiceReply.recordingMessageTitle,
     buttons: false
   });
 });
 
 ipcRenderer.on("recordStopped", function(event, arg) {
-  // Should set record screen
   swal.close();
+  swal(config.voiceReply.recordingMessageDone, {
+    title: config.voiceReply.recordingMessageTitle,
+    buttons: false,
+    icon: "success",
+    timer: 5000
+  });
+});
+
+ipcRenderer.on("recordError", function(event, arg) {
+  swal.close();
+  swal(config.voiceReply.recordingError, {
+    title: config.voiceReply.recordingMessageTitle,
+    buttons: false,
+    icon: "error",
+    timer: 5000
+  });
 });
 
 ipcRenderer.on("newImage", function(event, arg) {
@@ -118,6 +133,7 @@ function loadImage(isNext, fadeTime) {
   var img;
   if (image.src.split(".").pop() == "mp4") {
     img = document.createElement("video");
+    img.muted = !config.playVideoAudio;
     img.autoplay = true;
   } else {
     img = document.createElement("img");

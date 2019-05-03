@@ -15,6 +15,7 @@ var Bot = class {
     imageWatchdog,
     showVideo,
     whitelistChats,
+    voiceReply,
     logger
   ) {
     var self = this;
@@ -25,6 +26,7 @@ var Bot = class {
     this.imageWatchdog = imageWatchdog;
     this.showVideo = showVideo;
     this.whitelistChats = whitelistChats;
+    this.voiceReply = voiceReply;
 
     //get bot name
     this.bot.telegram.getMe().then((botInfo) => {
@@ -168,9 +170,13 @@ var Bot = class {
     fs.readFile(
       filename,
       function(err, data) {
-        if (!err) {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        for (let i = 0; i < this.voiceReply.sendTo.length; i++) {
           this.bot.telegram
-            .sendVoice(this.whitelistChats[0], {
+            .sendVoice(this.voiceReply.sendTo[i], {
               source: data
             })
             .then(() => {
@@ -179,8 +185,6 @@ var Bot = class {
             .catch((err) => {
               console.log("error", err);
             });
-        } else {
-          console.log(err);
         }
       }.bind(this)
     );
