@@ -38,8 +38,6 @@ var VoiceRecorder = class {
     globalShortcut.register(config.voiceReply.key, () => {
       const logger = console;
       let maxRecTime;
-      let bot = this.bot;
-      let emitter = this.emitter;
 
       this.emitter.send("recordStarted");
 
@@ -64,28 +62,40 @@ var VoiceRecorder = class {
         .stream()
         .pipe(fileStream);
 
-      audioRecorder.stream().on(`close`, function(code) {
-        logger.warn(`Recording closed. Exit code: `, code);
-        clearInterval(maxRecTime);
-        bot.sendAudio(fileName);
-      });
+      audioRecorder.stream().on(
+        `close`,
+        function(code) {
+          logger.warn(`Recording closed. Exit code: `, code);
+          clearInterval(maxRecTime);
+          this.bot.sendAudio(fileName);
+        }.bind(this)
+      );
 
-      audioRecorder.stream().on(`end`, function() {
-        logger.warn(`Recording ended.`);
-        emitter.send("recordStopped");
-        clearInterval(maxRecTime);
-      });
+      audioRecorder.stream().on(
+        `end`,
+        function() {
+          logger.warn(`Recording ended.`);
+          this.emitter.send("recordStopped");
+          clearInterval(maxRecTime);
+        }.bind(this)
+      );
 
-      audioRecorder.stream().on(`error`, function() {
-        logger.warn(`Recording error.`);
-        emitter.send("recordError");
-        clearInterval(maxRecTime);
-      });
+      audioRecorder.stream().on(
+        `error`,
+        function() {
+          logger.warn(`Recording error.`);
+          this.emitter.send("recordError");
+          clearInterval(maxRecTime);
+        }.bind(this)
+      );
 
-      maxRecTime = setTimeout(() => {
-        logger.log("MAX Stop recording");
-        audioRecorder.stop();
-      }, config.voiceReply.maxRecordTime);
+      maxRecTime = setTimeout(
+        function() {
+          logger.log("MAX Stop recording");
+          audioRecorder.stop();
+        }.bind(this),
+        config.voiceReply.maxRecordTime
+      );
     });
   }
 };
