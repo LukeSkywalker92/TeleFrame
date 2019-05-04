@@ -13,7 +13,13 @@ var config = {
   showCaption: true,
   toggleMonitor: true,
   turnOnHour: 9,
-  turnOffHour: 22
+  turnOffHour: 22,
+  keys: {
+    next: "right",
+    previous: "left",
+    play: "l",
+    pause: "k"
+  }
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
