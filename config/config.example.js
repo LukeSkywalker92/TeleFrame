@@ -2,6 +2,7 @@ var config = {
   botToken: '',
   whitelistChats: [],
 	showVideos: true,
+  playVideoAudio: false,
   imageFolder: 'images',
   fullscreen: true,
   fadeTime: 1500,

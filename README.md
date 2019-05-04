@@ -18,6 +18,7 @@
   - [Manual Installation](#manual-installation)
 - [Configuration](#configuration)
 - [Whitelist Chats](#whitelist-chats)
+- [Voice Replies using TeleFrame](#voice-replies-using-teleframe)
 - [Updating](#updating)
 - [Bot only mode (no GUI)](#bot-only-mode-no-gui)
 - [Building a TeleFrame](#building-a-teleframe)
@@ -61,29 +62,49 @@ Also note that:
 
 The following properties can be configured:
 
-| **Option** | **Description** |
-| --- | --- |
-| `botToken` | The token of the Telegram Bot, which will recieve the images. How to create a bot and get the token is explained [here](https://core.telegram.org/bots#6-botfather). |
-| `whitelistChats` | Use this to only allow certain users to send photos to your Teleframe. See hints below. |
-| `showVideos` | When set to true, videos that are send to the bot are also shown. |
-| `imageFolder` | The folder where the images are stored. |
-| `fullscreen` | When set to true, TeleFrame will run in fullscreen mode. |
-| `fadeTime` | The fading time between two images. |
-| `interval` | The time that an image is shown. |
-| `imageCount` | Defines how many different images are shown in the slideshow. |
-| `newPhotoMessage` | Message that is shown when the bot recieved a new image. |
-| `newVideoMessage` | Message that is shown when the bot recieved a new video. |
-| `showSender` | When set to true, TeleFrame will show the name of the sender when the image is shown. |
-| `showCaption` | When set to true, TeleFrame will show the caption of the image when the image is shown. |
-| `fullscreen` | When set to true, TeleFrame will run in fullscreen mode. |
-| `toggleMonitor` | When set to true, TeleFrame will switch the monitor off and on at the defined hours. |
-| `turnOnHour` | Defines when the monitor shuld be turned on. |
-| `turnOffHour` | Defines when the monitor shuld be turned off. |
-| `keys` | Defines an object with 4 strings specifying the keyboard shortcuts for play, next, previous and pause. Set to null for no controls |
+| **Option**           | **Description**                                                                                                                                                      |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `botToken`           | The token of the Telegram Bot, which will recieve the images. How to create a bot and get the token is explained [here](https://core.telegram.org/bots#6-botfather). |
+| `whitelistChats`     | Use this to only allow certain users to send photos to your TeleFrame. See hints below.                                                                              |
+| `playSoundOnRecieve` | Play a sound on recieving a message, set `false` to turn off.                                                                                                        |
+| `showVideos`         | When set to true, videos that are send to the bot are also shown.                                                                                                    |
+| `playVideoAudio`     | If recieved videos should be played with sound or not.                                                                                                               |
+| `imageFolder`        | The folder where the images are stored.                                                                                                                              |
+| `fullscreen`         | When set to true, TeleFrame will run in fullscreen mode.                                                                                                             |
+| `fadeTime`           | The fading time between two images.                                                                                                                                  |
+| `interval`           | The time that an image is shown.                                                                                                                                     |
+| `imageCount`         | Defines how many different images are shown in the slideshow.                                                                                                        |
+| `newPhotoMessage`    | Message that is shown when the bot recieved a new image.                                                                                                             |
+| `newVideoMessage`    | Message that is shown when the bot recieved a new video.                                                                                                             |
+| `showSender`         | When set to true, TeleFrame will show the name of the sender when the image is shown.                                                                                |
+| `showCaption`        | When set to true, TeleFrame will show the caption of the image when the image is shown.                                                                              |
+| `fullscreen`         | When set to true, TeleFrame will run in fullscreen mode.                                                                                                             |
+| `toggleMonitor`      | When set to true, TeleFrame will switch the monitor off and on at the defined hours.                                                                                 |
+| `turnOnHour`         | Defines when the monitor shuld be turned on.                                                                                                                         |
+| `turnOffHour`        | Defines when the monitor shuld be turned off.                                                                                                                        |
+| `keys`               | Defines an object with 4 strings specifying the keyboard shortcuts for play, next, previous and pause. Set to null for no controls                                   |
+| `voiceReply`         | Defines an object with the config for sending voicemessages with TeleFrame, see info bellow                                                                          |
+
 
 ## Whitelist Chats
 
-When you start your teleframe and send a "Hi" to the bot it will send you back the current chat id. Paste this id or several of them into the `whitelistChats` config option to only allow only pictures from these ids (eg `[1234567, 89101010]`). Leave empty (`[]`) for no whitelist.
+When you start your TeleFrame and send a "Hi" to the bot it will send you back the current chat id. Paste this id or several of them into the `whitelistChats` config option to only allow only pictures from these ids (eg `[1234567, 89101010]`). Leave empty (`[]`) for no whitelist.
+
+## Voice Replies using TeleFrame
+
+A very simple way to respond to the images is by using TeleFrame`s voice reply feature. The feature is intended to work like this: Who ever comes by the frame presses a button, speaks their message into the frame, when there is 2 seconds of silence or the maximum time is reached the recording will stop and the telegram bot will send it to all chat IDs set in the configuration.
+
+
+| **Option**              | **Description**                                                                        |
+| ----------------------- | -------------------------------------------------------------------------------------- |
+| `key`                   | The keyboardkey to start the voice recording                                           |
+| `sendTo`                | Array of chat IDs that recieve the voice message                                       |
+| `maxRecordTime`         | How long the recorder will record if there is no silence detected (in milliseconds)    |
+| `recordingMessageTitle` | The title of the recording dialog displayed on the frame during record                 |
+| `recordingMessage`      | The message of the recording dialog displayed on the frame during record               |
+| `recordingDone`         | The message of the recording dialog displayed on the frame when recording has finished |
+| `recordingError`        | The error message of the recording dialog displayed when recording has failed          |
+
 
 ## Updating
 

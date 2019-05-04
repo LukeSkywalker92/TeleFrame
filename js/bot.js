@@ -4,9 +4,6 @@ const download = require("image-downloader");
 const moment = require("moment");
 
 const fs = require(`fs`);
-const path = require(`path`);
-
-const { globalShortcut } = require("electron");
 
 var Bot = class {
   constructor(

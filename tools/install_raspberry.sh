@@ -48,7 +48,7 @@ sudo apt-get update || echo -e "\e[91mUpdate failed, carrying on installation ..
 
 # Installing helper tools
 echo -e "\e[96mInstalling helper tools ...\e[90m"
-sudo apt-get --assume-yes install curl wget git build-essential unzip unclutter x11-xserver-utils || exit
+sudo apt-get --assume-yes install curl wget git build-essential unzip unclutter x11-xserver-utils sox libsox-fmt-all || exit
 
 # Enable the Open GL driver to decrease Electron's CPU usage
 sudo /bin/su -c "echo 'dtoverlay=vc4-fkms-v3d' >> /boot/config.txt"
@@ -135,7 +135,7 @@ else
 fi
 
 # Use sample config for start TeleFrame
-cp config/config.js.example config/config.js
+cp config/config.example.js config/config.js
 # Put token into config
 sed -i "s/\(botToken *: *\).*/\1'$token',/" config/config.js
 

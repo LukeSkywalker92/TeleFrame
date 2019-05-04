@@ -14,9 +14,13 @@ var images = remote.getGlobal("images");
 var container = document.getElementById("container");
 var currentTimeout;
 var isPaused = false;
+var currentImageIndex = images.length;
+
+if (config.playSoundOnRecieve != false) {
+  var audio = new Audio(__dirname + "/sound1.mp3");
+}
 
 //handle new incoming image
-
 ipcRenderer.on("recordStarted", function(event, arg) {
   // TODO: add spinner here
   swal(config.voiceReply.recordingMessage, {
@@ -47,14 +51,21 @@ ipcRenderer.on("recordError", function(event, arg) {
 
 ipcRenderer.on("newImage", function(event, arg) {
   newImage(arg.sender, arg.type);
+  if (config.playSoundOnRecieve != false) {
+    audio.play();
+  }
 });
 
 ipcRenderer.on("next", function(event, arg) {
+  if (isPaused) hidePause();
   loadImage(true, 0);
+  if (isPaused) showPause();
 });
 
 ipcRenderer.on("previous", function(event, arg) {
+  if (isPaused) hidePause();
   loadImage(false, 0);
+  if (isPaused) showPause();
 });
 
 ipcRenderer.on("pause", function(event, arg) {
@@ -72,10 +83,6 @@ ipcRenderer.on("play", function(event, arg) {
   loadImage(true, 0);
   hidePause(isPaused);
 });
-
-//start slideshow of images
-var i = 0;
-loadImage(true, config.fadeTime);
 
 function showPause() {
   var pauseBox = document.createElement("div");
@@ -105,7 +112,7 @@ function hidePause() {
 }
 
 //load imge to slideshow
-function loadImage(isNext, fadeTime) {
+function loadImage(isNext, fadeTime, goToLatest = false) {
   clearTimeout(currentTimeout);
 
   if (images.length == 0) {
@@ -115,18 +122,21 @@ function loadImage(isNext, fadeTime) {
     return;
   }
 
-  // get image path and increase i for next image
-  var image = images[i];
+  // get image path and increase currentImageIndex for next image
   if (isNext) {
-    if (i >= images.length - 1) {
-      i = 0;
+    if (currentImageIndex >= images.length - 1) {
+      currentImageIndex = 0;
     } else {
-      i++;
+      currentImageIndex++;
     }
   } else {
-    i--;
-    if (i < 0) i = images.length - 1;
+    currentImageIndex--;
+    if (currentImageIndex < 0) currentImageIndex = images.length - 1;
   }
+
+  logger.info("loading image " + currentImageIndex);
+  var image = images[currentImageIndex];
+
   //get current container and create needed elements
   var currentImage = container.firstElementChild;
   var div = document.createElement("div");
@@ -284,6 +294,7 @@ function loadImage(isNext, fadeTime) {
   if (config.showCaption && image.caption !== undefined) {
     div.appendChild(caption);
   }
+  container.removeChild(currentImage);
   container.appendChild(div);
 
   //fade out sender and caption at half time of the shown image
@@ -307,7 +318,7 @@ function newImage(sender, type) {
       timer: 5000,
       icon: "success"
     }).then((value) => {
-      i = 0;
+      currentImageIndex = 0;
     });
   } else if (type == "video") {
     swal(" ", {
@@ -316,7 +327,10 @@ function newImage(sender, type) {
       timer: 5000,
       icon: "success"
     }).then((value) => {
-      i = 0;
+      currentImageIndex = 0;
     });
   }
 }
+
+//start slideshow of images
+loadImage(true, config.fadeTime);
