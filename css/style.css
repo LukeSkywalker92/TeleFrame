@@ -1,7 +1,7 @@
 body {
   background-color: black;
   margin: 0;
-  font-family: 'Lato', 'NotoColorEmoji', 'Helvetica Neue', Helvetica, sans-serif;
+  font-family: "Lato", "NotoColorEmoji", "Helvetica Neue", Helvetica, sans-serif;
   cursor: none;
 }
 
@@ -31,7 +31,7 @@ h1 {
 .sender {
   position: absolute;
   padding: 10 20;
-  font-family: 'Bowlby', 'NotoColorEmoji';
+  font-family: "Bowlby", "NotoColorEmoji";
   font-size: xx-large;
 }
 
@@ -41,7 +41,7 @@ h1 {
   max-width: 90%;
   height: auto;
   padding: 10 20;
-  font-family: 'Roboto-Bold', 'NotoColorEmoji';
+  font-family: "Roboto-Bold", "NotoColorEmoji";
   font-size: xx-large;
 }
 
@@ -54,29 +54,52 @@ h1 {
 }
 
 @font-face {
-  font-family: 'Lato';
+  font-family: "Lato";
   font-style: normal;
   font-weight: 400;
-  src: local('Lato-Regular'), url(../fonts/Lato-Regular.ttf) format('truetype');
+  src: local("Lato-Regular"), url(../fonts/Lato-Regular.ttf) format("truetype");
 }
 
 @font-face {
-  font-family: 'Bowlby';
+  font-family: "Bowlby";
   font-style: normal;
   font-weight: 400;
-  src: local('BowlbyOneSC-Regular'), url(../fonts/BowlbyOneSC-Regular.ttf) format('truetype');
+  src: local("BowlbyOneSC-Regular"),
+    url(../fonts/BowlbyOneSC-Regular.ttf) format("truetype");
 }
 
 @font-face {
-  font-family: 'Roboto-Bold';
+  font-family: "Roboto-Bold";
   font-style: normal;
   font-weight: 400;
-  src: local('Roboto-Bold'), url(../fonts/Roboto-Bold.ttf) format('truetype');
+  src: local("Roboto-Bold"), url(../fonts/Roboto-Bold.ttf) format("truetype");
 }
 
 @font-face {
-  font-family: 'NotoColorEmoji';
+  font-family: "NotoColorEmoji";
   font-style: normal;
   font-weight: 400;
-  src: local('NotoColorEmoji'), url(../fonts/NotoColorEmoji.ttf) format('truetype');
+  src: local("NotoColorEmoji"),
+    url(../fonts/NotoColorEmoji.ttf) format("truetype");
+}
+
+.spinner {
+  margin: 50px;
+  height: 28px;
+  width: 28px;
+  animation: rotate 0.8s infinite linear;
+  border: 8px solid #e10611;
+  border-right-color: transparent;
+  border-radius: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

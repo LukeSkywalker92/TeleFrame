@@ -93,6 +93,7 @@ var VoiceRecorder = class {
         function() {
           logger.log("MAX Stop recording");
           audioRecorder.stop();
+          this.emitter.send("recordStopped");
         }.bind(this),
         config.voiceReply.maxRecordTime
       );

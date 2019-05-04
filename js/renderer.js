@@ -22,9 +22,11 @@ if (config.playSoundOnRecieve != false) {
 
 //handle new incoming image
 ipcRenderer.on("recordStarted", function(event, arg) {
-  // TODO: add spinner here
+  let spinner = document.createElement("div");
+  spinner.classList.add("spinner");
   swal(config.voiceReply.recordingMessage, {
     title: config.voiceReply.recordingMessageTitle,
+    content: spinner,
     buttons: false
   });
 });
@@ -117,7 +119,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
 
   if (images.length == 0) {
     currentTimeout = setTimeout(() => {
-      loadImage();
+      loadImage(true, fadeTime);
     }, config.interval);
     return;
   }
@@ -240,14 +242,11 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
         duration: fadeTime
       });
       $(currentImage).velocity("fadeOut", {
-        duration: fadeTime,
-        complete: function() {
-          container.removeChild(currentImage);
-        }
+        duration: fadeTime
       });
       if (!isPaused) {
         currentTimeout = setTimeout(() => {
-          loadImage();
+          loadImage(true, fadeTime);
         }, img.duration * 1000);
       }
     };
@@ -274,14 +273,11 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
         duration: fadeTime
       });
       $(currentImage).velocity("fadeOut", {
-        duration: fadeTime,
-        complete: function() {
-          container.removeChild(currentImage);
-        }
+        duration: fadeTime
       });
       if (!isPaused) {
         currentTimeout = setTimeout(() => {
-          loadImage();
+          loadImage(true, fadeTime);
         }, config.interval);
       }
     };
@@ -318,7 +314,8 @@ function newImage(sender, type) {
       timer: 5000,
       icon: "success"
     }).then((value) => {
-      currentImageIndex = 0;
+      currentImageIndex = images.length;
+      loadImage(true, 0);
     });
   } else if (type == "video") {
     swal(" ", {
@@ -327,7 +324,8 @@ function newImage(sender, type) {
       timer: 5000,
       icon: "success"
     }).then((value) => {
-      currentImageIndex = 0;
+      currentImageIndex = images.length;
+      loadImage(true, 0);
     });
   }
 }
