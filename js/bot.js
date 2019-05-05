@@ -3,6 +3,8 @@ const Telegram = require("telegraf/telegram");
 const download = require("image-downloader");
 const moment = require("moment");
 
+const fs = require(`fs`);
+
 var Bot = class {
   constructor(
     botToken,
@@ -10,6 +12,7 @@ var Bot = class {
     imageWatchdog,
     showVideo,
     whitelistChats,
+    voiceReply,
     logger
   ) {
     var self = this;
@@ -20,6 +23,7 @@ var Bot = class {
     this.imageWatchdog = imageWatchdog;
     this.showVideo = showVideo;
     this.whitelistChats = whitelistChats;
+    this.voiceReply = voiceReply;
 
     //get bot name
     this.bot.telegram.getMe().then((botInfo) => {
@@ -139,11 +143,48 @@ var Bot = class {
       setTimeout(() => self.startBot(), 30000)
     );
     this.logger.info("Bot started!");
+    /*
+    this.sendMessage("Bot ready!")
+      .then(() => {
+        console.log("success");
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+      */
   }
 
   newImage(src, sender, caption) {
     //tell imageWatchdog that a new image arrived
     this.imageWatchdog.newImage(src, sender, caption);
+  }
+
+  sendMessage(message) {
+    return this.bot.telegram.sendMessage(this.whitelistChats[0], message);
+  }
+
+  sendAudio(filename) {
+    fs.readFile(
+      filename,
+      function(err, data) {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        for (let i = 0; i < this.voiceReply.sendTo.length; i++) {
+          this.bot.telegram
+            .sendVoice(this.voiceReply.sendTo[i], {
+              source: data
+            })
+            .then(() => {
+              console.log("success");
+            })
+            .catch((err) => {
+              console.log("error", err);
+            });
+        }
+      }.bind(this)
+    );
   }
 };
 

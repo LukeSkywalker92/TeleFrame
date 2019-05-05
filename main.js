@@ -4,6 +4,7 @@ const config = require("./config/config");
 const telebot = require("./js/bot");
 const imagewatcher = require("./js/imageWatchdog");
 const inputhandler = require("./js/inputHandler");
+const voicerecorder = require("./js/voiceRecorder");
 const schedules = require("./js/schedules");
 
 //create global variables
@@ -47,11 +48,18 @@ function createWindow() {
     imageWatchdog,
     config.showVideos,
     config.whitelistChats,
+    config.voiceReply,
     logger
   );
 
-  var inputHandler = new inputhandler(config, emitter, logger);
+  var inputHandler = new inputhandler(config, emitter, bot, logger);
   inputHandler.init();
+
+  if (config.voiceReply !== null) {
+    var voiceReply = new voicerecorder(config, emitter, bot, logger);
+    voiceReply.init();
+  }
+
   // generate scheduler, when times for turning monitor off and on
   // are given in the config file
   if (config.toggleMonitor) {

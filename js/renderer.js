@@ -14,18 +14,60 @@ var images = remote.getGlobal("images");
 var container = document.getElementById("container");
 var currentTimeout;
 var isPaused = false;
+var currentImageIndex = images.length;
+
+if (config.playSoundOnRecieve != false) {
+  var audio = new Audio(__dirname + "/sound1.mp3");
+}
 
 //handle new incoming image
+ipcRenderer.on("recordStarted", function(event, arg) {
+  let spinner = document.createElement("div");
+  spinner.classList.add("spinner");
+  swal(config.voiceReply.recordingMessage, {
+    title: config.voiceReply.recordingMessageTitle,
+    content: spinner,
+    buttons: false
+  });
+});
+
+ipcRenderer.on("recordStopped", function(event, arg) {
+  swal.close();
+  swal(config.voiceReply.recordingMessageDone, {
+    title: config.voiceReply.recordingMessageTitle,
+    buttons: false,
+    icon: "success",
+    timer: 5000
+  });
+});
+
+ipcRenderer.on("recordError", function(event, arg) {
+  swal.close();
+  swal(config.voiceReply.recordingError, {
+    title: config.voiceReply.recordingMessageTitle,
+    buttons: false,
+    icon: "error",
+    timer: 5000
+  });
+});
+
 ipcRenderer.on("newImage", function(event, arg) {
   newImage(arg.sender, arg.type);
+  if (config.playSoundOnRecieve != false) {
+    audio.play();
+  }
 });
 
 ipcRenderer.on("next", function(event, arg) {
+  if (isPaused) hidePause();
   loadImage(true, 0);
+  if (isPaused) showPause();
 });
 
 ipcRenderer.on("previous", function(event, arg) {
+  if (isPaused) hidePause();
   loadImage(false, 0);
+  if (isPaused) showPause();
 });
 
 ipcRenderer.on("pause", function(event, arg) {
@@ -43,10 +85,6 @@ ipcRenderer.on("play", function(event, arg) {
   loadImage(true, 0);
   hidePause(isPaused);
 });
-
-//start slideshow of images
-var i = 0;
-loadImage(true, config.fadeTime);
 
 function showPause() {
   var pauseBox = document.createElement("div");
@@ -76,34 +114,38 @@ function hidePause() {
 }
 
 //load imge to slideshow
-function loadImage(isNext, fadeTime) {
+function loadImage(isNext, fadeTime, goToLatest = false) {
   clearTimeout(currentTimeout);
 
   if (images.length == 0) {
     currentTimeout = setTimeout(() => {
-      loadImage();
+      loadImage(true, fadeTime);
     }, config.interval);
     return;
   }
 
-  // get image path and increase i for next image
-  var image = images[i];
+  // get image path and increase currentImageIndex for next image
   if (isNext) {
-    if (i >= images.length - 1) {
-      i = 0;
+    if (currentImageIndex >= images.length - 1) {
+      currentImageIndex = 0;
     } else {
-      i++;
+      currentImageIndex++;
     }
   } else {
-    i--;
-    if (i < 0) i = images.length - 1;
+    currentImageIndex--;
+    if (currentImageIndex < 0) currentImageIndex = images.length - 1;
   }
+
+  logger.info("loading image " + currentImageIndex);
+  var image = images[currentImageIndex];
+
   //get current container and create needed elements
   var currentImage = container.firstElementChild;
   var div = document.createElement("div");
   var img;
   if (image.src.split(".").pop() == "mp4") {
     img = document.createElement("video");
+    img.muted = !config.playVideoAudio;
     img.autoplay = true;
   } else {
     img = document.createElement("img");
@@ -200,14 +242,11 @@ function loadImage(isNext, fadeTime) {
         duration: fadeTime
       });
       $(currentImage).velocity("fadeOut", {
-        duration: fadeTime,
-        complete: function() {
-          container.removeChild(currentImage);
-        }
+        duration: fadeTime
       });
       if (!isPaused) {
         currentTimeout = setTimeout(() => {
-          loadImage();
+          loadImage(true, fadeTime);
         }, img.duration * 1000);
       }
     };
@@ -234,14 +273,11 @@ function loadImage(isNext, fadeTime) {
         duration: fadeTime
       });
       $(currentImage).velocity("fadeOut", {
-        duration: fadeTime,
-        complete: function() {
-          container.removeChild(currentImage);
-        }
+        duration: fadeTime
       });
       if (!isPaused) {
         currentTimeout = setTimeout(() => {
-          loadImage();
+          loadImage(true, fadeTime);
         }, config.interval);
       }
     };
@@ -254,6 +290,7 @@ function loadImage(isNext, fadeTime) {
   if (config.showCaption && image.caption !== undefined) {
     div.appendChild(caption);
   }
+  container.removeChild(currentImage);
   container.appendChild(div);
 
   //fade out sender and caption at half time of the shown image
@@ -277,7 +314,8 @@ function newImage(sender, type) {
       timer: 5000,
       icon: "success"
     }).then((value) => {
-      i = 0;
+      currentImageIndex = images.length;
+      loadImage(true, 0);
     });
   } else if (type == "video") {
     swal(" ", {
@@ -286,7 +324,11 @@ function newImage(sender, type) {
       timer: 5000,
       icon: "success"
     }).then((value) => {
-      i = 0;
+      currentImageIndex = images.length;
+      loadImage(true, 0);
     });
   }
 }
+
+//start slideshow of images
+loadImage(true, config.fadeTime);

@@ -1,15 +1,16 @@
 const { globalShortcut } = require("electron");
 
 var InputHandler = class {
-  constructor(config, emitter, logger) {
+  constructor(config, emitter, bot, logger) {
     this.config = config;
     this.logger = logger;
     this.emitter = emitter;
+    this.bot = bot;
   }
 
   init() {
-    if(config.keys === null) {
-      this.logger.warn("Keyboard controls are disabeled")
+    if (config.keys === null) {
+      this.logger.warn("Keyboard controls are disabeled");
       return;
     }
 
