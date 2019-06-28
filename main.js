@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const { logger, rendererLogger } = require("./js/logger");
 const config = require("./config/config");
 const telebot = require("./js/bot");
@@ -12,6 +12,7 @@ global.config = config;
 global.rendererLogger = rendererLogger;
 global.images = [];
 
+
 logger.info("Main app started ...");
 
 app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
@@ -23,7 +24,10 @@ function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
     width: 1024,
-    height: 600
+    height: 600,
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
 
   win.setFullScreen(config.fullscreen);
@@ -56,7 +60,7 @@ function createWindow() {
   inputHandler.init();
 
   if (config.voiceReply !== null) {
-    var voiceReply = new voicerecorder(config, emitter, bot, logger);
+    var voiceReply = new voicerecorder(config, emitter, bot, logger, ipcMain);
     voiceReply.init();
   }
 

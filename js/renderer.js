@@ -8,6 +8,7 @@ const velocity = require("velocity-animate");
 const logger = remote.getGlobal("rendererLogger");
 const config = remote.getGlobal("config");
 
+
 logger.info("Renderer started ...");
 
 var images = remote.getGlobal("images");
@@ -19,6 +20,40 @@ var currentImageIndex = images.length;
 if (config.playSoundOnRecieve != false) {
   var audio = new Audio(__dirname + "/sound1.mp3");
 }
+
+
+var startTime, endTime, longpress;
+
+    $("#container").on('click', function (event) {
+        tapPos = event.originalEvent.pageX
+        containerWidth = $("#container").width()
+        if (tapPos/containerWidth < 0.2) {
+          previousImage()
+        } else if (tapPos/containerWidth > 0.8) {
+          nextImage()
+        } else {
+          if (longpress) {
+            ipcRenderer.send("record");
+          } else {
+            if (isPaused) {
+              play()
+            } else {
+              pause()
+            }
+          }
+        }
+
+    });
+
+    $("#container").on('mousedown', function () {
+        startTime = new Date().getTime();
+    });
+
+    $("#container").on('mouseup', function () {
+        endTime = new Date().getTime();
+        longpress = (endTime - startTime > 500) ? true : false;
+    });
+
 
 //handle new incoming image
 ipcRenderer.on("recordStarted", function(event, arg) {
@@ -59,31 +94,19 @@ ipcRenderer.on("newImage", function(event, arg) {
 });
 
 ipcRenderer.on("next", function(event, arg) {
-  if (isPaused) hidePause();
-  loadImage(true, 0);
-  if (isPaused) showPause();
+  nextImage()
 });
 
 ipcRenderer.on("previous", function(event, arg) {
-  if (isPaused) hidePause();
-  loadImage(false, 0);
-  if (isPaused) showPause();
+  previousImage()
 });
 
 ipcRenderer.on("pause", function(event, arg) {
-  if (isPaused) return;
-
-  isPaused = true;
-  clearTimeout(currentTimeout);
-  showPause(isPaused);
+  pause()
 });
 
 ipcRenderer.on("play", function(event, arg) {
-  if (!isPaused) return;
-
-  isPaused = false;
-  loadImage(true, 0);
-  hidePause(isPaused);
+  play()
 });
 
 function showPause() {
@@ -111,6 +134,34 @@ function hidePause() {
   if (node.parentNode) {
     node.parentNode.removeChild(node);
   }
+}
+
+function nextImage() {
+  if (isPaused) hidePause();
+  loadImage(true, 0);
+  if (isPaused) showPause();
+}
+
+function previousImage() {
+  if (isPaused) hidePause();
+  loadImage(false, 0);
+  if (isPaused) showPause();
+}
+
+function pause() {
+  if (isPaused) return;
+
+  isPaused = true;
+  clearTimeout(currentTimeout);
+  showPause(isPaused);
+}
+
+function play() {
+  if (!isPaused) return;
+
+  isPaused = false;
+  loadImage(true, 0);
+  hidePause(isPaused);
 }
 
 //load imge to slideshow
