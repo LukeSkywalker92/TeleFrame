@@ -328,7 +328,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
       });
       if (!isPaused) {
         currentTimeout = setTimeout(() => {
-          loadImage(true, fadeTime);
+          loadImage(true, config.fadeTime);
         }, config.interval);
       }
     };
@@ -341,7 +341,10 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   if (config.showCaption && image.caption !== undefined) {
     div.appendChild(caption);
   }
-  container.removeChild(currentImage);
+  setTimeout(function() {
+    container.removeChild(currentImage);
+  }, fadeTime)
+
   container.appendChild(div);
 
   //fade out sender and caption at half time of the shown image
