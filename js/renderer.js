@@ -24,35 +24,35 @@ if (config.playSoundOnRecieve != false) {
 
 var startTime, endTime, longpress;
 
-    $("#container").on('click', function (event) {
-        tapPos = event.originalEvent.pageX
-        containerWidth = $("#container").width()
-        if (tapPos/containerWidth < 0.2) {
-          previousImage()
-        } else if (tapPos/containerWidth > 0.8) {
-          nextImage()
+$("#container").on('click', function (event) {
+    tapPos = event.originalEvent.pageX
+    containerWidth = $("#container").width()
+    if (tapPos/containerWidth < 0.2) {
+      previousImage()
+    } else if (tapPos/containerWidth > 0.8) {
+      nextImage()
+    } else {
+      if (longpress) {
+        ipcRenderer.send("record");
+      } else {
+        if (isPaused) {
+          play()
         } else {
-          if (longpress) {
-            ipcRenderer.send("record");
-          } else {
-            if (isPaused) {
-              play()
-            } else {
-              pause()
-            }
-          }
+          pause()
         }
+      }
+    }
 
-    });
+});
 
-    $("#container").on('mousedown', function () {
-        startTime = new Date().getTime();
-    });
+$("#container").on('mousedown', function () {
+    startTime = new Date().getTime();
+});
 
-    $("#container").on('mouseup', function () {
-        endTime = new Date().getTime();
-        longpress = (endTime - startTime > 500) ? true : false;
-    });
+$("#container").on('mouseup', function () {
+    endTime = new Date().getTime();
+    longpress = (endTime - startTime > 500) ? true : false;
+});
 
 
 //handle new incoming image
