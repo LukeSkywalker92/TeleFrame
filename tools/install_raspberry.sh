@@ -93,7 +93,7 @@ if $NODE_INSTALL; then
 
 	NODE_STABLE_BRANCH="9.x"
 	curl -sL https://deb.nodesource.com/setup_$NODE_STABLE_BRANCH | sudo -E bash -
-	sudo apt-get install -y nodejs
+	sudo apt-get install -y nodejs npm
 	echo -e "\e[92mNode.js installation Done!\e[0m"
 fi
 
