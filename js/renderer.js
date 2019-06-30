@@ -1,7 +1,7 @@
 const { remote, ipcRenderer } = require("electron");
 const $ = require("jquery");
 window.jQuery = $;
-const swal = require("sweetalert");
+const Swal = require("sweetalert2");
 const randomColor = require("randomcolor");
 const chroma = require("chroma-js");
 const velocity = require("velocity-animate");
@@ -22,7 +22,7 @@ if (config.playSoundOnRecieve != false) {
 }
 
 
-var startTime, endTime, longpress, timeout;
+var startTime, endTime, longpress, timeout, recordSwal;
 
 $("body").on('touchstart', function () {
     startTime = new Date().getTime();
@@ -54,30 +54,46 @@ $("body").on('touchend', function (event) {
 
 //handle new incoming image
 ipcRenderer.on("recordStarted", function(event, arg) {
+  let message = document.createElement("div");
   let spinner = document.createElement("div");
   spinner.classList.add("spinner");
-  swal(config.voiceReply.recordingMessage, {
+  message.appendChild(spinner);
+  let text = document.createElement("p");
+  text.innerHTML = config.voiceReply.recordingMessage;
+  message.appendChild(text);
+  console.log(config.voiceReply.recordingMessage);
+  recordSwal = Swal.fire({
     title: config.voiceReply.recordingMessageTitle,
-    content: spinner,
-    buttons: false
+    showConfirmButton: false,
+    html: message
   });
 });
 
 ipcRenderer.on("recordStopped", function(event, arg) {
-  swal.close();
-  swal(config.voiceReply.recordingMessageDone, {
+  let message = document.createElement("div");
+  let text = document.createElement("p");
+  text.innerHTML = config.voiceReply.recordingDone;
+  message.appendChild(text);
+  recordSwal.close();
+  Swal.fire({
+    html: message,
     title: config.voiceReply.recordingMessageTitle,
-    buttons: false,
-    icon: "success",
+    showConfirmButton: false,
+    type: "success",
     timer: 5000
   });
 });
 
 ipcRenderer.on("recordError", function(event, arg) {
-  swal.close();
-  swal(config.voiceReply.recordingError, {
+  let message = document.createElement("div");
+  let text = document.createElement("p");
+  text.innerHTML = config.voiceReply.recordingError;
+  message.appendChild(text);
+  recordSwal.close();
+  Swal.fire({
+    html: message,
     title: config.voiceReply.recordingMessageTitle,
-    buttons: false,
+    showConfirmButton: false,
     icon: "error",
     timer: 5000
   });
@@ -359,21 +375,21 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
 function newImage(sender, type) {
   images = remote.getGlobal("images");
   if (type == "image") {
-    swal(" ", {
+    Swal.fire({
       title: config.newPhotoMessage + " " + sender,
-      buttons: false,
+      showConfirmButton: false,
       timer: 5000,
-      icon: "success"
+      type: "success"
     }).then((value) => {
       currentImageIndex = images.length;
       loadImage(true, 0);
     });
   } else if (type == "video") {
-    swal(" ", {
+    Swal.fire({
       title: config.newVideoMessage + " " + sender,
-      buttons: false,
+      showConfirmButton: false,
       timer: 5000,
-      icon: "success"
+      type: "success"
     }).then((value) => {
       currentImageIndex = images.length;
       loadImage(true, 0);
