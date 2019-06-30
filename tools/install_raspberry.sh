@@ -20,6 +20,7 @@ NODE_TESTED="v6.9.1"
 
 # Determine which Pi is running.
 ARM=$(uname -m)
+AUTOSTARTFILE=/etc/xdg/lxsession/LXDE-pi/autostart
 
 # Check the Raspberry Pi version.
 if [ "$ARM" != "armv7l" ]; then
@@ -93,7 +94,7 @@ if $NODE_INSTALL; then
 
 	NODE_STABLE_BRANCH="9.x"
 	curl -sL https://deb.nodesource.com/setup_$NODE_STABLE_BRANCH | sudo -E bash -
-	sudo apt-get install -y nodejs
+	sudo apt-get install -y nodejs npm
 	echo -e "\e[92mNode.js installation Done!\e[0m"
 fi
 
@@ -173,14 +174,14 @@ fi
 
 # Autohide mouse cursor
 if [[ $mousechoice =~ ^[Yy]$ ]]; then
-    sudo echo "@unclutter -display :0 -idle 3 -root -noevents" >> ~/.config/lxsession/LXDE-pi/autostart
+    sudo echo "@unclutter -display :0 -idle 3 -root -noevents" >> AUTOSTARTFILE
 fi
 
 # Disable screensaver
 if [[ $screensaverchoice =~ ^[Yy]$ ]]; then
-    sudo echo "@xset s noblank" >> ~/.config/lxsession/LXDE-pi/autostart
-		sudo echo "@xset s off" >> ~/.config/lxsession/LXDE-pi/autostart
-		sudo echo "@xset -dpms" >> ~/.config/lxsession/LXDE-pi/autostart
+    sudo echo "@xset s noblank" >> AUTOSTARTFILE
+		sudo echo "@xset s off" >> AUTOSTARTFILE
+		sudo echo "@xset -dpms" >> AUTOSTARTFILE
 		sudo /bin/su -c "echo 'xserver-command=X -s 0 -dpms' >> /etc/lightdm/lightdm.conf"
 fi
 

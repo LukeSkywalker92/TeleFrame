@@ -3,6 +3,7 @@ body {
   margin: 0;
   font-family: "Lato", "NotoColorEmoji", "Helvetica Neue", Helvetica, sans-serif;
   cursor: none;
+  height: 100%;
 }
 
 h1 {
@@ -18,6 +19,14 @@ h1 {
   width: 100%;
   height: 100%;
   position: relative;
+  z-index: 0;
+}
+
+.touch-container: {
+  height: 100px;
+  position: relative;
+  color: red;
+  z-index: 100000;
 }
 
 .imgcontainer {

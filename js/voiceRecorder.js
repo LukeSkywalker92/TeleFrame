@@ -22,11 +22,12 @@ const options = {
 };
 
 var VoiceRecorder = class {
-  constructor(config, emitter, bot, logger) {
+  constructor(config, emitter, bot, logger, ipcMain) {
     this.config = config;
     this.logger = logger;
     this.emitter = emitter;
     this.bot = bot;
+    this.ipcMain = ipcMain;
   }
 
   init() {
@@ -36,68 +37,76 @@ var VoiceRecorder = class {
     }
 
     globalShortcut.register(config.voiceReply.key, () => {
-      const logger = console;
-      let maxRecTime;
-
-      this.emitter.send("recordStarted");
-
-      let audioRecorder = new AudioRecorder(options, logger);
-      logger.log("Start recording");
-
-      const fileName = path.join(
-        "audiofiles",
-        Math.random()
-          .toString(36)
-          .replace(/[^a-z]+/g, ``)
-          .substr(0, 4)
-          .concat(`.wav`)
-      );
-
-      logger.log(`Writing new recording file at: `, fileName);
-
-      const fileStream = fs.createWriteStream(fileName, { encoding: `binary` });
-
-      audioRecorder
-        .start()
-        .stream()
-        .pipe(fileStream);
-
-      audioRecorder.stream().on(
-        `close`,
-        function(code) {
-          logger.warn(`Recording closed. Exit code: `, code);
-          clearInterval(maxRecTime);
-          this.bot.sendAudio(fileName);
-        }.bind(this)
-      );
-
-      audioRecorder.stream().on(
-        `end`,
-        function() {
-          logger.warn(`Recording ended.`);
-          this.emitter.send("recordStopped");
-          clearInterval(maxRecTime);
-        }.bind(this)
-      );
-
-      audioRecorder.stream().on(
-        `error`,
-        function() {
-          logger.warn(`Recording error.`);
-          this.emitter.send("recordError");
-          clearInterval(maxRecTime);
-        }.bind(this)
-      );
-
-      maxRecTime = setTimeout(
-        function() {
-          logger.log("MAX Stop recording");
-          audioRecorder.stop();
-          this.emitter.send("recordStopped");
-        }.bind(this),
-        config.voiceReply.maxRecordTime
-      );
+      this.record();
     });
+
+    this.ipcMain.on('record', (event, arg) => {
+      this.record();
+    })
+  }
+
+  record() {
+    const logger = console;
+    let maxRecTime;
+
+    this.emitter.send("recordStarted");
+
+    let audioRecorder = new AudioRecorder(options, logger);
+    logger.log("Start recording");
+
+    const fileName = path.join(
+      "audiofiles",
+      Math.random()
+        .toString(36)
+        .replace(/[^a-z]+/g, ``)
+        .substr(0, 4)
+        .concat(`.wav`)
+    );
+
+    logger.log(`Writing new recording file at: `, fileName);
+
+    const fileStream = fs.createWriteStream(fileName, { encoding: `binary` });
+
+    audioRecorder
+      .start()
+      .stream()
+      .pipe(fileStream);
+
+    audioRecorder.stream().on(
+      `close`,
+      function(code) {
+        logger.warn(`Recording closed. Exit code: `, code);
+        clearInterval(maxRecTime);
+        this.bot.sendAudio(fileName);
+      }.bind(this)
+    );
+
+    audioRecorder.stream().on(
+      `end`,
+      function() {
+        logger.warn(`Recording ended.`);
+        this.emitter.send("recordStopped");
+        clearInterval(maxRecTime);
+      }.bind(this)
+    );
+
+    audioRecorder.stream().on(
+      `error`,
+      function() {
+        logger.warn(`Recording error.`);
+        this.emitter.send("recordError");
+        clearInterval(maxRecTime);
+      }.bind(this)
+    );
+
+    maxRecTime = setTimeout(
+      function() {
+        logger.log("MAX Stop recording");
+        audioRecorder.stop();
+        this.emitter.send("recordStopped");
+      }.bind(this),
+      config.voiceReply.maxRecordTime
+    );
   }
 };
 
