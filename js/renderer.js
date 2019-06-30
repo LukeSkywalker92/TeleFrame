@@ -28,7 +28,7 @@ $("body").on('mousedown touchstart', function () {
     startTime = new Date().getTime();
 });
 
-$("body").on('mouseup touchend', function () {
+$("body").on('mouseup touchend', function (event) {
     endTime = new Date().getTime();
     longpress = (endTime - startTime > 500) ? true : false;
     tapPos = event.originalEvent.pageX
