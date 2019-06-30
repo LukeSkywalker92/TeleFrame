@@ -22,16 +22,17 @@ if (config.playSoundOnRecieve != false) {
 }
 
 
-var startTime, endTime, longpress;
+var startTime, endTime, longpress, timeout;
 
-$("body").on('mousedown touchstart', function () {
+$("body").on('touchstart', function () {
     startTime = new Date().getTime();
 });
 
-$("body").on('mouseup touchend', function () {
+$("body").on('touchend', function (event) {
+    console.log(event);
     endTime = new Date().getTime();
     longpress = (endTime - startTime > 500) ? true : false;
-    tapPos = event.originalEvent.pageX
+    tapPos = event.originalEvent.changedTouches[0].pageX
     containerWidth = $("body").width()
     if (tapPos/containerWidth < 0.2) {
       previousImage()
