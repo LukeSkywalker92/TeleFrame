@@ -20,7 +20,6 @@ NODE_TESTED="v6.9.1"
 
 # Determine which Pi is running.
 ARM=$(uname -m)
-AUTOSTARTFILE=/etc/xdg/lxsession/LXDE-pi/autostart
 
 # Check the Raspberry Pi version.
 if [ "$ARM" != "armv7l" ]; then
@@ -174,14 +173,14 @@ fi
 
 # Autohide mouse cursor
 if [[ $mousechoice =~ ^[Yy]$ ]]; then
-    sudo echo "@unclutter -display :0 -idle 3 -root -noevents" >> AUTOSTARTFILE
+    sudo echo "@unclutter -display :0 -idle 3 -root -noevents" >> /etc/xdg/lxsession/LXDE-pi/autostart
 fi
 
 # Disable screensaver
 if [[ $screensaverchoice =~ ^[Yy]$ ]]; then
-    sudo echo "@xset s noblank" >> AUTOSTARTFILE
-		sudo echo "@xset s off" >> AUTOSTARTFILE
-		sudo echo "@xset -dpms" >> AUTOSTARTFILE
+    sudo echo "@xset s noblank" >> /etc/xdg/lxsession/LXDE-pi/autostart
+		sudo echo "@xset s off" >> /etc/xdg/lxsession/LXDE-pi/autostart
+		sudo echo "@xset -dpms" >> /etc/xdg/lxsession/LXDE-pi/autostart
 		sudo /bin/su -c "echo 'xserver-command=X -s 0 -dpms' >> /etc/lightdm/lightdm.conf"
 fi
 
