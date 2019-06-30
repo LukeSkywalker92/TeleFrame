@@ -24,9 +24,15 @@ if (config.playSoundOnRecieve != false) {
 
 var startTime, endTime, longpress;
 
-$("#container").on('click', function (event) {
+$("body").on('mousedown touchstart', function () {
+    startTime = new Date().getTime();
+});
+
+$("body").on('mouseup touchend', function () {
+    endTime = new Date().getTime();
+    longpress = (endTime - startTime > 500) ? true : false;
     tapPos = event.originalEvent.pageX
-    containerWidth = $("#container").width()
+    containerWidth = $("body").width()
     if (tapPos/containerWidth < 0.2) {
       previousImage()
     } else if (tapPos/containerWidth > 0.8) {
@@ -42,16 +48,6 @@ $("#container").on('click', function (event) {
         }
       }
     }
-
-});
-
-$("#container").on('mousedown', function () {
-    startTime = new Date().getTime();
-});
-
-$("#container").on('mouseup', function () {
-    endTime = new Date().getTime();
-    longpress = (endTime - startTime > 500) ? true : false;
 });
 
 
