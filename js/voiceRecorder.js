@@ -36,16 +36,18 @@ var VoiceRecorder = class {
       return;
     }
 
-    globalShortcut.register(config.voiceReply.key, () => {
-      this.emitter.send("recordButtonPressed");
-    });
+    if (config.voiceReply.key !== undefined) {
+      globalShortcut.register(config.voiceReply.key, () => {
+        this.emitter.send("recordButtonPressed");
+      });
+    }
 
-    this.ipcMain.on('record', (event, arg) => {
-      this.record(arg);
+    this.ipcMain.on('record', (event, chatId, messageId) => {
+      this.record(chatId, messageId);
     })
   }
 
-  record(chat) {
+  record(chatId, messageId) {
     const logger = console;
     let maxRecTime;
 
@@ -77,7 +79,7 @@ var VoiceRecorder = class {
       function(code) {
         logger.warn(`Recording closed. Exit code: `, code);
         clearInterval(maxRecTime);
-        this.bot.sendAudio(fileName, chat);
+        this.bot.sendAudio(fileName, chatId, messageId);
       }.bind(this)
     );
 

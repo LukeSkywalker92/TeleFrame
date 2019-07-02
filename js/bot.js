@@ -1,5 +1,6 @@
 const Telegraf = require("telegraf");
 const Telegram = require("telegraf/telegram");
+const Extra = require('telegraf/extra')
 const download = require("image-downloader");
 const moment = require("moment");
 
@@ -44,14 +45,14 @@ var Bot = class {
       if (
         !(
           this.whitelistChats.length > 0 &&
-          this.whitelistChats.indexOf(ctx.update.message.chat.id) !== -1
+          this.whitelistChats.indexOf(ctx.message.chat.id) !== -1
         )
       ) {
-        console.log(
+        this.logger.info(
           "Whitelist triggered:",
-          ctx.update.message.chat.id,
+          ctx.message.chat.id,
           this.whitelistChats,
-          this.whitelistChats.indexOf(ctx.update.message.chat.id)
+          this.whitelistChats.indexOf(ctx.message.chat.id)
         );
         ctx.reply(
           "Hey there, this bot is whitelisted, pls add your chat id to the config file"
@@ -68,13 +69,19 @@ var Bot = class {
               dest: this.imageFolder + "/" + moment().format("x") + ".jpg"
             })
             .then(({ filename, image }) => {
-              console.log(ctx.update.message.from.id);
-              console.log(ctx.update.message.chat.id)
+              var chatName = ''
+              if (ctx.message.chat.type == 'group') {
+                chatName = ctx.message.chat.title;
+              } else if (ctx.message.chat.type == 'private') {
+                chatName = ctx.message.from.first_name;
+              }
               this.newImage(
                 filename,
                 ctx.message.from.first_name,
                 ctx.message.caption,
-                ctx.update.message.chat.id
+                ctx.message.chat.id,
+                chatName,
+                ctx.message.message_id
               );
             })
             .catch((err) => {
@@ -88,14 +95,14 @@ var Bot = class {
       if (
         !(
           this.whitelistChats.length > 0 &&
-          this.whitelistChats.indexOf(ctx.update.message.from.id) !== -1
+          this.whitelistChats.indexOf(ctx.message.chat.id) !== -1
         )
       ) {
-        console.log(
+        this.logger.info(
           "Whitelist triggered:",
-          ctx.update.message.from.id,
+          ctx.message.chat.id,
           this.whitelistChats,
-          this.whitelistChats.indexOf(ctx.update.message.from.id)
+          this.whitelistChats.indexOf(ctx.message.chat.id)
         );
         ctx.reply(
           "Hey there, this bot is whitelisted, pls add your chat id to the config file"
@@ -111,10 +118,19 @@ var Bot = class {
               dest: this.imageFolder + "/" + moment().format("x") + ".mp4"
             })
             .then(({ filename, image }) => {
+              var chatName = ''
+              if (ctx.message.chat.type == 'group') {
+                chatName = ctx.message.chat.title;
+              } else if (ctx.message.chat.type == 'private') {
+                chatName = ctx.message.from.first_name;
+              }
               this.newImage(
                 filename,
                 ctx.message.from.first_name,
-                ctx.message.caption
+                ctx.message.caption,
+                ctx.message.chat.id,
+                chatName,
+                ctx.message.message_id
               );
             })
             .catch((err) => {
@@ -133,7 +149,7 @@ var Bot = class {
       ctx.reply(
         `Hey there ${ctx.chat.first_name} \n Your ChatID is ${ctx.chat.id}`
       );
-      console.log(ctx.chat);
+      this.logger.info(ctx.chat);
     });
 
     this.logger.info("Bot created!");
@@ -146,43 +162,35 @@ var Bot = class {
       setTimeout(() => self.startBot(), 30000)
     );
     this.logger.info("Bot started!");
-    /*
-    this.sendMessage("Bot ready!")
-      .then(() => {
-        console.log("success");
-      })
-      .catch((err) => {
-        console.log("error", err);
-      });
-      */
   }
 
-  newImage(src, sender, caption, chat) {
+  newImage(src, sender, caption, chatId, chatName, messageId) {
     //tell imageWatchdog that a new image arrived
-    this.imageWatchdog.newImage(src, sender, caption, chat);
+    this.imageWatchdog.newImage(src, sender, caption, chatId, chatName, messageId);
   }
 
   sendMessage(message) {
     return this.bot.telegram.sendMessage(this.whitelistChats[0], message);
   }
 
-  sendAudio(filename, chat) {
+  sendAudio(filename, chatId, messageId) {
     fs.readFile(
       filename,
       function(err, data) {
         if (err) {
-          console.log(err);
+          this.logger.error(err);
           return;
         }
           this.bot.telegram
-            .sendVoice(chat, {
+            .sendVoice(chatId, {
+              reply_to_message_id: messageId,
               source: data
             })
             .then(() => {
-              console.log("success");
+              this.logger.info("success");
             })
             .catch((err) => {
-              console.log("error", err);
+              this.logger.error("error", err);
             });
 
       }.bind(this)

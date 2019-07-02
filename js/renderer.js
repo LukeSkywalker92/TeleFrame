@@ -1,4 +1,7 @@
-const { remote, ipcRenderer } = require("electron");
+const {
+  remote,
+  ipcRenderer
+} = require("electron");
 const $ = require("jquery");
 window.jQuery = $;
 const Swal = require("sweetalert2");
@@ -16,46 +19,42 @@ var container = document.getElementById("container");
 var currentTimeout;
 var isPaused = false;
 var currentImageIndex = images.length;
-currentChat = ''
+var startTime, endTime, longpress, timeout, recordSwal, currentChatId, currentMessageId;
 
 if (config.playSoundOnRecieve != false) {
   var audio = new Audio(__dirname + "/sound1.mp3");
 }
 
-
-var startTime, endTime, longpress, timeout, recordSwal;
-
-$("body").on('touchstart', function () {
-    startTime = new Date().getTime();
-    currentChat=images[currentImageIndex]['chat']
+$("body").on('touchstart', function() {
+  startTime = new Date().getTime();
+  currentImageForVoiceReply = images[currentImageIndex]
 });
 
-$("body").on('touchend', function (event) {
-    console.log(event);
-    endTime = new Date().getTime();
-    longpress = (endTime - startTime > 500) ? true : false;
-    tapPos = event.originalEvent.changedTouches[0].pageX
-    containerWidth = $("body").width()
-    if (tapPos/containerWidth < 0.2) {
-      previousImage()
-    } else if (tapPos/containerWidth > 0.8) {
-      nextImage()
+$("body").on('touchend', function(event) {
+  endTime = new Date().getTime();
+  longpress = (endTime - startTime > 500) ? true : false;
+  tapPos = event.originalEvent.changedTouches[0].pageX
+  containerWidth = $("body").width()
+  if (tapPos / containerWidth < 0.2) {
+    previousImage()
+  } else if (tapPos / containerWidth > 0.8) {
+    nextImage()
+  } else {
+    if (longpress) {
+      ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
     } else {
-      if (longpress) {
-        ipcRenderer.send("record", currentChat);
+      if (isPaused) {
+        play()
       } else {
-        if (isPaused) {
-          play()
-        } else {
-          pause()
-        }
+        pause()
       }
     }
+  }
 });
 
 ipcRenderer.on("recordButtonPressed", function(event, arg) {
-  currentChat=images[currentImageIndex]['chat']
-  ipcRenderer.send("record", currentChat);
+  currentImageForVoiceReply = images[currentImageIndex]
+  ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
 });
 
 
@@ -66,9 +65,11 @@ ipcRenderer.on("recordStarted", function(event, arg) {
   spinner.classList.add("spinner");
   message.appendChild(spinner);
   let text = document.createElement("p");
-  text.innerHTML = config.voiceReply.recordingMessage;
+  messageText = config.voiceReply.recordingPreMessage
+                    + ' ' + currentImageForVoiceReply['chatName']
+                    + ' ' + config.voiceReply.recordingPostMessage;
+  text.innerHTML = messageText
   message.appendChild(text);
-  console.log(config.voiceReply.recordingMessage);
   recordSwal = Swal.fire({
     title: config.voiceReply.recordingMessageTitle,
     showConfirmButton: false,
@@ -79,7 +80,8 @@ ipcRenderer.on("recordStarted", function(event, arg) {
 ipcRenderer.on("recordStopped", function(event, arg) {
   let message = document.createElement("div");
   let text = document.createElement("p");
-  text.innerHTML = config.voiceReply.recordingDone;
+  text.innerHTML = config.voiceReply.recordingDone
+                    + ' ' + currentImageForVoiceReply['chatName'];
   message.appendChild(text);
   recordSwal.close();
   Swal.fire({
@@ -207,7 +209,6 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     if (currentImageIndex < 0) currentImageIndex = images.length - 1;
   }
 
-  logger.info("loading image " + currentImageIndex);
   var image = images[currentImageIndex];
 
   //get current container and create needed elements
@@ -294,13 +295,13 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     img.onloadeddata = function() {
       screenAspectRatio =
         remote
-          .getCurrentWindow()
-          .webContents.getOwnerBrowserWindow()
-          .getBounds().width /
+        .getCurrentWindow()
+        .webContents.getOwnerBrowserWindow()
+        .getBounds().width /
         remote
-          .getCurrentWindow()
-          .webContents.getOwnerBrowserWindow()
-          .getBounds().height;
+        .getCurrentWindow()
+        .webContents.getOwnerBrowserWindow()
+        .getBounds().height;
       imageAspectRatio = img.naturalWidth / img.naturalHeight;
       if (imageAspectRatio > screenAspectRatio) {
         img.style.width = "100%";
@@ -325,13 +326,13 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     img.onload = function() {
       screenAspectRatio =
         remote
-          .getCurrentWindow()
-          .webContents.getOwnerBrowserWindow()
-          .getBounds().width /
+        .getCurrentWindow()
+        .webContents.getOwnerBrowserWindow()
+        .getBounds().width /
         remote
-          .getCurrentWindow()
-          .webContents.getOwnerBrowserWindow()
-          .getBounds().height;
+        .getCurrentWindow()
+        .webContents.getOwnerBrowserWindow()
+        .getBounds().height;
       imageAspectRatio = img.naturalWidth / img.naturalHeight;
       if (imageAspectRatio > screenAspectRatio) {
         img.style.width = "100%";
