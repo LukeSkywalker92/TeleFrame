@@ -44,14 +44,14 @@ var Bot = class {
       if (
         !(
           this.whitelistChats.length > 0 &&
-          this.whitelistChats.indexOf(ctx.update.message.from.id) !== -1
+          this.whitelistChats.indexOf(ctx.update.message.chat.id) !== -1
         )
       ) {
         console.log(
           "Whitelist triggered:",
-          ctx.update.message.from.id,
+          ctx.update.message.chat.id,
           this.whitelistChats,
-          this.whitelistChats.indexOf(ctx.update.message.from.id)
+          this.whitelistChats.indexOf(ctx.update.message.chat.id)
         );
         ctx.reply(
           "Hey there, this bot is whitelisted, pls add your chat id to the config file"
@@ -68,10 +68,13 @@ var Bot = class {
               dest: this.imageFolder + "/" + moment().format("x") + ".jpg"
             })
             .then(({ filename, image }) => {
+              console.log(ctx.update.message.from.id);
+              console.log(ctx.update.message.chat.id)
               this.newImage(
                 filename,
                 ctx.message.from.first_name,
-                ctx.message.caption
+                ctx.message.caption,
+                ctx.update.message.chat.id
               );
             })
             .catch((err) => {
@@ -154,16 +157,16 @@ var Bot = class {
       */
   }
 
-  newImage(src, sender, caption) {
+  newImage(src, sender, caption, chat) {
     //tell imageWatchdog that a new image arrived
-    this.imageWatchdog.newImage(src, sender, caption);
+    this.imageWatchdog.newImage(src, sender, caption, chat);
   }
 
   sendMessage(message) {
     return this.bot.telegram.sendMessage(this.whitelistChats[0], message);
   }
 
-  sendAudio(filename) {
+  sendAudio(filename, chat) {
     fs.readFile(
       filename,
       function(err, data) {
@@ -171,9 +174,8 @@ var Bot = class {
           console.log(err);
           return;
         }
-        for (let i = 0; i < this.voiceReply.sendTo.length; i++) {
           this.bot.telegram
-            .sendVoice(this.voiceReply.sendTo[i], {
+            .sendVoice(chat, {
               source: data
             })
             .then(() => {
@@ -182,7 +184,7 @@ var Bot = class {
             .catch((err) => {
               console.log("error", err);
             });
-        }
+
       }.bind(this)
     );
   }

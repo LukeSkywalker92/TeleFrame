@@ -37,15 +37,15 @@ var VoiceRecorder = class {
     }
 
     globalShortcut.register(config.voiceReply.key, () => {
-      this.record();
+      this.emitter.send("recordButtonPressed");
     });
 
     this.ipcMain.on('record', (event, arg) => {
-      this.record();
+      this.record(arg);
     })
   }
 
-  record() {
+  record(chat) {
     const logger = console;
     let maxRecTime;
 
@@ -77,7 +77,7 @@ var VoiceRecorder = class {
       function(code) {
         logger.warn(`Recording closed. Exit code: `, code);
         clearInterval(maxRecTime);
-        this.bot.sendAudio(fileName);
+        this.bot.sendAudio(fileName, chat);
       }.bind(this)
     );
 

@@ -16,6 +16,7 @@ var container = document.getElementById("container");
 var currentTimeout;
 var isPaused = false;
 var currentImageIndex = images.length;
+currentChat = ''
 
 if (config.playSoundOnRecieve != false) {
   var audio = new Audio(__dirname + "/sound1.mp3");
@@ -26,6 +27,7 @@ var startTime, endTime, longpress, timeout, recordSwal;
 
 $("body").on('touchstart', function () {
     startTime = new Date().getTime();
+    currentChat=images[currentImageIndex]['chat']
 });
 
 $("body").on('touchend', function (event) {
@@ -40,7 +42,7 @@ $("body").on('touchend', function (event) {
       nextImage()
     } else {
       if (longpress) {
-        ipcRenderer.send("record");
+        ipcRenderer.send("record", currentChat);
       } else {
         if (isPaused) {
           play()
@@ -49,6 +51,11 @@ $("body").on('touchend', function (event) {
         }
       }
     }
+});
+
+ipcRenderer.on("recordButtonPressed", function(event, arg) {
+  currentChat=images[currentImageIndex]['chat']
+  ipcRenderer.send("record", currentChat);
 });
 
 

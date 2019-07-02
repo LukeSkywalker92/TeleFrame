@@ -22,12 +22,13 @@ var ImageWatchdog = class {
     }
   }
 
-  newImage(src, sender, caption) {
+  newImage(src, sender, caption, chat) {
     //handle new incoming image
     this.images.unshift({
       'src': src,
       'sender': sender,
-      'caption': caption
+      'caption': caption,
+      'chat': chat
     });
     if (this.images.length >= this.imageCount) {
       this.images.pop();

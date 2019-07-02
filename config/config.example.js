@@ -24,7 +24,6 @@ var config = {
   },
   voiceReply: {
     key: "a",
-    sendTo: [],
     maxRecordTime: 60*1000,
     recordingMessageTitle: "Voice Message",
     recordingMessage: "Recording in progress...",
