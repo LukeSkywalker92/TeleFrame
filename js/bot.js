@@ -181,10 +181,11 @@ var Bot = class {
           this.logger.error(err);
           return;
         }
-          this.bot.telegram
+          this.telegram
             .sendVoice(chatId, {
-              reply_to_message_id: messageId,
               source: data
+            }, {
+              reply_to_message_id: messageId
             })
             .then(() => {
               this.logger.info("success");
