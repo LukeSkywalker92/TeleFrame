@@ -22,6 +22,7 @@
 - [Configuration](#configuration)
 - [Whitelist Chats](#whitelist-chats)
 - [Voice Replies using TeleFrame](#voice-replies-using-teleframe)
+- [Touchscreen support](#touchscreen-support)
 - [Updating](#updating)
 - [Bot only mode (no GUI)](#bot-only-mode-no-gui)
 - [Building a TeleFrame](#building-a-teleframe)
@@ -109,6 +110,10 @@ A very simple way to respond to the images is by using TeleFrame`s voice reply f
 | `recordingDone`         | The message of the recording dialog displayed on the frame when recording has finished    |
 | `recordingError`        | The error message of the recording dialog displayed when recording has failed             |
 
+## Touchscreen support
+* Navigate through the images by touching at the left or right side of your touchscreen.
+* Pause and resume the slideshow by touching in the middle of your touchscreen.
+* Record a voice message and reply to the shown image by making a long touch in the middle of your touchscreen. The recording starts when you take your finger off.
 
 ## Updating
 
