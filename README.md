@@ -10,6 +10,9 @@
 
 **TeleFrame** is an open source digital image frame that displays images and videos, which were send to an Telegram Bot.
 
+## !!! IMPORTANT !!!
+**Before updating to 2.0.0, please read the release notes of release 2.0.0**
+
 ## Table Of Contents
 
 - [Table Of Contents](#table-of-contents)
