@@ -27,7 +27,7 @@
 
 ### Automatic Installation (Raspberry Pi only!)
 
-*Electron*, the app wrapper around Teleframe, only supports the Raspberry Pi 2/3. The Raspberry Pi 0/1 is currently **not** supported.
+*Electron*, the app wrapper around Teleframe, only supports the Raspberry Pi 2/3/4. The Raspberry Pi 0/1 is currently **not** supported.
 
 Note that you will need to install the lastest full version of Raspbian, **don't use the Lite version**.
 
@@ -40,10 +40,11 @@ bash -c "$(curl -sL https://raw.githubusercontent.com/LukeSkywalker92/TeleFrame/
 ### Manual Installation
 
 1. Download and install the latest *Node.js* version.
-2. Install *Electron* globally with `npm install -g electron`.
-3. Clone the repository and check out the master branch: `git clone https://github.com/LukeSkywalker92/TeleFrame.git`
-4. Enter the repository: `cd TeleFrame/`
-5. Install and run the app with: `npm install && npm start`
+2. If you like to use the voice reply feature you need to install sox
+3. Install *Electron* globally with `npm install -g electron`.
+4. Clone the repository and check out the master branch: `git clone https://github.com/LukeSkywalker92/TeleFrame.git`
+5. Enter the repository: `cd TeleFrame/`
+6. Install and run the app with: `npm install && npm start`
 
 Also note that:
 
@@ -92,18 +93,18 @@ When you start your TeleFrame and send a "Hi" to the bot it will send you back t
 
 ## Voice Replies using TeleFrame
 
-A very simple way to respond to the images is by using TeleFrame`s voice reply feature. The feature is intended to work like this: Who ever comes by the frame presses a button, speaks their message into the frame, when there is 2 seconds of silence or the maximum time is reached the recording will stop and the telegram bot will send it to all chat IDs set in the configuration.
+A very simple way to respond to the images is by using TeleFrame`s voice reply feature. The feature is intended to work like this: Who ever comes by the frame presses a button, speaks their message into the frame, when there is 2 seconds of silence or the maximum time is reached the recording will stop and the telegram bot will send it to the chat where the current image came from.
 
 
-| **Option**              | **Description**                                                                        |
-| ----------------------- | -------------------------------------------------------------------------------------- |
-| `key`                   | The keyboardkey to start the voice recording                                           |
-| `sendTo`                | Array of chat IDs that recieve the voice message                                       |
-| `maxRecordTime`         | How long the recorder will record if there is no silence detected (in milliseconds)    |
-| `recordingMessageTitle` | The title of the recording dialog displayed on the frame during record                 |
-| `recordingMessage`      | The message of the recording dialog displayed on the frame during record               |
-| `recordingDone`         | The message of the recording dialog displayed on the frame when recording has finished |
-| `recordingError`        | The error message of the recording dialog displayed when recording has failed          |
+| **Option**              | **Description**                                                                           |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| `key`                   | The keyboardkey to start the voice recording                                              |
+| `maxRecordTime`         | How long the recorder will record if there is no silence detected (in milliseconds)       |
+| `recordingMessageTitle` | The title of the recording dialog displayed on the frame during record                    |
+| `recordingPreMessage`   | The message of the recording dialog displayed on the frame during record before chat name |
+| `recordingPostMessage`  | The message of the recording dialog displayed on the frame during record after char name  |
+| `recordingDone`         | The message of the recording dialog displayed on the frame when recording has finished    |
+| `recordingError`        | The error message of the recording dialog displayed when recording has failed             |
 
 
 ## Updating
