@@ -1,7 +1,5 @@
-const {
-  remote,
-  ipcRenderer
-} = require("electron");
+// Imports
+const {remote, ipcRenderer} = require("electron");
 const $ = require("jquery");
 window.jQuery = $;
 const Swal = require("sweetalert2");
@@ -11,20 +9,22 @@ const velocity = require("velocity-animate");
 const logger = remote.getGlobal("rendererLogger");
 const config = remote.getGlobal("config");
 
-
+// Inform that Renderer started
 logger.info("Renderer started ...");
 
+// Create variables
 var images = remote.getGlobal("images");
 var container = document.getElementById("container");
-var currentTimeout;
 var isPaused = false;
 var currentImageIndex = images.length;
-var startTime, endTime, longpress, timeout, recordSwal, currentChatId, currentMessageId;
+var startTime, endTime, longpress, timeout, recordSwal, currentChatId, currentMessageId, currentTimeout;
 
+// configure sound notification sound
 if (config.playSoundOnRecieve != false) {
   var audio = new Audio(__dirname + "/sound1.mp3");
 }
 
+// handle touch events for navigation and voice reply
 $("body").on('touchstart', function() {
   startTime = new Date().getTime();
   currentImageForVoiceReply = images[currentImageIndex]
@@ -52,13 +52,14 @@ $("body").on('touchend', function(event) {
   }
 });
 
+// handle pressed record button
 ipcRenderer.on("recordButtonPressed", function(event, arg) {
   currentImageForVoiceReply = images[currentImageIndex]
   ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
 });
 
 
-//handle new incoming image
+// show record in progress message
 ipcRenderer.on("recordStarted", function(event, arg) {
   let message = document.createElement("div");
   let spinner = document.createElement("div");
@@ -77,6 +78,7 @@ ipcRenderer.on("recordStarted", function(event, arg) {
   });
 });
 
+// show record done message
 ipcRenderer.on("recordStopped", function(event, arg) {
   let message = document.createElement("div");
   let text = document.createElement("p");
@@ -93,6 +95,7 @@ ipcRenderer.on("recordStopped", function(event, arg) {
   });
 });
 
+//show record error message
 ipcRenderer.on("recordError", function(event, arg) {
   let message = document.createElement("div");
   let text = document.createElement("p");
@@ -108,6 +111,7 @@ ipcRenderer.on("recordError", function(event, arg) {
   });
 });
 
+// handle new incoming image
 ipcRenderer.on("newImage", function(event, arg) {
   newImage(arg.sender, arg.type);
   if (config.playSoundOnRecieve != false) {
@@ -115,6 +119,7 @@ ipcRenderer.on("newImage", function(event, arg) {
   }
 });
 
+// handle navigation
 ipcRenderer.on("next", function(event, arg) {
   nextImage()
 });
@@ -131,6 +136,7 @@ ipcRenderer.on("play", function(event, arg) {
   play()
 });
 
+// functions to show and hide pause icon
 function showPause() {
   var pauseBox = document.createElement("div");
   var div1 = document.createElement("div");
@@ -158,6 +164,7 @@ function hidePause() {
   }
 }
 
+// functions for navigation
 function nextImage() {
   if (isPaused) hidePause();
   loadImage(true, 0);
@@ -186,7 +193,7 @@ function play() {
   hidePause(isPaused);
 }
 
-//load imge to slideshow
+//load image to slideshow
 function loadImage(isNext, fadeTime, goToLatest = false) {
   clearTimeout(currentTimeout);
 
