@@ -22,12 +22,17 @@ var ImageWatchdog = class {
     }
   }
 
-  newImage(src, sender, caption) {
+  newImage(src, sender, caption, chatId, chatName, messageId) {
     //handle new incoming image
+    // TODO: message ID and chat name to reply to specific image and to show
+    //         chat name for voice recording message
     this.images.unshift({
       'src': src,
       'sender': sender,
-      'caption': caption
+      'caption': caption,
+      'chatId': chatId,
+      'chatName': chatName,
+      'messageId': messageId
     });
     if (this.images.length >= this.imageCount) {
       this.images.pop();
