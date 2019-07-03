@@ -48,6 +48,7 @@ var VoiceRecorder = class {
   }
 
   record(chatId, messageId) {
+    // function that records voice and tells bot to send it as voice reply
     const logger = console;
     let maxRecTime;
 

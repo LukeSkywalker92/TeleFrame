@@ -170,10 +170,12 @@ var Bot = class {
   }
 
   sendMessage(message) {
+    // function to send messages, used for whitlist handling
     return this.bot.telegram.sendMessage(this.whitelistChats[0], message);
   }
 
   sendAudio(filename, chatId, messageId) {
+    // function to send recorded audio as voice reply
     fs.readFile(
       filename,
       function(err, data) {
