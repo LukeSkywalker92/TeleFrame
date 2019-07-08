@@ -43,9 +43,9 @@ var Bot = class {
     //Download incoming photo
     this.bot.on("photo", (ctx) => {
       if (
-        !(
+        (
           this.whitelistChats.length > 0 &&
-          this.whitelistChats.indexOf(ctx.message.chat.id) !== -1
+          this.whitelistChats.indexOf(ctx.message.chat.id) == -1
         )
       ) {
         this.logger.info(
