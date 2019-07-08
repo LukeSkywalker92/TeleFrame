@@ -13,7 +13,7 @@ var config = {
   newVideoMessage: "Neues Video von",
   showSender: true,
   showCaption: true,
-  toggleMonitor: true,
+  toggleMonitor: false,
   turnOnHour: 9,
   turnOffHour: 22,
   keys: {
