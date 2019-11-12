@@ -14,7 +14,12 @@ var ImageWatchdog = class {
         if (err) throw err;
         var jsonData = JSON.parse(data);
         for (var image in jsonData) {
-          this.images.push(jsonData[image]);
+	  if (fs.existsSync(jsonData[image].src)) {
+	    const stats = fs.statSync(jsonData[image].src);
+	    if (stats.size > 0) {
+              this.images.push(jsonData[image]);
+            }
+          }
         }
       });
     } else {
