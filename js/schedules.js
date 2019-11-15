@@ -5,6 +5,7 @@ var schedules = class {
   constructor(config, logger) {
     this.turnOnHour = config.turnOnHour;
     this.turnOffHour = config.turnOffHour;
+    this.hdmiScreen = config.hdmiScreen;  
     this.logger = logger;
     this.opts = {timeout: 15000};
     var self = this;
@@ -26,17 +27,29 @@ var schedules = class {
   //execute command for turning the monitor on
   turnMonitorOn() {
     var self = this;
-    exec("tvservice --preferred && sudo chvt 6 && sudo chvt 7", self.opts, function(error, stdout, stderr) {
-      self.checkForExecError(error, stdout, stderr);
-    });
+    if (hdmiScreen) {
+      exec("tvservice --preferred && sudo chvt 6 && sudo chvt 7", self.opts, function(error, stdout, stderr) {
+        self.checkForExecError(error, stdout, stderr);
+      });
+    } else {
+      exec("sudo echo 0 > /sys/class/backlight/rpi_backlight/bl_power", self.opts, function(error, stdout, stderr) {
+        self.checkForExecError(error, stdout, stderr);
+      });
+    }
   }
 
   //execute command for turning the monitor off
   turnMonitorOff() {
-var self = this;
-    exec("tvservice -o", self.opts, function(error, stdout, stderr) {
-      self.checkForExecError(error, stdout, stderr);
-    });
+    var self = this;
+    if (!hdmiScreen) {
+      exec("tvservice -o", self.opts, function(error, stdout, stderr) {
+           self.checkForExecError(error, stdout, stderr);
+      });
+    } else {
+      exec("sudo echo 1 > /sys/class/backlight/rpi_backlight/bl_power", self.opts, function(error, stdout, stderr) {
+        self.checkForExecError(error, stdout, stderr);
+      });
+    }
   }
 
   //check for execution error

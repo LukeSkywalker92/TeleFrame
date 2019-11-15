@@ -5,6 +5,7 @@ var config = {
   showVideos: true,
   playVideoAudio: false,
   imageFolder: "images",
+  hdmiScreen: true,
   fullscreen: true,
   fadeTime: 1500,
   interval: 10 * 1000,

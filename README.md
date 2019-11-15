@@ -77,6 +77,7 @@ The following properties can be configured:
 | `imageFolder`        | The folder where the images are stored.                                                                                                                              |
 | `fullscreen`         | When set to true, TeleFrame will run in fullscreen mode.                                                                                                             |
 | `fadeTime`           | The fading time between two images.                                                                                                                                  |
+| `hdmiScreen`         | Set to true when screen is connected via HDMI.                                                                                                                       |
 | `interval`           | The time that an image is shown.                                                                                                                                     |
 | `imageCount`         | Defines how many different images are shown in the slideshow.                                                                                                        |
 | `newPhotoMessage`    | Message that is shown when the bot recieved a new image.                                                                                                             |

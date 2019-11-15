@@ -184,6 +184,11 @@ if [[ $screensaverchoice =~ ^[Yy]$ ]]; then
 		sudo /bin/su -c "echo 'xserver-command=X -s 0 -dpms' >> /etc/lightdm/lightdm.conf"
 fi
 
+# Enable backlight control of PiScreen connected via DSI
+if [ -f /sys/class/backlight/rpi_backlight/bl_power]; then
+   sudo chmod 666 /sys/class/backlight/rpi_backlight/bl_power
+fi
+
 # Use pm2 control like a service TeleFrame
 if [[ $pmchoice =~ ^[Yy]$ ]]; then
     sudo npm install -g pm2
