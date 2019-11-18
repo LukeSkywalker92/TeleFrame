@@ -10,6 +10,13 @@ var schedules = class {
     this.opts = {timeout: 15000};
     var self = this;
 
+    // change permissions for backlight control
+    if (!this.hdmiScreen) {
+      exec("sudo chmod 666 /sys/class/backlight/rpi_backlight/bl_power", this.opts, function(error, stdout, stderr) {
+        self.checkForExecError(error, stdout, stderr);
+      });
+    }
+
     //generate schedule for turning the monitor on
     this.monitorOnSchedule = schedule.scheduleJob('* * ' + this.turnOnHour.toString() + ' * * *', function() {
       self.turnMonitorOn();
@@ -27,7 +34,7 @@ var schedules = class {
   //execute command for turning the monitor on
   turnMonitorOn() {
     var self = this;
-    if (hdmiScreen) {
+    if (this.hdmiScreen) {
       exec("tvservice --preferred && sudo chvt 6 && sudo chvt 7", self.opts, function(error, stdout, stderr) {
         self.checkForExecError(error, stdout, stderr);
       });
@@ -41,7 +48,7 @@ var schedules = class {
   //execute command for turning the monitor off
   turnMonitorOff() {
     var self = this;
-    if (!hdmiScreen) {
+    if (this.hdmiScreen) {
       exec("tvservice -o", self.opts, function(error, stdout, stderr) {
            self.checkForExecError(error, stdout, stderr);
       });
