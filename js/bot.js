@@ -40,14 +40,15 @@ var Bot = class {
     //Help message
     this.bot.help((ctx) => ctx.reply("Send me an image."));
 
-    //Download incoming photo
-    this.bot.on("photo", (ctx) => {
+
+    //Middleware Check for whitelisted  ChatID
+    const isChatWhitelisted = (ctx, next) => {
       if (
         (
           this.whitelistChats.length > 0 &&
           this.whitelistChats.indexOf(ctx.message.chat.id) == -1
         )
-      ) {
+      ){
         this.logger.info(
           "Whitelist triggered:",
           ctx.message.chat.id,
@@ -57,9 +58,17 @@ var Bot = class {
         ctx.reply(
           "Hey there, this bot is whitelisted, pls add your chat id to the config file"
         );
-        return;
+
+        //Break if Chat is not whitelisted
+        return ;
       }
 
+      return next();
+    }
+
+
+    //Download incoming photo
+    this.bot.on("photo", isChatWhitelisted, (ctx) => {
       this.telegram
         .getFileLink(ctx.message.photo[ctx.message.photo.length - 1].file_id)
         .then((link) => {
@@ -91,25 +100,7 @@ var Bot = class {
     });
 
     //Download incoming video
-    this.bot.on("video", (ctx) => {
-      if (
-        !(
-          this.whitelistChats.length > 0 &&
-          this.whitelistChats.indexOf(ctx.message.chat.id) !== -1
-        )
-      ) {
-        this.logger.info(
-          "Whitelist triggered:",
-          ctx.message.chat.id,
-          this.whitelistChats,
-          this.whitelistChats.indexOf(ctx.message.chat.id)
-        );
-        ctx.reply(
-          "Hey there, this bot is whitelisted, pls add your chat id to the config file"
-        );
-        return;
-      }
-
+    this.bot.on("video", isChatWhitelisted, (ctx) => {
       if (this.showVideo) {
         this.telegram.getFileLink(ctx.message.video.file_id).then((link) => {
           download
@@ -147,7 +138,7 @@ var Bot = class {
     //Some small conversation
     this.bot.hears(/hi/i, (ctx) => {
       ctx.reply(
-        `Hey there ${ctx.chat.first_name} \n Your ChatID is ${ctx.chat.id}`
+        `Hey there ${ctx.chat.first_name} \nYour ChatID is ${ctx.chat.id}`
       );
       this.logger.info(ctx.chat);
     });
