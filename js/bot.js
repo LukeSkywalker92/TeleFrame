@@ -14,7 +14,8 @@ var Bot = class {
     showVideo,
     whitelistChats,
     voiceReply,
-    logger
+    logger,
+    config
   ) {
     var self = this;
     this.bot = new Telegraf(botToken);
@@ -25,6 +26,7 @@ var Bot = class {
     this.showVideo = showVideo;
     this.whitelistChats = whitelistChats;
     this.voiceReply = voiceReply;
+    this.config = config;
 
     //get bot name
     this.bot.telegram.getMe().then((botInfo) => {

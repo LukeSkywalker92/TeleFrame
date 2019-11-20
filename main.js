@@ -53,7 +53,8 @@ function createWindow() {
     config.showVideos,
     config.whitelistChats,
     config.voiceReply,
-    logger
+    logger,
+    config
   );
 
   var inputHandler = new inputhandler(config, emitter, bot, logger);
