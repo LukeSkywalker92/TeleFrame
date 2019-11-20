@@ -13,6 +13,7 @@ var Bot = class {
     imageWatchdog,
     showVideo,
     whitelistChats,
+    whitelistAdmins,
     voiceReply,
     logger,
     config
@@ -25,6 +26,7 @@ var Bot = class {
     this.imageWatchdog = imageWatchdog;
     this.showVideo = showVideo;
     this.whitelistChats = whitelistChats;
+    this.whitelistAdmins = whitelistAdmins;
     this.voiceReply = voiceReply;
     this.config = config;
 
@@ -59,6 +61,29 @@ var Bot = class {
         );
         ctx.reply(
           "Hey there, this bot is whitelisted, pls add your chat id to the config file"
+        );
+
+        //Break if Chat is not whitelisted
+        return ;
+      }
+
+      return next();
+    }
+
+
+    //Middleware Check for whitelisted  ChatID
+    const isAdminWhitelisted = (ctx, next) => {
+      if (
+          this.whitelistAdmins.indexOf(ctx.message.chat.id) == -1
+      ){
+        this.logger.info(
+          "Admin-Whitelist triggered:",
+          ctx.message.chat.id,
+          this.whitelistAdmins,
+          this.whitelistAdmins.indexOf(ctx.message.chat.id)
+        );
+        ctx.reply(
+          "Hey the Admin-Actions of this bot are whitelisted, pls add your chat id to the config file"
         );
 
         //Break if Chat is not whitelisted

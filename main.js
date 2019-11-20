@@ -52,6 +52,7 @@ function createWindow() {
     imageWatchdog,
     config.showVideos,
     config.whitelistChats,
+    config.whitelistAdmins,
     config.voiceReply,
     logger,
     config
