@@ -170,8 +170,24 @@ var Bot = class {
       this.logger.info(ctx.chat);
     });
 
+    //Admin-Action: Reboot
+    this.bot.command('reboot', isAdminWhitelisted, (ctx) => {
+      this.logger.warn("Reboot received");
+      ctx.reply('Reboot triggered');
+
+      if(this.config.adminAction.allowAdminAction ){
+        this.logger.warn(this.config.adminAction.actions.rebootAction);
+      }else{
+        this.logger.warn("Reboot denied from config");
+        ctx.reply('Reboot triggered');
+      }
+
+    })
+
     this.logger.info("Bot created!");
   }
+
+
 
   startBot() {
     //Start bot
