@@ -3,6 +3,7 @@ const Telegram = require("telegraf/telegram");
 const Extra = require('telegraf/extra')
 const download = require("image-downloader");
 const moment = require("moment");
+const exec = require("child_process").exec;
 
 const fs = require(`fs`);
 
@@ -170,19 +171,30 @@ var Bot = class {
       this.logger.info(ctx.chat);
     });
 
-    //Admin-Action: Reboot
-    this.bot.command('reboot', isAdminWhitelisted, (ctx) => {
-      this.logger.warn("Reboot received");
-      ctx.reply('Reboot triggered');
 
-      if(this.config.adminAction.allowAdminAction ){
-        this.logger.warn(this.config.adminAction.actions.rebootAction);
-      }else{
-        this.logger.warn("Reboot denied from config");
-        ctx.reply('Reboot triggered');
-      }
+    //Add Admin Actions from config to Bot-Command
+    if(this.config.adminAction.allowAdminAction ){
+      var actions = this.config.adminAction.actions;
+      this.logger.info("Add Admin-Actions");
 
-    })
+      actions.forEach(action => {
+        //only add action if comman isn't (empty or null) and action is enabled
+        if(!!action.command && action.enable){
+        this.bot.command(action.name, isAdminWhitelisted, (ctx) => {
+          this.logger.warn("Command received: "+action.name);
+          ctx.reply('Triggered Action '+action.name);
+
+          this.logger.warn(action.command);
+
+          exec(action.command, function(error, stdout, stderr) {
+            self.checkForExecError(error, stdout, stderr);
+          });
+        })
+
+        }
+      });
+
+    }
 
     this.logger.info("Bot created!");
   }
@@ -232,6 +244,16 @@ var Bot = class {
 
       }.bind(this)
     );
+  }
+
+  //check for execution error
+  checkForExecError(error, stdout, stderr, res) {
+    console.log(stdout);
+    console.log(stderr);
+    if (error) {
+      console.log(error);
+      return;
+    }
   }
 };
 
