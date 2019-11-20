@@ -1,6 +1,7 @@
 var config = {
   botToken: "",
   whitelistChats: [],
+  whitelistAdmins: [],
   playSoundOnRecieve: "sound1.mp3",
   showVideos: true,
   playVideoAudio: false,
@@ -30,6 +31,17 @@ var config = {
     recordingPostMessage: "in progress...",
     recordingDone: "Voice message sent sucessfully!",
     recordingError: "Voice message has failed!"
+  },
+  adminAction: {
+    allowAdminAction: false,
+    actions: [
+      {name: "echo", command: 'echo test', enable: true},
+      {name: "reboot", command: "sudo reboot", enable: true},
+      {name: "shutdown", command: "sudo shutdown -h now ", enable: true},
+      {name: "restart", command: "pm2 restart all", enable: true},
+      {name: "startOpenvpn", command: "systemctl openvpn start", enable: true},
+      {name: "stopOpenvpn", command: '', enable: true}
+    ]
   }
 };
 
