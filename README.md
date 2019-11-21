@@ -90,6 +90,7 @@ The following properties can be configured:
 | `turnOffHour`        | Defines when the monitor shuld be turned off.                                                                                                                        |
 | `keys`               | Defines an object with 4 strings specifying the keyboard shortcuts for play, next, previous and pause. Set to null for no controls                                   |
 | `voiceReply`         | Defines an object with the config for sending voicemessages with TeleFrame, see info bellow                                                                          |
+| `adminAction`        | Defines an object with the config for sending Admin-Commands to the TeleFrame, see info bellow                                                                          |
 
 
 ## Whitelist Chats
@@ -110,6 +111,54 @@ A very simple way to respond to the images is by using TeleFrame`s voice reply f
 | `recordingPostMessage`  | The message of the recording dialog displayed on the frame during record after char name  |
 | `recordingDone`         | The message of the recording dialog displayed on the frame when recording has finished    |
 | `recordingError`        | The error message of the recording dialog displayed when recording has failed             |
+
+## Sending Admin-Commands to the TeleFrame
+
+As administrator of a TeleFrame, it could be very useful to execute commands on the TeleFrame computer.
+
+With the TeleFrame-Bot you are able to send these commands without logging on to the remote computer.
+
+Examples for such admin actions could be:
+
+- Reboot the Raspberry Pi
+
+- Restart of the TeleFrame application
+
+- Open a VPN connection
+- Close a VPN connection
+
+- ....
+
+
+
+
+To enable Admin-Action on the TeleFrame, following settings must be made in the Config file:
+- Adding the Chat-ID to the list of Administators (whitelistAdmins)
+
+- Activating the Admin Actions (allowAdminAction)
+
+- Adding an Action Object (actions) [see adminAction-Object]
+
+- Activation of the action object (enable)
+
+
+
+Now the action on the TeleFrame can be triggered by sending the corresponding command (e.g. /reboot for the command named "reboot").
+
+### adminAction-object
+| **Option**              | **Description**                                                                           |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| `allowAdminAction`      | Global Switch to enable the Admin-Actions                                                 |
+| `actions`               | Defines an array of action-objects, see info bellow                                       |
+
+### action-object
+| **Option**              | **Description**                                                                           |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| `name`                  | Name of the action                                                                        |
+| `command`               | Command to execute onf TeleFrame                                                          |
+| `enable`                | When set to True, the command is added to the bot                                         |
+
+
 
 ## Touchscreen support
 * Navigate through the images by touching at the left or right side of your touchscreen.
