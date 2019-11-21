@@ -115,33 +115,20 @@ A very simple way to respond to the images is by using TeleFrame`s voice reply f
 ## Sending Admin-Commands to the TeleFrame
 
 As administrator of a TeleFrame, it could be very useful to execute commands on the TeleFrame computer.
-
 With the TeleFrame-Bot you are able to send these commands without logging on to the remote computer.
 
 Examples for such admin actions could be:
-
 - Reboot the Raspberry Pi
-
 - Restart of the TeleFrame application
-
 - Open a VPN connection
 - Close a VPN connection
-
 - ....
-
-
-
 
 To enable Admin-Action on the TeleFrame, following settings must be made in the Config file:
 - Adding the Chat-ID to the list of Administators (whitelistAdmins)
-
 - Activating the Admin Actions (allowAdminAction)
-
 - Adding an Action Object (actions) [see adminAction-Object]
-
 - Activation of the action object (enable)
-
-
 
 Now the action on the TeleFrame can be triggered by sending the corresponding command (e.g. /reboot for the command named "reboot").
 
