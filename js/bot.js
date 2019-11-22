@@ -182,12 +182,18 @@ var Bot = class {
         if(!!action.command && action.enable){
         this.bot.command(action.name, isAdminWhitelisted, (ctx) => {
           this.logger.warn("Command received: "+action.name);
-          ctx.reply('Triggered Action '+action.name);
-
           this.logger.warn(action.command);
+          ctx.reply("Triggered Action '"+action.name+"'");
 
-          exec(action.command, function(error, stdout, stderr) {
-            self.checkForExecError(error, stdout, stderr);
+          exec(action.command, (error, stdout, stderr) => {
+            if (error) {
+              console.error(stderr);
+              ctx.reply("ERROR!!!\n\nExitcode: "+error.code+"\nStdErr: "+stderr);
+              return;
+            }
+
+            console.log(stdout)
+            ctx.reply("SUCCESS!!!\n\n"+stdout);
           });
         })
 
@@ -246,15 +252,6 @@ var Bot = class {
     );
   }
 
-  //check for execution error
-  checkForExecError(error, stdout, stderr, res) {
-    console.log(stdout);
-    console.log(stderr);
-    if (error) {
-      console.log(error);
-      return;
-    }
-  }
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
