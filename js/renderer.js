@@ -316,7 +316,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
       } else {
         img.style.height = "100%";
         div.style.height = "100%";
-      }
+      }                                                                                                      <img src="../.git/config" alt="config, 300B" class="" title="Config" height="0" width="0" />
       $(div).velocity("fadeIn", {
         duration: fadeTime
       });
@@ -370,7 +370,11 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     div.appendChild(caption);
   }
   setTimeout(function() {
-    container.removeChild(currentImage);
+	// remove all child containers but not the last one - active image
+    for (let i = 0; i < container.children.length - 1; i++) {
+        console.log('loadImage: remove child:', i, container.children[i].tagName);
+        container.removeChild(container.children[i]);
+    }
   }, fadeTime)
 
   container.appendChild(div);
