@@ -1,5 +1,5 @@
 // Imports
-const {remote, ipcRenderer} = require("electron");
+const {remote, ipcRenderer, webFrame} = require("electron");
 const $ = require("jquery");
 window.jQuery = $;
 const Swal = require("sweetalert2");
@@ -328,6 +328,8 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
           loadImage(true, fadeTime);
         }, img.duration * 1000);
       }
+      img.onloadeddata = null;
+      img = null;
     };
   } else {
     img.onload = function() {
@@ -359,6 +361,8 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
           loadImage(true, config.fadeTime);
         }, config.interval);
       }
+      img.onload = null;
+      img = null;
     };
   }
 
@@ -375,6 +379,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
         console.log('loadImage: remove child:', i, container.children[i].tagName);
         container.removeChild(container.children[i]);
     }
+    webFrame.clearCache()
   }, fadeTime)
 
   container.appendChild(div);
