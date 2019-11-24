@@ -316,7 +316,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
       } else {
         img.style.height = "100%";
         div.style.height = "100%";
-      }                                                                                                      <img src="../.git/config" alt="config, 300B" class="" title="Config" height="0" width="0" />
+      }
       $(div).velocity("fadeIn", {
         duration: fadeTime
       });
