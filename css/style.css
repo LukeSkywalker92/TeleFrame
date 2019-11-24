@@ -112,3 +112,19 @@ h1 {
     transform: rotate(360deg);
   }
 }
+
+.touch-bar {
+  background: #656565;
+  opacity: 50%;
+  height: 10%;
+  width: 100%;
+  display: block;
+  position: fixed;
+  top: 0;
+}
+
+.touch-bar-blur {
+  height: 10%;
+  width: 100%;
+  backdrop-filter: blur(20px);
+}

@@ -8,6 +8,7 @@ const chroma = require("chroma-js");
 const velocity = require("velocity-animate");
 const logger = remote.getGlobal("rendererLogger");
 const config = remote.getGlobal("config");
+const {touchBar, touchBarElement} = require("./js/touchBar.js")
 
 // Inform that Renderer started
 logger.info("Renderer started ...");
