@@ -113,18 +113,23 @@ h1 {
   }
 }
 
-.touch-bar {
-  background: #656565;
-  opacity: 50%;
-  height: 10%;
+.touch-bar-container {
   width: 100%;
   display: block;
   position: fixed;
-  top: 0;
+}
+
+.touch-bar {
+  background: #656565;
+  opacity: 50%;
+  height: 100%;
+  width: 100%;
+  position: absolute;
 }
 
 .touch-bar-blur {
-  height: 10%;
-  width: 100%;
   backdrop-filter: blur(20px);
+  height: 100%;
+  width: 100%;
+  position: absolute;
 }

@@ -8,10 +8,12 @@ const chroma = require("chroma-js");
 const velocity = require("velocity-animate");
 const logger = remote.getGlobal("rendererLogger");
 const config = remote.getGlobal("config");
-const {touchBar, touchBarElement} = require("./js/touchBar.js")
+const {TouchBar, TouchBarElement} = require("./js/touchBar.js")
 
 // Inform that Renderer started
 logger.info("Renderer started ...");
+
+
 
 // Create variables
 var images = remote.getGlobal("images");
@@ -23,6 +25,10 @@ var startTime, endTime, longpress, timeout, recordSwal, currentChatId, currentMe
 // configure sound notification sound
 if (config.playSoundOnRecieve != false) {
   var audio = new Audio(__dirname + "/sound1.mp3");
+}
+
+if (config.touchBar) {
+  touchBar = new TouchBar("test", config.touchBar.height)
 }
 
 // handle touch events for navigation and voice reply

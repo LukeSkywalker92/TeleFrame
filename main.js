@@ -71,7 +71,9 @@ function createWindow() {
   }
 
   // Open the DevTools.
-  // win.webContents.openDevTools()
+  if (config.develop) {
+    win.webContents.openDevTools()
+  }
   bot.startBot();
 
   // Emitted when the window is closed.
