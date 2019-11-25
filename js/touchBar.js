@@ -1,8 +1,8 @@
 class TouchBar {
-  constructor(elements, height) {
+  constructor(elements, config) {
     self = this;
     this.elements = elements;
-    this.height = height;
+    this.height = config.height;
     this.hidden = true;
     const touchBarContainer = document.getElementById('touch-bar-container')
     touchBarContainer.style.height = this.height;
@@ -11,8 +11,11 @@ class TouchBar {
     touchBarBlur.classList = "touch-bar-blur";
     const touchBar = document.createElement('div');
     touchBar.classList = "touch-bar";
-
-    this.elements.forEach(function (element) {
+    if (config.elements == undefined) {
+      config.elements = Object.keys(elements)
+    }
+    config.elements.forEach(function (name) {
+      const element = self.elements[name]
       const el = document.createElement('div')
       el.classList = "touchBarElement"
       el.style.lineHeight = self.height
@@ -56,10 +59,9 @@ class TouchBar {
 }
 
 class TouchBarElement {
-  constructor(name, icon, callback) {
+  constructor( icon, callback) {
     this.callback = callback;
     this.icon = icon;
-    this.name = name;
   }
 }
 

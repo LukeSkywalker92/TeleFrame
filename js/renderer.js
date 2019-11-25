@@ -22,13 +22,19 @@ var isPaused = false;
 var currentImageIndex = images.length;
 var startTime, endTime, longpress, timeout, recordSwal, currentChatId, currentMessageId, currentTimeout;
 
-var touchBarElements = [
-  new TouchBarElement("left", "far fa-arrow-alt-circle-left", previousImage),
-  new TouchBarElement("play", "far fa-play-circle", play),
-  new TouchBarElement("pause", "far fa-pause-circle", pause),
-  new TouchBarElement("right", "far fa-arrow-alt-circle-right", nextImage),
-  new TouchBarElement("voice", "fas fa-microphone-alt", record),
-]
+var touchBarElements = {
+  "previousImage": new TouchBarElement("far fa-arrow-alt-circle-left", previousImage),
+  "play": new TouchBarElement("far fa-play-circle", play),
+  "pause": new TouchBarElement("far fa-pause-circle", pause),
+  "playPause": new TouchBarElement("far fa-pause-circle", playPause),
+  "nextImage": new TouchBarElement("far fa-arrow-alt-circle-right", nextImage),
+  "record": new TouchBarElement("fas fa-microphone-alt", record),
+  "starImage": new TouchBarElement("far fa-star", dummyCallback),
+  "deleteImage": new TouchBarElement("far fa-trash-alt", dummyCallback),
+  "mute": new TouchBarElement("fas fa-volume-mute", dummyCallback),
+  "shutdown": new TouchBarElement("fas fa-power-off", dummyCallback),
+}
+
 
 // configure sound notification sound
 if (config.playSoundOnRecieve != false) {
@@ -36,7 +42,7 @@ if (config.playSoundOnRecieve != false) {
 }
 
 if (config.touchBar) {
-  touchBar = new TouchBar(touchBarElements, config.touchBar.height)
+  touchBar = new TouchBar(touchBarElements, config.touchBar)
 } else {
   // handle touch events for navigation and voice reply
   $("body").on('touchstart', function() {
@@ -221,6 +227,16 @@ function playPause() {
 function record() {
   currentImageForVoiceReply = images[currentImageIndex]
   ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
+}
+
+function dummyCallback() {
+  Swal.fire({
+    html: "This is not yet implemented",
+    title: "Ooops",
+    showConfirmButton: false,
+    icon: "error",
+    timer: 5000
+  });
 }
 
 //load image to slideshow
