@@ -89,11 +89,30 @@ The following properties can be configured:
 | `turnOffHour`        | Defines when the monitor shuld be turned off.                                                                                                                        |
 | `keys`               | Defines an object with 4 strings specifying the keyboard shortcuts for play, next, previous and pause. Set to null for no controls                                   |
 | `voiceReply`         | Defines an object with the config for sending voicemessages with TeleFrame, see info bellow                                                                          |
+| `touchBar`         | Defines an object with the config for using a touch bar for executing commands instead of the default touch gestures.|
 
 
 ## Whitelist Chats
 
 When you start your TeleFrame and send a "Hi" to the bot it will send you back the current chat id. Paste this id or several of them into the `whitelistChats` config option to only allow only pictures from these ids (eg `[1234567, 89101010]`). Leave empty (`[]`) for no whitelist.
+
+## Using the Touch Bar
+
+To use a touch bar for executing commands instead of the default touch gestures you need to add a touchBar obect to your config.
+This object takes the height of the touchbar and a list of elements that should appear as keys. Availiable elements are:
+
+| **Element**             | **Description**                                                                           |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| `previousImage`         | Navigate to the previous Image. 																													|
+| `nextImage`  						| Navigate to the next Image. 																															|
+| `play`         					| Resume slideshow. 																																				|
+| `pause` 								| Pause slideshow. 																																					|
+| `playPause`  					  | Toggle between play and pause. 																														|
+| `record`         				| Record voice reply. 																																			|
+| `starImage`        			| Star an image to prevent it from beeing deleted. 																					|
+| `deleteImage`        		| Delete an image. 																																					|
+| `mute`        					| Mute notification sounds. 																																|
+| `shutdown`        			| Shutdown the system. 																																			|
 
 ## Voice Replies using TeleFrame
 
