@@ -16,6 +16,15 @@ var config = {
   toggleMonitor: false,
   turnOnHour: 9,
   turnOffHour: 22,
+  touchBar: {
+    height: "50px",
+    elements: [
+      "previousImage",
+      "playPause",
+      "nextImage",
+      "record"
+    ]
+  },
   keys: {
     next: "right",
     previous: "left",
