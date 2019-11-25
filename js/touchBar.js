@@ -2,6 +2,7 @@ class TouchBar {
   constructor(elements, height) {
     this.elements = elements;
     this.height = height;
+    this.hidden = true;
     const touchBarContainer = document.getElementById('touch-bar-container')
     touchBarContainer.style.height = this.height;
     touchBarContainer.style.bottom = "-" + this.height;
@@ -15,11 +16,22 @@ class TouchBar {
 
   show() {
     $("#touch-bar-container").animate({bottom:0}, 100);
+    this.hidden = false;
   }
 
   hide() {
     $("#touch-bar-container").animate({bottom:"-" + this.height}, 100);
+    this.hidden = true;
   }
+
+  toggle() {
+    if (this.hidden) {
+      this.show()
+    } else {
+      this.hide()
+    }
+  }
+
 }
 
 class TouchBarElement {

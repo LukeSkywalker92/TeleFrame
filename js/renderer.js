@@ -29,35 +29,40 @@ if (config.playSoundOnRecieve != false) {
 
 if (config.touchBar) {
   touchBar = new TouchBar("test", config.touchBar.height)
-}
+  $("body").on('touchend', function(event) {
+    touchBar.toggle()
+  });
+} else {
+  // handle touch events for navigation and voice reply
+  $("body").on('touchstart', function() {
+    startTime = new Date().getTime();
+    currentImageForVoiceReply = images[currentImageIndex]
+  });
 
-// handle touch events for navigation and voice reply
-$("body").on('touchstart', function() {
-  startTime = new Date().getTime();
-  currentImageForVoiceReply = images[currentImageIndex]
-});
-
-$("body").on('touchend', function(event) {
-  endTime = new Date().getTime();
-  longpress = (endTime - startTime > 500) ? true : false;
-  tapPos = event.originalEvent.changedTouches[0].pageX
-  containerWidth = $("body").width()
-  if (tapPos / containerWidth < 0.2) {
-    previousImage()
-  } else if (tapPos / containerWidth > 0.8) {
-    nextImage()
-  } else {
-    if (longpress) {
-      ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
+  $("body").on('touchend', function(event) {
+    endTime = new Date().getTime();
+    longpress = (endTime - startTime > 500) ? true : false;
+    tapPos = event.originalEvent.changedTouches[0].pageX
+    containerWidth = $("body").width()
+    if (tapPos / containerWidth < 0.2) {
+      previousImage()
+    } else if (tapPos / containerWidth > 0.8) {
+      nextImage()
     } else {
-      if (isPaused) {
-        play()
+      if (longpress) {
+        ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
       } else {
-        pause()
+        if (isPaused) {
+          play()
+        } else {
+          pause()
+        }
       }
     }
-  }
-});
+  });
+}
+
+
 
 // handle pressed record button
 ipcRenderer.on("recordButtonPressed", function(event, arg) {
