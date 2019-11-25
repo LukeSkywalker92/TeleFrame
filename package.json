@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/LukeSkywalker92/teleframe#readme",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.11.2",
     "chroma-js": "^2.1.0",
     "dotenv": "^8.2.0",
     "electron": "^7.1.2",

@@ -22,16 +22,21 @@ var isPaused = false;
 var currentImageIndex = images.length;
 var startTime, endTime, longpress, timeout, recordSwal, currentChatId, currentMessageId, currentTimeout;
 
+var touchBarElements = [
+  new TouchBarElement("left", "far fa-arrow-alt-circle-left", previousImage),
+  new TouchBarElement("play", "far fa-play-circle", play),
+  new TouchBarElement("pause", "far fa-pause-circle", pause),
+  new TouchBarElement("right", "far fa-arrow-alt-circle-right", nextImage),
+  new TouchBarElement("voice", "fas fa-microphone-alt", record),
+]
+
 // configure sound notification sound
 if (config.playSoundOnRecieve != false) {
   var audio = new Audio(__dirname + "/sound1.mp3");
 }
 
 if (config.touchBar) {
-  touchBar = new TouchBar("test", config.touchBar.height)
-  $("body").on('touchend', function(event) {
-    touchBar.toggle()
-  });
+  touchBar = new TouchBar(touchBarElements, config.touchBar.height)
 } else {
   // handle touch events for navigation and voice reply
   $("body").on('touchstart', function() {
@@ -102,7 +107,7 @@ ipcRenderer.on("recordStopped", function(event, arg) {
     html: message,
     title: config.voiceReply.recordingMessageTitle,
     showConfirmButton: false,
-    type: "success",
+    icon: "success",
     timer: 5000
   });
 });
@@ -203,6 +208,19 @@ function play() {
   isPaused = false;
   loadImage(true, 0);
   hidePause(isPaused);
+}
+
+function playPause() {
+  if (isPaused) {
+    play()
+  } else {
+    pause()
+  }
+}
+
+function record() {
+  currentImageForVoiceReply = images[currentImageIndex]
+  ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
 }
 
 //load image to slideshow

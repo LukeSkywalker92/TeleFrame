@@ -1,3 +1,6 @@
+@import url('../node_modules/@fortawesome/fontawesome-free/css/all.min.css');
+
+
 body {
   background-color: black;
   margin: 0;
@@ -22,10 +25,11 @@ h1 {
   z-index: 0;
 }
 
-.touch-container: {
-  height: 100px;
-  position: relative;
-  color: red;
+.touch-container {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
   z-index: 100000;
 }
 
@@ -125,6 +129,8 @@ h1 {
   height: 100%;
   width: 100%;
   position: absolute;
+  display: flex;
+  justify-content: space-between;
 }
 
 .touch-bar-blur {
@@ -132,4 +138,9 @@ h1 {
   height: 100%;
   width: 100%;
   position: absolute;
+}
+
+.touchBarElement {
+  margin: auto;
+  color: white;
 }
