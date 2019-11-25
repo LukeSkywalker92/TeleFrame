@@ -235,9 +235,11 @@ function starImage() {
   if (images[currentImageIndex].starred) {
     images[currentImageIndex].starred = false
     ipcRenderer.send("starImage", images);
+    touchBarElements["starImage"].iconElement.classList = "far fa-star"
   } else {
     images[currentImageIndex].starred = true
     ipcRenderer.send("starImage", images);
+    touchBarElements["starImage"].iconElement.classList = "fas fa-star"
   }
 
 }
@@ -277,6 +279,12 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   }
 
   var image = images[currentImageIndex];
+
+  if (image.starred) {
+    touchBarElements["starImage"].iconElement.classList = "fas fa-star"
+  } else {
+    touchBarElements["starImage"].iconElement.classList = "far fa-star"
+  }
 
   //get current container and create needed elements
   var currentImage = container.firstElementChild;
