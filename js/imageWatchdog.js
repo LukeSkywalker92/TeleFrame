@@ -1,12 +1,13 @@
 const fs = require('fs');
 
 var ImageWatchdog = class {
-  constructor(imageFolder, imageCount, images, emitter, logger) {
+  constructor(imageFolder, imageCount, images, emitter, logger, ipcMain) {
     this.imageFolder = imageFolder;
     this.imageCount = imageCount;
     this.images = images;
     this.logger = logger;
     this.emitter = emitter;
+    this.ipcMain = ipcMain;
 
     //get paths of already downloaded images
     if (fs.existsSync(this.imageFolder + '/' + "images.json")) {
@@ -25,6 +26,13 @@ var ImageWatchdog = class {
     } else {
       this.saveImageArray()
     }
+  }
+
+  init() {
+    this.ipcMain.on('starImage', (event, images) => {
+      this.images = images
+      this.saveImageArray();
+    })
   }
 
   newImage(src, sender, caption, chatId, chatName, messageId) {

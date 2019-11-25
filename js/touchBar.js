@@ -25,6 +25,7 @@ class TouchBar {
       });
       const icon = document.createElement('i')
       icon.classList = element.icon
+      element.iconElement = icon
       el.appendChild(icon)
       touchBar.appendChild(el)
     })

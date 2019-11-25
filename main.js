@@ -43,8 +43,10 @@ function createWindow() {
     config.imageCount,
     global.images,
     emitter,
-    logger
+    logger,
+    ipcMain
   );
+  imageWatchdog.init()
 
   var bot = new telebot(
     config.botToken,

@@ -29,7 +29,7 @@ var touchBarElements = {
   "playPause": new TouchBarElement("far fa-pause-circle", playPause),
   "nextImage": new TouchBarElement("far fa-arrow-alt-circle-right", nextImage),
   "record": new TouchBarElement("fas fa-microphone-alt", record),
-  "starImage": new TouchBarElement("far fa-star", dummyCallback),
+  "starImage": new TouchBarElement("far fa-star", starImage),
   "deleteImage": new TouchBarElement("far fa-trash-alt", dummyCallback),
   "mute": new TouchBarElement("fas fa-volume-mute", dummyCallback),
   "shutdown": new TouchBarElement("fas fa-power-off", dummyCallback),
@@ -204,6 +204,7 @@ function pause() {
   if (isPaused) return;
 
   isPaused = true;
+  touchBarElements["playPause"].iconElement.classList = "far fa-play-circle"
   clearTimeout(currentTimeout);
   showPause(isPaused);
 }
@@ -212,6 +213,7 @@ function play() {
   if (!isPaused) return;
 
   isPaused = false;
+  touchBarElements["playPause"].iconElement.classList = "far fa-pause-circle"
   loadImage(true, 0);
   hidePause(isPaused);
 }
@@ -228,6 +230,18 @@ function record() {
   currentImageForVoiceReply = images[currentImageIndex]
   ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
 }
+
+function starImage() {
+  if (images[currentImageIndex].starred) {
+    images[currentImageIndex].starred = false
+    ipcRenderer.send("starImage", images);
+  } else {
+    images[currentImageIndex].starred = true
+    ipcRenderer.send("starImage", images);
+  }
+
+}
+
 
 function dummyCallback() {
   Swal.fire({
