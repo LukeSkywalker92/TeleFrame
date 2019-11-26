@@ -234,7 +234,7 @@ function record() {
 function starImage() {
   if (images[currentImageIndex].starred) {
     images[currentImageIndex].starred = false
-    ipcRenderer.send("starImage", images);
+    ipcRenderer.send("unstarImage", images);
     touchBarElements["starImage"].iconElement.classList = "far fa-star"
   } else {
     images[currentImageIndex].starred = true

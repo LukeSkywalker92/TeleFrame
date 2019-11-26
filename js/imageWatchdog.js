@@ -15,22 +15,34 @@ var ImageWatchdog = class {
         if (err) throw err;
         var jsonData = JSON.parse(data);
         for (var image in jsonData) {
-	  if (fs.existsSync(jsonData[image].src)) {
-	    const stats = fs.statSync(jsonData[image].src);
-	    if (stats.size > 0) {
-              this.images.push(jsonData[image]);
-            }
-          }
+      	  if (fs.existsSync(jsonData[image].src)) {
+      	    const stats = fs.statSync(jsonData[image].src);
+      	    if (stats.size > 0) {
+                    this.images.push(jsonData[image]);
+                    if (jsonData[image].starred) {
+                      this.imageCount++;
+                    }
+                  }
+                }
         }
       });
+
     } else {
       this.saveImageArray()
     }
   }
 
   init() {
+
     this.ipcMain.on('starImage', (event, images) => {
-      this.images = images
+      this.imageCount++;
+      this.images = images;
+      this.saveImageArray();
+    })
+
+    this.ipcMain.on('unstarImage', (event, images) => {
+      this.imageCount--;
+      this.images = images;
       this.saveImageArray();
     })
   }
@@ -48,7 +60,8 @@ var ImageWatchdog = class {
       'messageId': messageId
     });
     if (this.images.length >= this.imageCount) {
-      this.images.pop();
+      console.log(this.getOldestUnstarredImageIndex());
+      this.images.splice(this.getOldestUnstarredImageIndex(), 1)
     }
     //notify frontend, that new image arrived
 		var type;
@@ -62,6 +75,14 @@ var ImageWatchdog = class {
 			type: type
     });
     this.saveImageArray();
+  }
+
+  getOldestUnstarredImageIndex() {
+    for (var i = this.images.length-1; i >= 0; i--) {
+       if (!this.images[i].starred) {
+         return i;
+       }
+    }
   }
 
   saveImageArray() {

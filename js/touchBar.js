@@ -63,6 +63,7 @@ class TouchBarElement {
   constructor( icon, callback) {
     this.callback = callback;
     this.icon = icon;
+    this.iconElement;
   }
 }
 
