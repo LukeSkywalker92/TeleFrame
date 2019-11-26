@@ -30,7 +30,7 @@ var touchBarElements = {
   "nextImage": new TouchBarElement("far fa-arrow-alt-circle-right", nextImage),
   "record": new TouchBarElement("fas fa-microphone-alt", record),
   "starImage": new TouchBarElement("far fa-star", starImage),
-  "deleteImage": new TouchBarElement("far fa-trash-alt", dummyCallback),
+  "deleteImage": new TouchBarElement("far fa-trash-alt", deleteImage),
   "mute": new TouchBarElement("fas fa-volume-mute", dummyCallback),
   "shutdown": new TouchBarElement("fas fa-power-off", dummyCallback),
 }
@@ -244,6 +244,11 @@ function starImage() {
 
 }
 
+function deleteImage() {
+  ipcRenderer.send("deleteImage", currentImageIndex);
+  images.splice(currentImageIndex, 1)
+  loadImage(true, 0);
+}
 
 function dummyCallback() {
   Swal.fire({

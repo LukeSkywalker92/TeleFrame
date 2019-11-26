@@ -48,6 +48,11 @@ var ImageWatchdog = class {
       this.images = images;
       this.saveImageArray();
     })
+
+    this.ipcMain.on('deleteImage', (event, index) => {
+      this.images.splice(index, 1)
+      this.saveImageArray();
+    })
   }
 
   newImage(src, sender, caption, chatId, chatName, messageId) {
