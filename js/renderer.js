@@ -21,7 +21,7 @@ var startTime, endTime, longpress, timeout, recordSwal, currentChatId, currentMe
 
 // configure sound notification sound
 if (config.playSoundOnRecieve != false) {
-  var audio = new Audio(__dirname + "/sound1.mp3");
+  var audio = new Audio(__dirname + "/sounds/" + config.playSoundOnRecieve);
 }
 
 // handle touch events for navigation and voice reply
