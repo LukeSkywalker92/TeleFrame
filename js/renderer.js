@@ -136,7 +136,7 @@ ipcRenderer.on("recordError", function(event, arg) {
 
 // handle new incoming image
 ipcRenderer.on("newImage", function(event, arg) {
-  newImage(arg.sender, arg.type);
+  newImage(arg.sender, arg.type, arg.images);
   if (config.playSoundOnRecieve != false) {
     audio.play();
   }
@@ -464,8 +464,9 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
 }
 
 //notify user of incoming image and restart slideshow with the newest image
-function newImage(sender, type) {
-  images = remote.getGlobal("images");
+function newImage(sender, type, newImageArray) {
+  images = newImageArray;
+  console.log(images);
   if (type == "image") {
     Swal.fire({
       title: config.newPhotoMessage + " " + sender,

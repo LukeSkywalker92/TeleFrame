@@ -20,6 +20,7 @@ var ImageWatchdog = class {
       	    if (stats.size > 0) {
                     this.images.push(jsonData[image]);
                     if (jsonData[image].starred) {
+                      console.log("starred")
                       this.imageCount++;
                     }
                   }
@@ -31,6 +32,8 @@ var ImageWatchdog = class {
       this.saveImageArray()
     }
   }
+
+
 
   init() {
 
@@ -59,10 +62,13 @@ var ImageWatchdog = class {
       'chatName': chatName,
       'messageId': messageId
     });
-    if (this.images.length >= this.imageCount) {
-      console.log(this.getOldestUnstarredImageIndex());
-      this.images.splice(this.getOldestUnstarredImageIndex(), 1)
+    console.log(this.imageCount);
+    while (this.images.length-1 >= this.imageCount) {
+      console.log("yay");
+      console.log(this.images.splice(this.getOldestUnstarredImageIndex(), 1));
     }
+    console.log(this.images.length);
+    console.log(this.imageCount);
     //notify frontend, that new image arrived
 		var type;
 		if (src.split('.').pop() == 'mp4') {
@@ -72,14 +78,18 @@ var ImageWatchdog = class {
 		}
     this.emitter.send('newImage', {
       sender: sender,
-			type: type
+			type: type,
+      images: this.images
     });
     this.saveImageArray();
   }
 
   getOldestUnstarredImageIndex() {
-    for (var i = this.images.length-1; i >= 0; i--) {
+    for (var i = this.images.length-1; i > 0; i--) {
+      console.log(i);
+      console.log(!this.images[i].starred);
        if (!this.images[i].starred) {
+         console.log(i);
          return i;
        }
     }
