@@ -19,6 +19,7 @@ logger.info("Renderer started ...");
 var images = remote.getGlobal("images");
 var container = document.getElementById("container");
 var isPaused = false;
+var isMuted = false;
 var currentImageIndex = images.length;
 var startTime, endTime, longpress, timeout, recordSwal, currentChatId, currentMessageId, currentTimeout;
 
@@ -31,7 +32,7 @@ var touchBarElements = {
   "record": new TouchBarElement("fas fa-microphone-alt", record),
   "starImage": new TouchBarElement("far fa-star", starImage),
   "deleteImage": new TouchBarElement("far fa-trash-alt", deleteImage),
-  "mute": new TouchBarElement("fas fa-volume-mute", dummyCallback),
+  "mute": new TouchBarElement("fas fa-volume-up", mute),
   "shutdown": new TouchBarElement("fas fa-power-off", dummyCallback),
 }
 
@@ -137,7 +138,7 @@ ipcRenderer.on("recordError", function(event, arg) {
 // handle new incoming image
 ipcRenderer.on("newImage", function(event, arg) {
   newImage(arg.sender, arg.type, arg.images);
-  if (config.playSoundOnRecieve != false) {
+  if ((config.playSoundOnRecieve != false) && (isMuted == false)) {
     audio.play();
   }
 });
@@ -248,6 +249,16 @@ function deleteImage() {
   ipcRenderer.send("deleteImage", currentImageIndex);
   images.splice(currentImageIndex, 1)
   loadImage(true, 0);
+}
+
+function mute() {
+  if (isMuted) {
+    isMuted = false;
+    touchBarElements["mute"].iconElement.classList = "fas fa-volume-up"
+  } else {
+    isMuted = true;
+    touchBarElements["mute"].iconElement.classList = "fas fa-volume-mute"
+  }
 }
 
 function dummyCallback() {
