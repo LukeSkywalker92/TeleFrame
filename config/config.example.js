@@ -17,12 +17,17 @@ var config = {
   turnOnHour: 9,
   turnOffHour: 22,
   touchBar: {
-    height: "50px",
+    height: "75px",
     elements: [
       "previousImage",
       "playPause",
       "nextImage",
-      "record"
+      "record",
+      "starImage",
+      "deleteImage",
+      "mute",
+      "shutdown",
+      "reboot"
     ]
   },
   keys: {
