@@ -23,10 +23,7 @@ class TouchBar {
       $(el).on('touchend', function(event) {
         element.callback()
       });
-      const icon = document.createElement('i')
-      icon.classList = element.icon
-      element.iconElement = icon
-      el.appendChild(icon)
+      el.appendChild(element.iconElement)
       touchBar.appendChild(el)
     })
 
@@ -63,7 +60,8 @@ class TouchBarElement {
   constructor( icon, callback) {
     this.callback = callback;
     this.icon = icon;
-    this.iconElement;
+    this.iconElement = document.createElement('i')
+    this.iconElement.classList = this.icon
   }
 }
 
