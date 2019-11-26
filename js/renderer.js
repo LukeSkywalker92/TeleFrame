@@ -33,7 +33,8 @@ var touchBarElements = {
   "starImage": new TouchBarElement("far fa-star", starImage),
   "deleteImage": new TouchBarElement("far fa-trash-alt", deleteImage),
   "mute": new TouchBarElement("fas fa-volume-up", mute),
-  "shutdown": new TouchBarElement("fas fa-power-off", dummyCallback),
+  "shutdown": new TouchBarElement("fas fa-power-off", shutdown),
+  "reboot": new TouchBarElement("fas fa-redo-alt", reboot),
 }
 
 
@@ -259,6 +260,18 @@ function mute() {
     isMuted = true;
     touchBarElements["mute"].iconElement.classList = "fas fa-volume-mute"
   }
+}
+
+function shutdown() {
+  executeSystemCommand("sudo shutdown -h now")
+}
+
+function reboot() {
+  executeSystemCommand("sudo reboot")
+}
+
+function executeSystemCommand(command) {
+  ipcRenderer.send("executeSystemCommand", command);
 }
 
 function dummyCallback() {
