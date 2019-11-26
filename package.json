@@ -1,11 +1,12 @@
 {
   "name": "teleframe",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "botonly": "node botonly.js"
+    "botonly": "node botonly.js",
+    "preinstall": "echo arch=$(uname -m) > .npmrc"
   },
   "repository": {
     "type": "git",
