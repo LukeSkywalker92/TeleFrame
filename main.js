@@ -6,6 +6,7 @@ const imagewatcher = require("./js/imageWatchdog");
 const inputhandler = require("./js/inputHandler");
 const voicerecorder = require("./js/voiceRecorder");
 const schedules = require("./js/schedules");
+const CommandExecutor = require("./js/systemCommands")
 
 //create global variables
 global.config = config;
@@ -60,6 +61,9 @@ function createWindow() {
 
   var inputHandler = new inputhandler(config, emitter, bot, logger);
   inputHandler.init();
+
+  var commandExecutor = new CommandExecutor(emitter, logger, ipcMain);
+  commandExecutor.init();
 
   if (config.voiceReply !== null) {
     var voiceReply = new voicerecorder(config, emitter, bot, logger, ipcMain);
