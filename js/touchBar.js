@@ -20,6 +20,7 @@ class TouchBar {
       el.classList = "touchBarElement"
       el.style.lineHeight = self.height
       el.style.fontSize = ($('#touch-bar-container').height()*0.8) + 'px';
+      el.style.width = ($('#touch-bar-container').height()*0.8) + 'px';
       $(el).on('touchend', function(event) {
         element.callback()
       });
