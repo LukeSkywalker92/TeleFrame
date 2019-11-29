@@ -4,6 +4,12 @@ class TouchBar {
     this.elements = elements;
     this.height = config.height;
     this.hidden = true;
+    this.autHideTimerId = 0;
+    this.startAutoHideTimer = () => {
+      if (parseInt(config.autoHideTimeout) > 0) {
+        self.autoHideTimerId = setTimeout(() => self.hide(), config.autoHideTimeout);
+  	  }
+  	};
     const touchBarContainer = document.getElementById('touch-bar-container')
     touchBarContainer.style.height = this.height;
     touchBarContainer.style.bottom = "-" + this.height;
@@ -21,6 +27,10 @@ class TouchBar {
       el.style.lineHeight = self.height
       el.style.fontSize = ($('#touch-bar-container').height()*0.8) + 'px';
       $(el).on('touchend', function(event) {
+        // don't bubble up events to prevent disappearing sweetalert messages
+        event.preventDefault();
+		    clearTimeout(self.autoHideTimerId);
+        self.startAutoHideTimer();
         element.callback()
       });
       el.appendChild(element.iconElement)
@@ -38,12 +48,14 @@ class TouchBar {
     $("#touch-container").animate({bottom:this.height}, 100);
     $("#touch-bar-container").animate({bottom:0}, 100);
     this.hidden = false;
+    this.startAutoHideTimer();
   }
 
   hide() {
     $("#touch-container").animate({bottom:0}, 100);
     $("#touch-bar-container").animate({bottom:"-" + this.height}, 100);
     this.hidden = true;
+	  clearTimeout(self.autoHideTimerId);
   }
 
   toggle() {

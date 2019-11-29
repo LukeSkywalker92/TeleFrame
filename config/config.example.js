@@ -18,6 +18,9 @@ var config = {
   turnOffHour: 22,
   touchBar: {
     height: "75px",
+    // 	timout to automatically hide the touchbar.
+    // 	To disable auto hide set value to 0 
+    autoHideTimeout: 30 * 1000,
     elements: [
       "previousImage",
       "playPause",
