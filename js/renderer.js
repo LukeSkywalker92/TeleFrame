@@ -53,6 +53,7 @@ if (config.touchBar) {
   });
 
   $("body").on('touchend', function(event) {
+    event.preventDefault();
     endTime = new Date().getTime();
     longpress = (endTime - startTime > 500) ? true : false;
     tapPos = event.originalEvent.changedTouches[0].pageX
@@ -99,6 +100,9 @@ ipcRenderer.on("recordStarted", function(event, arg) {
   recordSwal = Swal.fire({
     title: config.voiceReply.recordingMessageTitle,
     showConfirmButton: false,
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    allowEnterKey: false,
     html: message
   });
 });
@@ -184,7 +188,7 @@ function showPause() {
 
 function hidePause() {
   let node = document.getElementById("pauseBox");
-  if (node.parentNode) {
+  if (node && node.parentNode) {
     node.parentNode.removeChild(node);
   }
 }
@@ -206,18 +210,18 @@ function pause() {
   if (isPaused) return;
 
   isPaused = true;
-  touchBarElements["playPause"].iconElement.classList = "far fa-play-circle"
   clearTimeout(currentTimeout);
   showPause(isPaused);
+  setTouchbarIconStatus();
 }
 
 function play() {
   if (!isPaused) return;
 
   isPaused = false;
-  touchBarElements["playPause"].iconElement.classList = "far fa-pause-circle"
   loadImage(true, 0);
   hidePause(isPaused);
+  setTouchbarIconStatus();
 }
 
 function playPause() {
@@ -229,27 +233,73 @@ function playPause() {
 }
 
 function record() {
+  if (images.length == 0) {
+    return;
+  }
   currentImageForVoiceReply = images[currentImageIndex]
   ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
 }
 
 function starImage() {
+  if (images.length == 0) {
+    return;
+  }
   if (images[currentImageIndex].starred) {
     images[currentImageIndex].starred = false
     ipcRenderer.send("unstarImage", images);
-    touchBarElements["starImage"].iconElement.classList = "far fa-star"
   } else {
     images[currentImageIndex].starred = true
     ipcRenderer.send("starImage", images);
-    touchBarElements["starImage"].iconElement.classList = "fas fa-star"
   }
-
+  setTouchbarIconStatus();
 }
 
 function deleteImage() {
-  ipcRenderer.send("deleteImage", currentImageIndex);
-  images.splice(currentImageIndex, 1)
-  loadImage(true, 0);
+  if (images.length == 0) {
+    return;
+  }
+  // to ensure to show the correctly next image
+  const doDeleteImage =  () => {
+    ipcRenderer.send("deleteImage", currentImageIndex);
+    images.splice(currentImageIndex, 1)
+    if (images.length == 0) {
+      $(container).empty();
+      $(container).append('<h1>TeleFrame</h1>');
+    }
+    currentImageIndex = (currentImageIndex > 0 ? currentImageIndex - 1 : images.length);
+  };
+
+  if (!config.confirmDeleteImage) {
+    doDeleteImage();
+    return;
+  }
+
+  var paused = isPaused;
+  pause();
+  touchBar.hide();
+
+  Swal.fire({
+    title: config.deleteMessage || 'Really remove?',
+    background: 'rgba(255,255,255,0.8)',
+    confirmButtonText: config.deleteConfirmText || 'Remove',
+    cancelButtonText: config.deleteCancelText || 'Cancel',
+    showCancelButton: true,
+    focusCancel: true,
+    confirmButtonColor: '#a00',
+    icon: "warning"
+  }).then(result => {
+    if (result.value) {
+      doDeleteImage();
+    } else {
+      currentImageIndex = (currentImageIndex > 0 ? currentImageIndex - 1 : images.length);
+    }
+    if (!paused) {
+      play();
+    } else {
+      loadImage(true, 0);
+    }
+    touchBar.show();
+  });
 }
 
 function mute() {
@@ -268,6 +318,40 @@ function shutdown() {
 
 function reboot() {
   executeSystemCommand("sudo reboot")
+}
+
+function setTouchbarIconStatus() {
+
+console.log(`setTouchbarIconStatus() currentImageIndex: ${currentImageIndex} images.length: ${images.length}`, images)
+
+  if (images.length > 0) {
+    touchBarElements["record"].iconElement.classList = "fas fa-microphone-alt";
+    touchBarElements["deleteImage"].iconElement.classList = "far fa-trash-alt";
+    if (images[currentImageIndex].starred) {
+      touchBarElements["starImage"].iconElement.classList = "fas fa-star";
+    } else {
+      touchBarElements["starImage"].iconElement.classList = "far fa-star";
+    }
+    if (isPaused) {
+      touchBarElements["playPause"].iconElement.classList = "far fa-pause-circle";
+    } else {
+      touchBarElements["playPause"].iconElement.classList = "far fa-play-circle";
+    }
+  }
+  if (images.length > 1) {
+    touchBarElements["previousImage"].iconElement.classList = "far fa-arrow-alt-circle-left";
+    touchBarElements["nextImage"].iconElement.classList = "far fa-arrow-alt-circle-right";
+  }
+  if (images.length < 2) {
+    touchBarElements["playPause"].iconElement.classList += " disabled-icon";
+    touchBarElements["previousImage"].iconElement.classList = "far fa-arrow-alt-circle-left disabled-icon";
+    touchBarElements["nextImage"].iconElement.classList = "far fa-arrow-alt-circle-right disabled-icon";
+    if (images.length == 0) {
+      touchBarElements["record"].iconElement.classList = "fas fa-microphone-alt disabled-icon";
+      touchBarElements["deleteImage"].iconElement.classList = "far fa-trash-alt disabled-icon";
+      touchBarElements["starImage"].iconElement.classList = "far fa-star disabled-icon";
+    }
+  }
 }
 
 function executeSystemCommand(command) {
@@ -308,12 +392,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   }
 
   var image = images[currentImageIndex];
-
-  if (image.starred) {
-    touchBarElements["starImage"].iconElement.classList = "fas fa-star"
-  } else {
-    touchBarElements["starImage"].iconElement.classList = "far fa-star"
-  }
+  setTouchbarIconStatus();
 
   //get current container and create needed elements
   var currentImage = container.firstElementChild;
@@ -453,7 +532,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
       $(currentImage).velocity("fadeOut", {
         duration: fadeTime
       });
-      if (!isPaused) {
+      if (!isPaused && images.length > 1) {
         currentTimeout = setTimeout(() => {
           loadImage(true, config.fadeTime);
         }, config.interval);
@@ -501,7 +580,7 @@ function newImage(sender, type, newImageArray) {
       title: config.newPhotoMessage + " " + sender,
       showConfirmButton: false,
       timer: 5000,
-      type: "success"
+      icon: "success"
     }).then((value) => {
       currentImageIndex = images.length;
       loadImage(true, 0);

@@ -100,7 +100,7 @@ When you start your TeleFrame and send a "Hi" to the bot it will send you back t
 
 To use a touch bar for executing commands instead of the default touch gestures you need to add a touchBar obect to your config.
 To open the touch bar, just touch the screen. Do the same to hide it again.
-The touchBar object takes the height of the touchbar and a list of elements that should appear as keys. Availiable elements are:
+The touchBar object takes the height of the touchbar, optionally the autoHideTimeout and a list of elements that should appear as keys. Availiable elements are:
 
 | **Element**             | **Description**                                                                           |
 | ----------------------- | ----------------------------------------------------------------------------------------- |
@@ -110,8 +110,8 @@ The touchBar object takes the height of the touchbar and a list of elements that
 | `pause` 								| Pause slideshow. 																																					|
 | `playPause`  					  | Toggle between play and pause. 																														|
 | `record`         				| Record voice reply. 																																			|
-| `starImage`        			| Star the active image to prevent it from beeing deleted. 																					|
-| `deleteImage`        		| Delete the active an image. 																																					|
+| `starImage`        			| Star the active image to prevent it from beeing deleted.                                  |
+| `deleteImage`        		| Delete the active an image.                                                               |
 | `mute`        					| Mute notification sounds. 																																|
 | `shutdown`        			| Shutdown the system. 																																			|
 | `reboot`        				| Reboot the system. 																																				|

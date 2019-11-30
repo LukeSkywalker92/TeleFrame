@@ -16,10 +16,15 @@ var config = {
   toggleMonitor: false,
   turnOnHour: 9,
   turnOffHour: 22,
+  // show confirm message before delete an image
+  confirmDeleteImage: true,
+  deleteMessage: "Really remove?",
+  deleteConfirmText: "Remove",
+  deleteCancelText: "Cancel",
   touchBar: {
     height: "75px",
-    // 	timout to automatically hide the touchbar.
-    // 	To disable auto hide set value to 0 
+    // timout to automatically hide the touchbar.
+    // To disable auto hide set value to 0
     autoHideTimeout: 30 * 1000,
     elements: [
       "previousImage",

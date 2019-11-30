@@ -8,8 +8,8 @@ class TouchBar {
     this.startAutoHideTimer = () => {
       if (parseInt(config.autoHideTimeout) > 0) {
         self.autoHideTimerId = setTimeout(() => self.hide(), config.autoHideTimeout);
-  	  }
-  	};
+      }
+    };
     const touchBarContainer = document.getElementById('touch-bar-container')
     touchBarContainer.style.height = this.height;
     touchBarContainer.style.bottom = "-" + this.height;
@@ -29,7 +29,7 @@ class TouchBar {
       $(el).on('touchend', function(event) {
         // don't bubble up events to prevent disappearing sweetalert messages
         event.preventDefault();
-		    clearTimeout(self.autoHideTimerId);
+        clearTimeout(self.autoHideTimerId);
         self.startAutoHideTimer();
         element.callback()
       });
