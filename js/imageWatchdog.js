@@ -39,8 +39,16 @@ var ImageWatchdog = class {
       'chatName': chatName,
       'messageId': messageId
     });
-    if (this.images.length >= this.imageCount) {
-      this.images.pop();
+    if (this.images.length > this.imageCount) {
+	// delete image / video file before popping. Prevent an overfull harddrive
+	try {
+	  var oldSrc = this.images[this.imageCount].src;
+	  fs.unlinkSync(oldSrc);
+	  this.logger.info("Deleted file " + oldSrc);
+	} catch(err) {
+	  this.logger.error('An error occured while deleting the file ' + oldSrc + ':\n' + err);
+	}
+	this.images.pop();
     }
     //notify frontend, that new image arrived
 		var type;
