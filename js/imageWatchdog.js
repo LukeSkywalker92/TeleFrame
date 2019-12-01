@@ -39,7 +39,7 @@ var ImageWatchdog = class {
       'chatName': chatName,
       'messageId': messageId
     });
-    if (this.images.length = this.imageCount) {
+    if (this.images.length > this.imageCount) {
 	// delete image / video file before popping. Prevent an overfull harddrive
 	try {
 	  var oldSrc = this.images[this.imageCount].src;
