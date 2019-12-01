@@ -1,12 +1,14 @@
 const fs = require('fs');
 
 var ImageWatchdog = class {
-  constructor(imageFolder, imageCount, images, emitter, logger) {
+  constructor(imageFolder, imageCount, autoDeleteImages, images, emitter, logger) {
     this.imageFolder = imageFolder;
     this.imageCount = imageCount;
+    this.autoDeleteImages = autoDeleteImages;
     this.images = images;
     this.logger = logger;
     this.emitter = emitter;
+
 
     //get paths of already downloaded images
     if (fs.existsSync(this.imageFolder + '/' + "images.json")) {
@@ -14,9 +16,9 @@ var ImageWatchdog = class {
         if (err) throw err;
         var jsonData = JSON.parse(data);
         for (var image in jsonData) {
-	  if (fs.existsSync(jsonData[image].src)) {
-	    const stats = fs.statSync(jsonData[image].src);
-	    if (stats.size > 0) {
+          if (fs.existsSync(jsonData[image].src)) {
+	        const stats = fs.statSync(jsonData[image].src);
+	        if (stats.size > 0) {
               this.images.push(jsonData[image]);
             }
           }
@@ -41,25 +43,28 @@ var ImageWatchdog = class {
     });
     if (this.images.length > this.imageCount) {
 	// delete image / video file before popping. Prevent an overfull harddrive
-	try {
-	  var oldSrc = this.images[this.imageCount].src;
-	  fs.unlinkSync(oldSrc);
-	  this.logger.info("Deleted file " + oldSrc);
-	} catch(err) {
-	  this.logger.error('An error occured while deleting the file ' + oldSrc + ':\n' + err);
+	if (this.autoDeleteImages) {
+	  // TODO: Check if the image to delete is starred (after implementation of starring feature via touchbar feature)
+	  try {
+	    var oldSrc = this.images[this.imageCount].src;
+	    fs.unlinkSync(oldSrc);
+	    this.logger.info("Deleted file " + oldSrc);
+	  } catch(err) {
+	    this.logger.error('An error occured while deleting the file ' + oldSrc + ':\n' + err);
+	  }
 	}
         this.images.pop();
     }
     //notify frontend, that new image arrived
-		var type;
-		if (src.split('.').pop() == 'mp4') {
-			type = 'video';
-		} else {
-			type = 'image';
-		}
+    var type;
+    if (src.split('.').pop() == 'mp4') {
+        type = 'video';
+    } else {
+	type = 'image';
+    }
     this.emitter.send('newImage', {
       sender: sender,
-			type: type
+      type: type
     });
     this.saveImageArray();
   }
@@ -70,7 +75,7 @@ var ImageWatchdog = class {
     var jsonContent = JSON.stringify(this.images);
     fs.writeFile(this.imageFolder + '/' + "images.json", jsonContent, 'utf8', function(err) {
       if (err) {
-        self.logger.error("An error occured while writing JSON Object to File.");
+        this.logger.error("An error occured while writing JSON Object to File.");
         return console.log(err);
       }
     });

@@ -9,6 +9,7 @@ var config = {
   fadeTime: 1500,
   interval: 10 * 1000,
   imageCount: 30,
+  autoDeleteImages: false,
   newPhotoMessage: "Neues Foto von",
   newVideoMessage: "Neues Video von",
   showSender: true,

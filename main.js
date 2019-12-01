@@ -41,6 +41,7 @@ function createWindow() {
   var imageWatchdog = new imagewatcher(
     config.imageFolder,
     config.imageCount,
+    config.autoDeleteImages,
     global.images,
     emitter,
     logger
