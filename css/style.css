@@ -1,3 +1,6 @@
+@import url('../node_modules/@fortawesome/fontawesome-free/css/all.min.css');
+
+
 body {
   background-color: black;
   margin: 0;
@@ -15,18 +18,19 @@ h1 {
   transform: translate(-50%, -50%);
 }
 
-.container: {
+.container {
   width: 100%;
   height: 100%;
   position: relative;
   z-index: 0;
 }
 
-.touch-container: {
-  height: 100px;
-  position: relative;
-  color: red;
-  z-index: 100000;
+.touch-container {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  z-index: 1050;
 }
 
 .imgcontainer {
@@ -111,4 +115,36 @@ h1 {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.touch-bar-container {
+  width: 100%;
+  display: block;
+  position: fixed;
+}
+
+.touch-bar {
+  background: #656565;
+  opacity: 50%;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+}
+
+.touch-bar-blur {
+  backdrop-filter: blur(20px);
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
+.touchBarElement {
+  margin: auto;
+  color: white;
+}
+
+.disabled-icon {
+  color: #333;
 }

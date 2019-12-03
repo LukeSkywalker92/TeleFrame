@@ -6,6 +6,7 @@ const imagewatcher = require("./js/imageWatchdog");
 const inputhandler = require("./js/inputHandler");
 const voicerecorder = require("./js/voiceRecorder");
 const schedules = require("./js/schedules");
+const CommandExecutor = require("./js/systemCommands")
 
 //create global variables
 global.config = config;
@@ -27,7 +28,8 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true
-    }
+    },
+    frame: false
   });
 
   win.setFullScreen(config.fullscreen);
@@ -43,8 +45,10 @@ function createWindow() {
     config.imageCount,
     global.images,
     emitter,
-    logger
+    logger,
+    ipcMain
   );
+  imageWatchdog.init()
 
   var bot = new telebot(
     config.botToken,
@@ -59,6 +63,9 @@ function createWindow() {
   var inputHandler = new inputhandler(config, emitter, bot, logger);
   inputHandler.init();
 
+  var commandExecutor = new CommandExecutor(emitter, logger, ipcMain);
+  commandExecutor.init();
+
   if (config.voiceReply !== null) {
     var voiceReply = new voicerecorder(config, emitter, bot, logger, ipcMain);
     voiceReply.init();
@@ -71,7 +78,9 @@ function createWindow() {
   }
 
   // Open the DevTools.
-  // win.webContents.openDevTools()
+  if (config.develop) {
+    win.webContents.openDevTools()
+  }
   bot.startBot();
 
   // Emitted when the window is closed.
