@@ -268,16 +268,13 @@ function deleteImage() {
     }
     currentImageIndex = (currentImageIndex > 0 ? currentImageIndex - 1 : images.length);
   };
-
   if (!config.confirmDeleteImage) {
     doDeleteImage();
     return;
   }
-
   var paused = isPaused;
   pause();
   touchBar.hide();
-
   Swal.fire({
     title: config.deleteMessage || 'Really remove?',
     background: 'rgba(255,255,255,0.8)',
@@ -313,17 +310,58 @@ function mute() {
 }
 
 function shutdown() {
-  executeSystemCommand("sudo shutdown -h now")
+  const doShutdown = () => executeSystemCommand("sudo shutdown -h now");
+
+  if (!config.confirmShutdown) {
+     doShutdown();
+    return;
+  }
+  touchBar.hide();
+  Swal.fire({
+    title: config.shutdownMessage || 'Really shutdown?',
+    background: 'rgba(255,255,255,0.8)',
+    confirmButtonText: config.shutdownConfirmText || 'Shutdown',
+    cancelButtonText: config.shutdownCancelText || 'Cancel',
+    showCancelButton: true,
+    focusCancel: true,
+    confirmButtonColor: '#a00',
+    icon: "warning"
+  }).then(result => {
+    if (result.value) {
+       doShutdown();
+    } else {
+      touchBar.show();
+    }
+  });
 }
 
 function reboot() {
-  executeSystemCommand("sudo reboot")
+  const doReboot = () => executeSystemCommand("sudo reboot");
+
+  if (!config.confirmReboot) {
+     doReboot();
+    return;
+  }
+  touchBar.hide();
+  Swal.fire({
+    title: config.rebootMessage || 'Really reboot?',
+    background: 'rgba(255,255,255,0.8)',
+    confirmButtonText: config.rebootConfirmText || 'Reboot',
+    cancelButtonText: config.rebootCancelText || 'Cancel',
+    showCancelButton: true,
+    focusCancel: true,
+    confirmButtonColor: '#a00',
+    icon: "warning"
+  }).then(result => {
+    if (result.value) {
+       doReboot();
+    } else {
+      touchBar.show();
+    }
+  });
 }
 
 function setTouchbarIconStatus() {
-
-console.log(`setTouchbarIconStatus() currentImageIndex: ${currentImageIndex} images.length: ${images.length}`, images)
-
   if (images.length > 0) {
     touchBarElements["record"].iconElement.classList = "fas fa-microphone-alt";
     touchBarElements["deleteImage"].iconElement.classList = "far fa-trash-alt";

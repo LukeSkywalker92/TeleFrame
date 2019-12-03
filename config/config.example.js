@@ -21,6 +21,16 @@ var config = {
   deleteMessage: "Really remove?",
   deleteConfirmText: "Remove",
   deleteCancelText: "Cancel",
+  // show confirm message before shutdown
+  confirmShutdown: true,
+  shutdownMessage: "Really shutdown?",
+  shutdownConfirmText: "Shutdown",
+  shutdownCancelText: "Cancel",
+  // show confirm message before reboot
+  confirmReboot: true,
+  rebootMessage: "Really rboot?",
+  rebootConfirmText: "Reboot",
+  rebootCancelText: "Cancel",
   touchBar: {
     height: "75px",
     // timout to automatically hide the touchbar.
