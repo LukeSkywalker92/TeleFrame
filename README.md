@@ -87,10 +87,21 @@ The following properties can be configured:
 | `toggleMonitor`      | When set to true, TeleFrame will switch the monitor off and on at the defined hours.                                                                                 |
 | `turnOnHour`         | Defines when the monitor shuld be turned on.                                                                                                                         |
 | `turnOffHour`        | Defines when the monitor shuld be turned off.                                                                                                                        |
+| `confirmDeleteImage` | Defines if to show a confirm message before delete an image `true` or `false`                                                                                        |
+| `deleteMessage`      | Message that is shown when the deleteImage icon was touched. Default 'Really remove?'                                                                                |
+| `deleteConfirmText`  | Text for the delete message confirm button. Default 'Remove'                                                                                                         |
+| `deleteCancelText`   | Text for the delete message cancel button. Default "Cancel"                                                                                                          |
+| `confirmShutdown`    | Defines if to show a confirm message before shutdown the system `true` or `false`                                                                                    |
+| `shutdownMessage`    | Message that is shown when the shutdown icon was touched. Default 'Really shutdown?'                                                                                 |
+| `shutdownConfirmText` | Text for the shutdown message confirm button. Default 'Remove'                                                                                                      |
+| `shutdownCancelText` | Text for the shutdown message cancel button. Default "Cancel"                                                                                                        |
+| `confirmReboot`      | Defines if to show a confirm message before rebooting the system `true` or `false`                                                                                   |
+| `rebootMessage`      | Message that is shown when the reboot icon was touched. Default 'Really reboot?'                                                                                     |
+| `rebootConfirmText`  | Text for the shutdown message confirm button. Default 'Reboot'                                                                                                       |
+| `rebootCancelText`   | Text for the shutdown message cancel button. Default "Cancel"                                                                                                        |
 | `keys`               | Defines an object with 4 strings specifying the keyboard shortcuts for play, next, previous and pause. Set to null for no controls                                   |
 | `voiceReply`         | Defines an object with the config for sending voicemessages with TeleFrame, see info bellow                                                                          |
-| `touchBar`         | Defines an object with the config for using a touch bar for executing commands instead of the default touch gestures.|
-
+| `touchBar`           | Defines an object with the config for using a touch bar for executing commands instead of the default touch gestures.                                                |
 
 ## Whitelist Chats
 
@@ -100,7 +111,7 @@ When you start your TeleFrame and send a "Hi" to the bot it will send you back t
 
 To use a touch bar for executing commands instead of the default touch gestures you need to add a touchBar obect to your config.
 To open the touch bar, just touch the screen. Do the same to hide it again.
-The touchBar object takes the height of the touchbar and a list of elements that should appear as keys. Availiable elements are:
+The touchBar object takes the height of the touchbar, optionally the autoHideTimeout and a list of elements that should appear as keys. Availiable elements are:
 
 | **Element**             | **Description**                                                                           |
 | ----------------------- | ----------------------------------------------------------------------------------------- |
@@ -110,8 +121,8 @@ The touchBar object takes the height of the touchbar and a list of elements that
 | `pause` 								| Pause slideshow. 																																					|
 | `playPause`  					  | Toggle between play and pause. 																														|
 | `record`         				| Record voice reply. 																																			|
-| `starImage`        			| Star the active image to prevent it from beeing deleted. 																					|
-| `deleteImage`        		| Delete the active an image. 																																					|
+| `starImage`        			| Star the active image to prevent it from beeing deleted.                                  |
+| `deleteImage`        		| Delete the active an image.                                                               |
 | `mute`        					| Mute notification sounds. 																																|
 | `shutdown`        			| Shutdown the system. 																																			|
 | `reboot`        				| Reboot the system. 																																				|
