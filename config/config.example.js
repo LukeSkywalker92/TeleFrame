@@ -28,7 +28,7 @@ var config = {
   shutdownCancelText: "Cancel",
   // show confirm message before reboot
   confirmReboot: true,
-  rebootMessage: "Really rboot?",
+  rebootMessage: "Really reboot?",
   rebootConfirmText: "Reboot",
   rebootCancelText: "Cancel",
   touchBar: {

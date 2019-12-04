@@ -8,6 +8,11 @@ const voicerecorder = require("./js/voiceRecorder");
 const schedules = require("./js/schedules");
 const CommandExecutor = require("./js/systemCommands")
 
+// initialize localized texts
+try {
+  consig = Object.assign(config, require("./config/" + config.lang));
+} catch(_) {}
+
 //create global variables
 global.config = config;
 global.rendererLogger = rendererLogger;

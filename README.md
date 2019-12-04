@@ -85,8 +85,8 @@ The following properties can be configured:
 | `showCaption`        | When set to true, TeleFrame will show the caption of the image when the image is shown.                                                                              |
 | `fullscreen`         | When set to true, TeleFrame will run in fullscreen mode.                                                                                                             |
 | `toggleMonitor`      | When set to true, TeleFrame will switch the monitor off and on at the defined hours.                                                                                 |
-| `turnOnHour`         | Defines when the monitor shuld be turned on.                                                                                                                         |
-| `turnOffHour`        | Defines when the monitor shuld be turned off.                                                                                                                        |
+| `turnOnHour`         | Defines when the monitor should be turned on.                                                                                                                         |
+| `turnOffHour`        | Defines when the monitor should be turned off.                                                                                                                        |
 | `confirmDeleteImage` | Defines if to show a confirm message before delete an image `true` or `false`                                                                                        |
 | `deleteMessage`      | Message that is shown when the deleteImage icon was touched. Default 'Really remove?'                                                                                |
 | `deleteConfirmText`  | Text for the delete message confirm button. Default 'Remove'                                                                                                         |
