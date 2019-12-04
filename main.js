@@ -10,8 +10,14 @@ const CommandExecutor = require("./js/systemCommands")
 
 // initialize localized texts
 try {
-  consig = Object.assign(config, require("./config/" + config.lang));
-} catch(_) {}
+  // try to load the user defined language file
+  Object.assign(config, require(`./config/${config.languageFile}`));
+} catch(_) {
+  try {
+    // fallback - try to load the language file for the current environment setting
+    Object.assign(config, require(`./config/i18n/${process.env.LANG.substr(0,2)}.js` ));
+  } catch(_) {}
+}
 
 //create global variables
 global.config = config;

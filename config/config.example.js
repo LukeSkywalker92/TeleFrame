@@ -62,7 +62,14 @@ var config = {
     recordingPostMessage: "in progress...",
     recordingDone: "Voice message sent sucessfully!",
     recordingError: "Voice message has failed!"
-  }
+  },
+  // languageFile defines the relative from the config folder to a language file.
+  // Set the path to one of the predefined files of 'config/i18n' - i.e.
+  //   languageFile: 'config/i18n/de.js'
+  // or define your own phrases.
+  // To do that, copy config/mylang.example.js to config/mylang.js,change the
+  // phrases as you like and define
+  //   languageFile: 'mylang.js'
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
