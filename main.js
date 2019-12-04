@@ -6,17 +6,30 @@ const imagewatcher = require("./js/imageWatchdog");
 const inputhandler = require("./js/inputHandler");
 const voicerecorder = require("./js/voiceRecorder");
 const schedules = require("./js/schedules");
-const CommandExecutor = require("./js/systemCommands")
+const CommandExecutor = require("./js/systemCommands");
+const fs = require('fs');
 
 // initialize localized texts
-try {
-  // try to load the user defined language file
-  Object.assign(config, require(`./config/${config.languageFile}`));
-} catch(_) {
-  try {
-    // fallback - try to load the language file for the current environment setting
-    Object.assign(config, require(`./config/i18n/${process.env.LANG.substr(0,2)}.js` ));
-  } catch(_) {}
+if (fs.existsSync('./config/texts.js')) {
+  //  load the users language file
+  Object.assign(config, require('./config/texts.js'), config);
+} else if (config.languageFile && fs.existsSync(`./config/${config.languageFile}`)) {
+  //  load the language file definied in config.languageFile
+  Object.assign(config, require(`./config/${config.languageFile}`), config);
+} else {
+  // fallback - load the language file for the current environment setting
+  let envLang = process.env.LANG;
+  // including country - 'en_US'
+  let langFile =`./config/i18n/${envLang.substr(0, envLang.indexOf('.'))}.js`;
+  if(fs.existsSync(langFile)) {
+    Object.assign(config, require(langFile), config);
+  } else {
+    // whithout country - 'en'
+    langFile = `./config/i18n/${envLang.substr(0, envLang.indexOf('_'))}.js`;
+    if(fs.existsSync(langFile)) {
+      Object.assign(config, require(langFile), config);
+    }
+  }
 }
 
 //create global variables

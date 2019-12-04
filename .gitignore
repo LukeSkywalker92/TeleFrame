@@ -61,6 +61,7 @@ typings/
 .next
 
 config/config.js
+config/texts.js
 
 images/*
 !images/.gitkeep
