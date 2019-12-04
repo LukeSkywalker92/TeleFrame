@@ -8,49 +8,75 @@ const chroma = require("chroma-js");
 const velocity = require("velocity-animate");
 const logger = remote.getGlobal("rendererLogger");
 const config = remote.getGlobal("config");
+const {TouchBar, TouchBarElement} = require("./js/touchBar.js")
 
 // Inform that Renderer started
 logger.info("Renderer started ...");
+
+
 
 // Create variables
 var images = remote.getGlobal("images");
 var container = document.getElementById("container");
 var isPaused = false;
+var isMuted = false;
 var currentImageIndex = images.length;
 var startTime, endTime, longpress, timeout, recordSwal, currentChatId, currentMessageId, currentTimeout;
+
+var touchBarElements = {
+  "previousImage": new TouchBarElement("far fa-arrow-alt-circle-left", previousImage),
+  "play": new TouchBarElement("far fa-play-circle", play),
+  "pause": new TouchBarElement("far fa-pause-circle", pause),
+  "playPause": new TouchBarElement("far fa-pause-circle", playPause),
+  "nextImage": new TouchBarElement("far fa-arrow-alt-circle-right", nextImage),
+  "record": new TouchBarElement("fas fa-microphone-alt", record),
+  "starImage": new TouchBarElement("far fa-star", starImage),
+  "deleteImage": new TouchBarElement("far fa-trash-alt", deleteImage),
+  "mute": new TouchBarElement("fas fa-volume-up", mute),
+  "shutdown": new TouchBarElement("fas fa-power-off", shutdown),
+  "reboot": new TouchBarElement("fas fa-redo-alt", reboot),
+}
+
 
 // configure sound notification sound
 if (config.playSoundOnRecieve != false) {
   var audio = new Audio(__dirname + "/sounds/" + config.playSoundOnRecieve);
 }
 
-// handle touch events for navigation and voice reply
-$("body").on('touchstart', function() {
-  startTime = new Date().getTime();
-  currentImageForVoiceReply = images[currentImageIndex]
-});
+if (config.touchBar) {
+  touchBar = new TouchBar(touchBarElements, config.touchBar)
+} else {
+  // handle touch events for navigation and voice reply
+  $("body").on('touchstart', function() {
+    startTime = new Date().getTime();
+    currentImageForVoiceReply = images[currentImageIndex]
+  });
 
-$("body").on('touchend', function(event) {
-  endTime = new Date().getTime();
-  longpress = (endTime - startTime > 500) ? true : false;
-  tapPos = event.originalEvent.changedTouches[0].pageX
-  containerWidth = $("body").width()
-  if (tapPos / containerWidth < 0.2) {
-    previousImage()
-  } else if (tapPos / containerWidth > 0.8) {
-    nextImage()
-  } else {
-    if (longpress) {
-      ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
+  $("body").on('touchend', function(event) {
+    event.preventDefault();
+    endTime = new Date().getTime();
+    longpress = (endTime - startTime > 500) ? true : false;
+    tapPos = event.originalEvent.changedTouches[0].pageX
+    containerWidth = $("body").width()
+    if (tapPos / containerWidth < 0.2) {
+      previousImage()
+    } else if (tapPos / containerWidth > 0.8) {
+      nextImage()
     } else {
-      if (isPaused) {
-        play()
+      if (longpress) {
+        ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
       } else {
-        pause()
+        if (isPaused) {
+          play()
+        } else {
+          pause()
+        }
       }
     }
-  }
-});
+  });
+}
+
+
 
 // handle pressed record button
 ipcRenderer.on("recordButtonPressed", function(event, arg) {
@@ -74,6 +100,9 @@ ipcRenderer.on("recordStarted", function(event, arg) {
   recordSwal = Swal.fire({
     title: config.voiceReply.recordingMessageTitle,
     showConfirmButton: false,
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    allowEnterKey: false,
     html: message
   });
 });
@@ -90,7 +119,7 @@ ipcRenderer.on("recordStopped", function(event, arg) {
     html: message,
     title: config.voiceReply.recordingMessageTitle,
     showConfirmButton: false,
-    type: "success",
+    icon: "success",
     timer: 5000
   });
 });
@@ -113,8 +142,8 @@ ipcRenderer.on("recordError", function(event, arg) {
 
 // handle new incoming image
 ipcRenderer.on("newImage", function(event, arg) {
-  newImage(arg.sender, arg.type);
-  if (config.playSoundOnRecieve != false) {
+  newImage(arg.sender, arg.type, arg.images);
+  if ((config.playSoundOnRecieve != false) && (isMuted == false)) {
     audio.play();
   }
 });
@@ -159,7 +188,7 @@ function showPause() {
 
 function hidePause() {
   let node = document.getElementById("pauseBox");
-  if (node.parentNode) {
+  if (node && node.parentNode) {
     node.parentNode.removeChild(node);
   }
 }
@@ -183,6 +212,7 @@ function pause() {
   isPaused = true;
   clearTimeout(currentTimeout);
   showPause(isPaused);
+  setTouchbarIconStatus();
 }
 
 function play() {
@@ -191,6 +221,189 @@ function play() {
   isPaused = false;
   loadImage(true, 0);
   hidePause(isPaused);
+  setTouchbarIconStatus();
+}
+
+function playPause() {
+  if (isPaused) {
+    play()
+  } else {
+    pause()
+  }
+}
+
+function record() {
+  if (images.length == 0) {
+    return;
+  }
+  currentImageForVoiceReply = images[currentImageIndex]
+  ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
+}
+
+function starImage() {
+  if (images.length == 0) {
+    return;
+  }
+  if (images[currentImageIndex].starred) {
+    images[currentImageIndex].starred = false
+    ipcRenderer.send("unstarImage", images);
+  } else {
+    images[currentImageIndex].starred = true
+    ipcRenderer.send("starImage", images);
+  }
+  setTouchbarIconStatus();
+}
+
+function deleteImage() {
+  if (images.length == 0) {
+    return;
+  }
+  // to ensure to show the correctly next image
+  const doDeleteImage =  () => {
+    ipcRenderer.send("deleteImage", currentImageIndex);
+    images.splice(currentImageIndex, 1)
+    if (images.length == 0) {
+      $(container).empty();
+      $(container).append('<h1>TeleFrame</h1>');
+    }
+    currentImageIndex = (currentImageIndex > 0 ? currentImageIndex - 1 : images.length);
+  };
+  if (!config.confirmDeleteImage) {
+    doDeleteImage();
+    return;
+  }
+  var paused = isPaused;
+  pause();
+  touchBar.hide();
+  Swal.fire({
+    title: config.deleteMessage || 'Really remove?',
+    background: 'rgba(255,255,255,0.8)',
+    confirmButtonText: config.deleteConfirmText || 'Remove',
+    cancelButtonText: config.deleteCancelText || 'Cancel',
+    showCancelButton: true,
+    focusCancel: true,
+    confirmButtonColor: '#a00',
+    icon: "warning"
+  }).then(result => {
+    if (result.value) {
+      doDeleteImage();
+    } else {
+      currentImageIndex = (currentImageIndex > 0 ? currentImageIndex - 1 : images.length);
+    }
+    if (!paused) {
+      play();
+    } else {
+      loadImage(true, 0);
+    }
+    touchBar.show();
+  });
+}
+
+function mute() {
+  if (isMuted) {
+    isMuted = false;
+    touchBarElements["mute"].iconElement.classList = "fas fa-volume-up"
+  } else {
+    isMuted = true;
+    touchBarElements["mute"].iconElement.classList = "fas fa-volume-mute"
+  }
+}
+
+function shutdown() {
+  const doShutdown = () => executeSystemCommand("sudo shutdown -h now");
+
+  if (!config.confirmShutdown) {
+     doShutdown();
+    return;
+  }
+  touchBar.hide();
+  Swal.fire({
+    title: config.shutdownMessage || 'Really shutdown?',
+    background: 'rgba(255,255,255,0.8)',
+    confirmButtonText: config.shutdownConfirmText || 'Shutdown',
+    cancelButtonText: config.shutdownCancelText || 'Cancel',
+    showCancelButton: true,
+    focusCancel: true,
+    confirmButtonColor: '#a00',
+    icon: "warning"
+  }).then(result => {
+    if (result.value) {
+       doShutdown();
+    } else {
+      touchBar.show();
+    }
+  });
+}
+
+function reboot() {
+  const doReboot = () => executeSystemCommand("sudo reboot");
+
+  if (!config.confirmReboot) {
+     doReboot();
+    return;
+  }
+  touchBar.hide();
+  Swal.fire({
+    title: config.rebootMessage || 'Really reboot?',
+    background: 'rgba(255,255,255,0.8)',
+    confirmButtonText: config.rebootConfirmText || 'Reboot',
+    cancelButtonText: config.rebootCancelText || 'Cancel',
+    showCancelButton: true,
+    focusCancel: true,
+    confirmButtonColor: '#a00',
+    icon: "warning"
+  }).then(result => {
+    if (result.value) {
+       doReboot();
+    } else {
+      touchBar.show();
+    }
+  });
+}
+
+function setTouchbarIconStatus() {
+  if (images.length > 0) {
+    touchBarElements["record"].iconElement.classList = "fas fa-microphone-alt";
+    touchBarElements["deleteImage"].iconElement.classList = "far fa-trash-alt";
+    if (images[currentImageIndex].starred) {
+      touchBarElements["starImage"].iconElement.classList = "fas fa-star";
+    } else {
+      touchBarElements["starImage"].iconElement.classList = "far fa-star";
+    }
+    if (isPaused) {
+      touchBarElements["playPause"].iconElement.classList = "far fa-pause-circle";
+    } else {
+      touchBarElements["playPause"].iconElement.classList = "far fa-play-circle";
+    }
+  }
+  if (images.length > 1) {
+    touchBarElements["previousImage"].iconElement.classList = "far fa-arrow-alt-circle-left";
+    touchBarElements["nextImage"].iconElement.classList = "far fa-arrow-alt-circle-right";
+  }
+  if (images.length < 2) {
+    touchBarElements["playPause"].iconElement.classList += " disabled-icon";
+    touchBarElements["previousImage"].iconElement.classList = "far fa-arrow-alt-circle-left disabled-icon";
+    touchBarElements["nextImage"].iconElement.classList = "far fa-arrow-alt-circle-right disabled-icon";
+    if (images.length == 0) {
+      touchBarElements["record"].iconElement.classList = "fas fa-microphone-alt disabled-icon";
+      touchBarElements["deleteImage"].iconElement.classList = "far fa-trash-alt disabled-icon";
+      touchBarElements["starImage"].iconElement.classList = "far fa-star disabled-icon";
+    }
+  }
+}
+
+function executeSystemCommand(command) {
+  ipcRenderer.send("executeSystemCommand", command);
+}
+
+function dummyCallback() {
+  Swal.fire({
+    html: "This is not yet implemented",
+    title: "Ooops",
+    showConfirmButton: false,
+    icon: "error",
+    timer: 5000
+  });
 }
 
 //load image to slideshow
@@ -217,6 +430,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   }
 
   var image = images[currentImageIndex];
+  setTouchbarIconStatus();
 
   //get current container and create needed elements
   var currentImage = container.firstElementChild;
@@ -356,7 +570,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
       $(currentImage).velocity("fadeOut", {
         duration: fadeTime
       });
-      if (!isPaused) {
+      if (!isPaused && images.length > 1) {
         currentTimeout = setTimeout(() => {
           loadImage(true, config.fadeTime);
         }, config.interval);
@@ -396,14 +610,15 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
 }
 
 //notify user of incoming image and restart slideshow with the newest image
-function newImage(sender, type) {
-  images = remote.getGlobal("images");
+function newImage(sender, type, newImageArray) {
+  images = newImageArray;
+  console.log(images);
   if (type == "image") {
     Swal.fire({
       title: config.newPhotoMessage + " " + sender,
       showConfirmButton: false,
       timer: 5000,
-      type: "success"
+      icon: "success"
     }).then((value) => {
       currentImageIndex = images.length;
       loadImage(true, 0);
