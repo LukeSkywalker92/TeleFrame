@@ -79,6 +79,7 @@ The following properties can be configured:
 | `fadeTime`           | The fading time between two images.                                                                                                                                  |
 | `interval`           | The time that an image is shown.                                                                                                                                     |
 | `imageCount`         | Defines how many different images are shown in the slideshow.                                                                                                        |
+| 'autoDeleteImages'   | Defines if old images should be deleted, when they are no longer used in the slideshow (see 'imageCount'). Starred images will not be deleted.                       |
 | `newPhotoMessage`    | Message that is shown when the bot recieved a new image.                                                                                                             |
 | `newVideoMessage`    | Message that is shown when the bot recieved a new video.                                                                                                             |
 | `showSender`         | When set to true, TeleFrame will show the name of the sender when the image is shown.                                                                                |
