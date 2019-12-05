@@ -5,8 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "botonly": "node botonly.js",
-    "preinstall": "echo arch=$(uname -m) > .npmrc"
+    "botonly": "node botonly.js"
   },
   "repository": {
     "type": "git",
