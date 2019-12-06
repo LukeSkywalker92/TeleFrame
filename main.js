@@ -7,30 +7,7 @@ const inputhandler = require("./js/inputHandler");
 const voicerecorder = require("./js/voiceRecorder");
 const schedules = require("./js/schedules");
 const CommandExecutor = require("./js/systemCommands");
-const fs = require('fs');
-
-// initialize localized texts
-if (fs.existsSync('./config/texts.js')) {
-  //  load the users language file
-  Object.assign(config, require('./config/texts.js'), config);
-} else if (config.languageFile && fs.existsSync(`./config/${config.languageFile}`)) {
-  //  load the language file definied in config.languageFile
-  Object.assign(config, require(`./config/${config.languageFile}`), config);
-} else {
-  // fallback - load the language file for the current environment setting
-  let envLang = process.env.LANG;
-  // including country - 'en_US'
-  let langFile =`./config/i18n/${envLang.substr(0, envLang.indexOf('.'))}.js`;
-  if(fs.existsSync(langFile)) {
-    Object.assign(config, require(langFile), config);
-  } else {
-    // whithout country - 'en'
-    langFile = `./config/i18n/${envLang.substr(0, envLang.indexOf('_'))}.js`;
-    if(fs.existsSync(langFile)) {
-      Object.assign(config, require(langFile), config);
-    }
-  }
-}
+require("./js/initLanguage")(config);
 
 //create global variables
 global.config = config;
