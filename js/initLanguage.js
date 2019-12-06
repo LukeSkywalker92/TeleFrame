@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 module.exports = (config) => {
   // initialize localized texts
   let configPath = __dirname + '/../config/';
