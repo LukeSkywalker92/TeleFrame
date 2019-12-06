@@ -39,8 +39,8 @@ var touchBarElements = {
 
 
 // configure sound notification sound
-if (config.playSoundOnRecieve != false) {
-  var audio = new Audio(__dirname + "/sounds/" + config.playSoundOnRecieve);
+if (config.playSoundOnRecieve !== false) {
+  var audio = new Audio(__dirname + "/sounds/" + (config.playSoundOnRecieve || 'sound1.mp3'));
 }
 
 if (config.touchBar) {
