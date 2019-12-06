@@ -1,6 +1,17 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const { logger, rendererLogger } = require("./js/logger");
 const config = require("./config/config");
+
+var myscreenConfig="";
+if(config.hasOwnProperty("screenConfig"))
+{
+    myscreenConfig = config.screenConfig;
+}else{
+    myscreenConfig = "./config/screens/hdmi_default";
+}
+const screen = require(myscreenConfig);
+logger.info("Configuring for: " +  screen.name + " (" + myscreenConfig + ")");
+
 const telebot = require("./js/bot");
 const imagewatcher = require("./js/imageWatchdog");
 const inputhandler = require("./js/inputHandler");
@@ -9,6 +20,7 @@ const schedules = require("./js/schedules");
 
 //create global variables
 global.config = config;
+global.screen = screen;
 global.rendererLogger = rendererLogger;
 global.images = [];
 
@@ -67,7 +79,7 @@ function createWindow() {
   // generate scheduler, when times for turning monitor off and on
   // are given in the config file
   if (config.toggleMonitor) {
-    var scheduler = new schedules(config, logger);
+    var scheduler = new schedules(config, screen, logger);
   }
 
   // Open the DevTools.

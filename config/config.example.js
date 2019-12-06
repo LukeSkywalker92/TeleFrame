@@ -1,6 +1,7 @@
 var config = {
   botToken: "",
   whitelistChats: [],
+  screenConfig: "./config/screens/dsi_raspberry_7inch.js",  
   playSoundOnRecieve: "sound1.mp3",
   showVideos: true,
   playVideoAudio: false,
