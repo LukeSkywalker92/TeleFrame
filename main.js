@@ -1,3 +1,4 @@
+const exec = require("child_process").execSync;
 const { app, BrowserWindow, ipcMain } = require("electron");
 const { logger, rendererLogger } = require("./js/logger");
 const config = require("./config/config");
@@ -14,6 +15,10 @@ global.images = [];
 
 
 logger.info("Main app started ...");
+
+// switch off the LEDs
+exec("sudo sh -c 'echo none > /sys/class/leds/led0/trigger'", { encoding: 'utf-8' });
+exec("sudo sh -c 'echo none > /sys/class/leds/led1/trigger'", { encoding: 'utf-8' });
 
 app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
 // Keep a global reference of the window object, if you don't, the window will
