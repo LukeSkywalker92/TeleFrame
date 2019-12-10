@@ -119,7 +119,9 @@ fi
 
 cd ~/TeleFrame  || exit
 echo -e "\e[96mInstalling dependencies ...\e[90m"
-if npm install --arch=armv7l; then
+# if npm_config_arch is'nt set add it to users .profile
+[ -z "$npm_config_arch" ] && (echo -e "# npm archive configuration\nexport npm_config_arch=\$(uname -m)" >> ~/.profile)
+if npm install --arch=$ARM; then
 	echo -e "\e[92mDependencies installation Done!\e[0m"
 else
 	echo -e "\e[91mUnable to install dependencies!"
@@ -127,7 +129,7 @@ else
 fi
 
 echo -e "\e[96mInstalling electron globally ...\e[90m"
-if sudo npm install --arch=armv7l -g electron --unsafe-perm=true --allow-root; then
+if sudo npm install --arch=$ARM -g electron --unsafe-perm=true --allow-root; then
 	echo -e "\e[92mElectron installation Done!\e[0m"
 else
 	echo -e "\e[91mUnable to install electron!"
