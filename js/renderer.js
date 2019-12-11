@@ -39,8 +39,8 @@ var touchBarElements = {
 
 
 // configure sound notification sound
-if (config.playSoundOnRecieve != false) {
-  var audio = new Audio(__dirname + "/sounds/" + config.playSoundOnRecieve);
+if (config.playSoundOnRecieve !== false) {
+  var audio = new Audio(__dirname + "/sounds/" + (config.playSoundOnRecieve || 'sound1.mp3'));
 }
 
 if (config.touchBar) {
@@ -268,7 +268,7 @@ function deleteImage() {
     }
     currentImageIndex = (currentImageIndex > 0 ? currentImageIndex - 1 : images.length);
   };
-  if (!config.confirmDeleteImage) {
+  if (config.confirmDeleteImage === false) {
     doDeleteImage();
     return;
   }
@@ -312,7 +312,7 @@ function mute() {
 function shutdown() {
   const doShutdown = () => executeSystemCommand("sudo shutdown -h now");
 
-  if (!config.confirmShutdown) {
+  if (config.confirmShutdown === false) {
      doShutdown();
     return;
   }
@@ -338,7 +338,7 @@ function shutdown() {
 function reboot() {
   const doReboot = () => executeSystemCommand("sudo reboot");
 
-  if (!config.confirmReboot) {
+  if (config.confirmReboot === false) {
      doReboot();
     return;
   }

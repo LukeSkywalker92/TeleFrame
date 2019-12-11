@@ -10,6 +10,10 @@ class TouchBar {
         self.autoHideTimerId = setTimeout(() => self.hide(), config.autoHideTimeout);
       }
     };
+    // if not defined initialize autoHideTimeout to 30 seconds
+    if (typeof config.autoHideTimeout === 'undefined') {
+      config.autoHideTimeout = 30*1000;
+    }
     const touchBarContainer = document.getElementById('touch-bar-container')
     touchBarContainer.style.height = this.height;
     touchBarContainer.style.bottom = "-" + this.height;
