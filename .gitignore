@@ -63,7 +63,7 @@ typings/
 # next.js build output
 .next
 
-config/config.js
+# config/config.js
 
 images/*
 !images/.gitkeep
