@@ -1,7 +1,8 @@
 { 
    "botToken":"",
-   "whitelistChats":[ ],
-   "whitelistAdmins":[ ],
+   "whitelistChats":[ 
+
+   ],
    "playSoundOnRecieve":"sound1.mp3",
    "showVideos":true,
    "playVideoAudio":false,
@@ -10,55 +11,53 @@
    "fadeTime":1500,
    "interval":10000,
    "imageCount":30,
-   "newPhotoMessage":"Neues Foto von",
-   "newVideoMessage":"Neues Video von",
+   "newPhotoMessage":"New image from",
+   "newVideoMessage":"New video from",
    "showSender":true,
    "showCaption":true,
    "toggleMonitor":false,
    "turnOnHour":9,
    "turnOffHour":22,
-   "keys":null,
+   "confirmDeleteImage":true,
+   "deleteMessage":"Really remove?",
+   "deleteConfirmText":"Remove",
+   "deleteCancelText":"Cancel",
+   "confirmShutdown":true,
+   "shutdownMessage":"Really shutdown?",
+   "shutdownConfirmText":"Shutdown",
+   "shutdownCancelText":"Cancel",
+   "confirmReboot":true,
+   "rebootMessage":"Really rboot?",
+   "rebootConfirmText":"Reboot",
+   "rebootCancelText":"Cancel",
+   "touchBar":{ 
+      "height":"75px",
+      "autoHideTimeout":30000,
+      "elements":[ 
+         "previousImage",
+         "playPause",
+         "nextImage",
+         "record",
+         "starImage",
+         "deleteImage",
+         "mute",
+         "shutdown",
+         "reboot"
+      ]
+   },
+   "keys":{ 
+      "next":"right",
+      "previous":"left",
+      "play":"l",
+      "pause":"k"
+   },
    "voiceReply":{ 
+      "key":"a",
       "maxRecordTime":60000,
       "recordingMessageTitle":"Voice Message",
       "recordingPreMessage":"Recording for",
       "recordingPostMessage":"in progress...",
       "recordingDone":"Voice message sent sucessfully!",
       "recordingError":"Voice message has failed!"
-   },
-   "adminAction":{ 
-      "allowAdminAction":true,
-      "actions":[ 
-         { 
-            "name":"reboot",
-            "command":"sudo reboot",
-            "enable":true
-         },
-         { 
-            "name":"shutdown",
-            "command":"sudo shutdown -h now ",
-            "enable":true
-         },
-         { 
-            "name":"restart",
-            "command":"pm2 restart all",
-            "enable":true
-         },
-         { 
-            "name":"startOpenvpn",
-            "command":"systemctl openvpn start",
-            "enable":true
-         },
-         { 
-            "name":"stopOpenvpn",
-            "command":"systemctl openvpn stop",
-            "enable":true
-         },
-         { 
-            "name":"echo",
-            "command":"echo test",
-            "enable":true
-         }
-      ]
    }
 }
