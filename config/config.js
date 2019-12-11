@@ -6,10 +6,9 @@ const _ = require('lodash');
 const userConfig = require('./config.json');
 const defaultConfig = require('./defaultConfig.json');
 
-//const finalConfig = _.merge(userConfig, defaultConfig);
+// merge Files
 const config = _.merge(defaultConfig, userConfig);
 
-console.log(config);
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
 if (typeof module !== "undefined") {
