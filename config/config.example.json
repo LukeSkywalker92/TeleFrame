@@ -1,0 +1,9 @@
+{
+   "botToken":"",
+   "whitelistChats":[],
+   "whitelistAdmins":[],
+   "showVideos":false,
+   "fadeTime":1500,
+   "interval":10000,
+   "imageCount":30,
+}
