@@ -1,0 +1,6 @@
+{
+"botToken":"BOTID",
+"whitelistChats":[],
+"whitelistAdmins":[],
+"showVideos":false
+}
