@@ -11,6 +11,13 @@
 **TeleFrame** is an open source digital image frame that displays images and videos, which were send to an Telegram Bot.
 
 ## !!! IMPORTANT !!!
+**To update TeleFrame on a Raspberry PI, an additional parameter is currently required to define the processor architecture: `npm install --arch=$(uname -m)`**
+
+You can write the required environment variable once into your `.profile` to update as usual:
+```bash
+ [ -z "$npm_config_arch" ] && (echo -e "# npm archive configuration\nexport npm_config_arch=\$(uname -m)" >> ~/.profile)`
+```
+
 **Before updating to 2.0.0, please read the release notes of release 2.0.0**
 
 ## Table Of Contents
