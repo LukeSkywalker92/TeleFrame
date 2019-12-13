@@ -2,15 +2,15 @@ const fs = require('fs');
 
 module.exports = (config) => {
   // initialize localized texts
-  let configPath = __dirname + '/../config/';
-  let langPath =  configPath + 'i18n/';
-  let langfile = configPath + 'texts.js';
+  const configPath = __dirname + '/../config/';
+  const langPath =  configPath + 'i18n/';
+  let langFile = configPath + 'texts.js';
   let currentTextConfig = {};
   // Does users language file 'config/tests.js' exist?
-  if (!fs.existsSync(langfile)) {
+  if (!fs.existsSync(langFile)) {
     //  load the language file definied in config.language
-    if (config.language && fs.existsSync(langPath + config.language + '.js')) {
-      langFile = langPath + config.languageFile;
+    if (typeof config.language && fs.existsSync(langPath + config.language + '.js')) {
+      langFile = langPath + config.language + '.js';
     } else {
       // fallback - load the language file for the current environment setting
       // in addition, always merge the current configuration last in order
@@ -21,11 +21,16 @@ module.exports = (config) => {
       if(!fs.existsSync(langFile)) {
         // whithout country - 'en'
         langFile =  langPath + `${envLang.substr(0, envLang.indexOf('_'))}.js`;
+        if(!fs.existsSync(langFile)) {
+          langFile = null;
+        }
       }
       // keep the texts defined in the current config
       Object.assign(currentTextConfig, config);
     }
   }
   // load the language
-  Object.assign(config, langFile, currentTextConfig);
+  if (langFile) {
+    Object.assign(config, require(langFile), currentTextConfig);
+  }
 };
