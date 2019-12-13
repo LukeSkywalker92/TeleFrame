@@ -109,8 +109,7 @@ The following properties can be configured:
 | `keys`               | Defines an object with 4 strings specifying the keyboard shortcuts for play, next, previous and pause. Set to null for no controls                                   |
 | `voiceReply`         | Defines an object with the config for sending voicemessages with TeleFrame, see info bellow                                                                          |
 | `touchBar`           | Defines an object with the config for using a touch bar for executing commands instead of the default touch gestures.                                                |
-| `languageFile`       | Defines the relative path from the config folder to the language file          
-                                                                                      |
+| `language`           | Defines the language to use.  See `config.example.js` 'Language configuration' for details                                                                           |
 ## Whitelist Chats
 
 When you start your TeleFrame and send a "Hi" to the bot it will send you back the current chat id. Paste this id or several of them into the `whitelistChats` config option to only allow only pictures from these ids (eg `[1234567, 89101010]`). Leave empty (`[]`) for no whitelist.

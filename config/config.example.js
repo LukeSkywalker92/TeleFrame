@@ -47,10 +47,12 @@ var config = {
     key: "a",
     maxRecordTime: 60*1000,
   },
-  // languageFile defines the relative from the config folder to a language file.
-  // Set the path to one of the predefined files of 'config/i18n' - i.e.
-  //   languageFile: 'config/i18n/de.js'
-  // You can define your own phrases.
+  // language configuration.
+  // Set the language option to one of the available languages.
+  // The language files can be found in 'config/i18n/<xx>.js'.
+  // For example, to use German, uncomment the next line.
+  //   language: 'de',
+  // You also can define your own phrases.
   // To do that, copy one of the 'config/i18n/<xx>.js'
   // to 'config/texts.js' and change the phrases as you like.
   // If the file 'config/texts.js' exists, it will be loaded preferentially.
