@@ -10,13 +10,11 @@ var i18n = {
   rebootMessage: "Really reboot?",
   rebootConfirmText: "Reboot",
   rebootCancelText: "Cancel",
-  voiceReply: {
-    recordingMessageTitle: "Voice Message",
-    recordingPreMessage: "Recording for",
-    recordingPostMessage: "in progress...",
-    recordingDone: "Voice message sent sucessfully!",
-    recordingError: "Voice message has failed!"
-  }
+  recordingMessageTitle: "Voice Message",
+  recordingPreMessage: "Recording for",
+  recordingPostMessage: "in progress...",
+  recordingDone: "Voice message sent sucessfully!",
+  recordingError: "Voice message has failed!"
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/

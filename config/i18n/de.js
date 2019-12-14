@@ -10,13 +10,11 @@ var i18n = {
   rebootMessage: "System wirklich neu starten?",
   rebootConfirmText: "Neu starten",
   rebootCancelText: "Nein",
-  voiceReply: {
-    recordingMessageTitle: "Sprachnachricht",
-    recordingPreMessage: "Sprachaufzeichnung für",
-    recordingPostMessage: "läuft...",
-    recordingDone: "Sprachnachricht erfolgreich gesendet!",
-    recordingError: "Aufzeichnung fehlgeschlagen!"
-  }
+  recordingMessageTitle: "Sprachnachricht",
+  recordingPreMessage: "Sprachaufzeichnung für",
+  recordingPostMessage: "läuft...",
+  recordingDone: "Sprachnachricht erfolgreich gesendet!",
+  recordingError: "Aufzeichnung fehlgeschlagen!"
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/

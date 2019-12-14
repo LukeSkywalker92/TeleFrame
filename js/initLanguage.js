@@ -5,7 +5,7 @@ module.exports = (config) => {
   const configPath = __dirname + '/../config/';
   const langPath =  configPath + 'i18n/';
   let langFile = configPath + 'texts.js';
-  let currentTextConfig = {};
+  let mergeCurrentConfigTexts = false;
   // Does users language file 'config/tests.js' exist?
   if (!fs.existsSync(langFile)) {
     //  load the language file definied in config.language
@@ -22,15 +22,27 @@ module.exports = (config) => {
         // whithout country - 'en'
         langFile =  langPath + `${envLang.substr(0, envLang.indexOf('_'))}.js`;
         if(!fs.existsSync(langFile)) {
-          langFile = null;
+          langFile = langPath + 'en.js';
         }
       }
       // keep the texts defined in the current config
-      Object.assign(currentTextConfig, config);
+      mergeCurrentConfigTexts = true;
     }
   }
   // load the language
-  if (langFile) {
-    Object.assign(config, require(langFile), currentTextConfig);
+  config.phrases = require(langFile);
+
+  // remove unused text configuration options
+  for (const phraseKey in Object.keys(config.phrases)) {
+    if (mergeCurrentConfigTexts && typeof config[phraseKey] === 'string') {
+      config.phrases[phraseKey] = config[phraseKey];
+    }
+    if (typeof config.voiceReply[phraseKey] === 'string') {
+      if (mergeCurrentConfigTexts) {
+        config.phrases[phraseKey] = config.voiceReply[phraseKey];
+      }
+      delete config.voiceReply[phraseKey];
+    }
+    delete config[phraseKey];
   }
 };
