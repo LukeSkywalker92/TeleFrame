@@ -92,13 +92,13 @@ ipcRenderer.on("recordStarted", function(event, arg) {
   spinner.classList.add("spinner");
   message.appendChild(spinner);
   let text = document.createElement("p");
-  messageText = config.voiceReply.recordingPreMessage
+  messageText = (config.phrases.recordingPreMessage || "Recording for")
                     + ' ' + currentImageForVoiceReply['chatName']
-                    + ' ' + config.voiceReply.recordingPostMessage;
+                    + ' ' + (config.phrases.recordingPostMessage || "in progress...");
   text.innerHTML = messageText
   message.appendChild(text);
   recordSwal = Swal.fire({
-    title: config.voiceReply.recordingMessageTitle,
+    title: config.phrases.recordingMessageTitle || "Voice Message",
     showConfirmButton: false,
     allowOutsideClick: false,
     allowEscapeKey: false,
@@ -111,13 +111,13 @@ ipcRenderer.on("recordStarted", function(event, arg) {
 ipcRenderer.on("recordStopped", function(event, arg) {
   let message = document.createElement("div");
   let text = document.createElement("p");
-  text.innerHTML = config.voiceReply.recordingDone
+  text.innerHTML = (config.phrases.recordingDone || "Voice message sent sucessfully!")
                     + ' ' + currentImageForVoiceReply['chatName'];
   message.appendChild(text);
   recordSwal.close();
   Swal.fire({
     html: message,
-    title: config.voiceReply.recordingMessageTitle,
+    title: config.phrases.recordingMessageTitle || "Voice Message",
     showConfirmButton: false,
     icon: "success",
     timer: 5000
@@ -128,12 +128,12 @@ ipcRenderer.on("recordStopped", function(event, arg) {
 ipcRenderer.on("recordError", function(event, arg) {
   let message = document.createElement("div");
   let text = document.createElement("p");
-  text.innerHTML = config.voiceReply.recordingError;
+  text.innerHTML = config.phrases.recordingError || "Voice message has failed!";
   message.appendChild(text);
   recordSwal.close();
   Swal.fire({
     html: message,
-    title: config.voiceReply.recordingMessageTitle,
+    title: config.phrases.recordingMessageTitle || "Voice Message",
     showConfirmButton: false,
     icon: "error",
     timer: 5000
@@ -276,10 +276,10 @@ function deleteImage() {
   pause();
   touchBar.hide();
   Swal.fire({
-    title: config.deleteMessage || 'Really remove?',
+    title: config.phrases.deleteMessage || 'Really remove?',
     background: 'rgba(255,255,255,0.8)',
-    confirmButtonText: config.deleteConfirmText || 'Remove',
-    cancelButtonText: config.deleteCancelText || 'Cancel',
+    confirmButtonText: config.phrases.deleteConfirmText || 'Remove',
+    cancelButtonText: config.phrases.deleteCancelText || 'Cancel',
     showCancelButton: true,
     focusCancel: true,
     confirmButtonColor: '#a00',
@@ -318,10 +318,10 @@ function shutdown() {
   }
   touchBar.hide();
   Swal.fire({
-    title: config.shutdownMessage || 'Really shutdown?',
+    title: config.phrases.shutdownMessage || 'Really shutdown?',
     background: 'rgba(255,255,255,0.8)',
-    confirmButtonText: config.shutdownConfirmText || 'Shutdown',
-    cancelButtonText: config.shutdownCancelText || 'Cancel',
+    confirmButtonText: config.phrases.shutdownConfirmText || 'Shutdown',
+    cancelButtonText: config.phrases.shutdownCancelText || 'Cancel',
     showCancelButton: true,
     focusCancel: true,
     confirmButtonColor: '#a00',
@@ -344,10 +344,10 @@ function reboot() {
   }
   touchBar.hide();
   Swal.fire({
-    title: config.rebootMessage || 'Really reboot?',
+    title: config.phrases.rebootMessage || 'Really reboot?',
     background: 'rgba(255,255,255,0.8)',
-    confirmButtonText: config.rebootConfirmText || 'Reboot',
-    cancelButtonText: config.rebootCancelText || 'Cancel',
+    confirmButtonText: config.phrases.rebootConfirmText || 'Reboot',
+    cancelButtonText: config.phrases.rebootCancelText || 'Cancel',
     showCancelButton: true,
     focusCancel: true,
     confirmButtonColor: '#a00',
@@ -434,7 +434,17 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
 
   //get current container and create needed elements
   var currentImage = container.firstElementChild;
+
   var div = document.createElement("div");
+  var assetDiv = null;
+  if (config.useFullscreenForCaptionAndSender) {
+      assetDiv = document.createElement("div");
+      assetDiv.className = "basecontainer";
+      assetDiv.appendChild(div);
+  } else {
+    assetDiv = div;
+  }
+
   var img;
   if (image.src.split(".").pop() == "mp4") {
     img = document.createElement("video");
@@ -582,10 +592,10 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
 
   div.appendChild(img);
   if (config.showSender) {
-    div.appendChild(sender);
+    assetDiv.appendChild(sender);
   }
   if (config.showCaption && image.caption !== undefined) {
-    div.appendChild(caption);
+    assetDiv.appendChild(caption);
   }
   setTimeout(function() {
 	// remove all child containers but not the last one - active image
@@ -596,7 +606,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     webFrame.clearCache()
   }, fadeTime)
 
-  container.appendChild(div);
+  container.appendChild(assetDiv);
 
   //fade out sender and caption at half time of the shown image
   setTimeout(function() {
@@ -615,7 +625,7 @@ function newImage(sender, type, newImageArray) {
   console.log(images);
   if (type == "image") {
     Swal.fire({
-      title: config.newPhotoMessage + " " + sender,
+      title: (config.phrases.newPhotoMessage || "New image from") + " " + sender,
       showConfirmButton: false,
       timer: 5000,
       icon: "success"
@@ -625,7 +635,7 @@ function newImage(sender, type, newImageArray) {
     });
   } else if (type == "video") {
     Swal.fire({
-      title: config.newVideoMessage + " " + sender,
+      title: (config.phrases.newVideoMessage || "New video from") + " " + sender,
       showConfirmButton: false,
       timer: 5000,
       type: "success"
