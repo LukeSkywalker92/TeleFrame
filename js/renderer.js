@@ -92,13 +92,13 @@ ipcRenderer.on("recordStarted", function(event, arg) {
   spinner.classList.add("spinner");
   message.appendChild(spinner);
   let text = document.createElement("p");
-  messageText = config.voiceReply.recordingPreMessage
+  messageText = (config.voiceReply.recordingPreMessage || "Recording for")
                     + ' ' + currentImageForVoiceReply['chatName']
-                    + ' ' + config.voiceReply.recordingPostMessage;
+                    + ' ' + (config.voiceReply.recordingPostMessage || "in progress...");
   text.innerHTML = messageText
   message.appendChild(text);
   recordSwal = Swal.fire({
-    title: config.voiceReply.recordingMessageTitle,
+    title: config.voiceReply.recordingMessageTitle || "Voice Message",
     showConfirmButton: false,
     allowOutsideClick: false,
     allowEscapeKey: false,
@@ -111,13 +111,13 @@ ipcRenderer.on("recordStarted", function(event, arg) {
 ipcRenderer.on("recordStopped", function(event, arg) {
   let message = document.createElement("div");
   let text = document.createElement("p");
-  text.innerHTML = config.voiceReply.recordingDone
+  text.innerHTML = (config.voiceReply.recordingDone || "Voice message sent sucessfully!")
                     + ' ' + currentImageForVoiceReply['chatName'];
   message.appendChild(text);
   recordSwal.close();
   Swal.fire({
     html: message,
-    title: config.voiceReply.recordingMessageTitle,
+    title: config.voiceReply.recordingMessageTitle || "Voice Message",
     showConfirmButton: false,
     icon: "success",
     timer: 5000
@@ -128,12 +128,12 @@ ipcRenderer.on("recordStopped", function(event, arg) {
 ipcRenderer.on("recordError", function(event, arg) {
   let message = document.createElement("div");
   let text = document.createElement("p");
-  text.innerHTML = config.voiceReply.recordingError;
+  text.innerHTML = config.voiceReply.recordingError || "Voice message has failed!";
   message.appendChild(text);
   recordSwal.close();
   Swal.fire({
     html: message,
-    title: config.voiceReply.recordingMessageTitle,
+    title: config.voiceReply.recordingMessageTitle || "Voice Message",
     showConfirmButton: false,
     icon: "error",
     timer: 5000
@@ -615,7 +615,7 @@ function newImage(sender, type, newImageArray) {
   console.log(images);
   if (type == "image") {
     Swal.fire({
-      title: config.newPhotoMessage + " " + sender,
+      title: (config.newPhotoMessage  || "New image from") + " " + sender,
       showConfirmButton: false,
       timer: 5000,
       icon: "success"
@@ -625,7 +625,7 @@ function newImage(sender, type, newImageArray) {
     });
   } else if (type == "video") {
     Swal.fire({
-      title: config.newVideoMessage + " " + sender,
+      title: (config.newVideoMessage ||  "New video from") + " " + sender,
       showConfirmButton: false,
       timer: 5000,
       type: "success"
