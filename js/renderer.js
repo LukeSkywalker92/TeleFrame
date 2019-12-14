@@ -441,6 +441,8 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
       assetDiv = document.createElement("div");
       assetDiv.className = "basecontainer";
       assetDiv.appendChild(div);
+      assetDiv.style.display = 'none';
+      div.style.display = 'block';
   } else {
     assetDiv = div;
   }
@@ -541,7 +543,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
         img.style.height = "100%";
         div.style.height = "100%";
       }
-      $(div).velocity("fadeIn", {
+      $(assetDiv).velocity("fadeIn", {
         duration: fadeTime
       });
       $(currentImage).velocity("fadeOut", {
@@ -574,7 +576,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
         img.style.height = "100%";
         div.style.height = "100%";
       }
-      $(div).velocity("fadeIn", {
+      $(assetDiv).velocity("fadeIn", {
         duration: fadeTime
       });
       $(currentImage).velocity("fadeOut", {
