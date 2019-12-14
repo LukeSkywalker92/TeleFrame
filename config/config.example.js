@@ -13,6 +13,8 @@ var config = {
   newVideoMessage: "New video from",
   showSender: true,
   showCaption: true,
+  // To output sender caption, use the entire screen
+  useFullscreenForCaptionAndSender: true,
   toggleMonitor: false,
   turnOnHour: 9,
   turnOffHour: 22,
