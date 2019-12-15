@@ -15,6 +15,10 @@ var config = {
   showCaption: true,
   // To output sender caption, use the entire screen
   useFullscreenForCaptionAndSender: true,
+  // Defines the percentage of the duration of <interval> to show sender and caption.
+  // minimum value: 10  = fade out after 10% of <interval>
+  // maximum value: 100 = full time. sender and caption does not fade out
+  senderAndCaptionDuration: 50,
   toggleMonitor: false,
   turnOnHour: 9,
   turnOffHour: 22,

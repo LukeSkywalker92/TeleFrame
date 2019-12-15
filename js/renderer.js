@@ -618,7 +618,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     $(caption).velocity("fadeOut", {
       duration: fadeTime / 2
     });
-  }, config.interval / 2);
+  }, config.interval * 0.01 * (Math.max(10, Math.min(100, parseInt(config.senderAndCaptionDuration) || 50))));
 }
 
 //notify user of incoming image and restart slideshow with the newest image
