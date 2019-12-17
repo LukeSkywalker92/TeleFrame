@@ -9,7 +9,7 @@ module.exports = (config) => {
   // Does users language file 'config/tests.js' exist?
   if (!fs.existsSync(langFile)) {
     //  load the language file definied in config.language
-    if (typeof config.language && fs.existsSync(langPath + config.language + '.js')) {
+    if (typeof config.language === 'string' && fs.existsSync(langPath + config.language + '.js')) {
       langFile = langPath + config.language + '.js';
     } else {
       // fallback - load the language file for the current environment setting
