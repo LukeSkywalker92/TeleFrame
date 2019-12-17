@@ -17,6 +17,8 @@ var Bot = class {
     whitelistAdmins,
     voiceReply,
     logger,
+    emitter,
+    ipcMain,
     config
   ) {
     var self = this;
@@ -30,6 +32,8 @@ var Bot = class {
     this.whitelistAdmins = whitelistAdmins;
     this.voiceReply = voiceReply;
     this.config = config;
+    this.emitter = emitter;
+    this.ipcMain = ipcMain;
 
     //get bot name
     this.bot.telegram.getMe().then((botInfo) => {

@@ -56,6 +56,8 @@ function createWindow() {
     config.whitelistAdmins,
     config.voiceReply,
     logger,
+    emitter,
+    ipcMain,
     config
   );
 
