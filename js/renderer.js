@@ -521,13 +521,21 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     caption.style.top = "2%";
   }
 
-  //calculate aspect ratio to show complete image on the screen and
-  //fade in new image while fading out the old image as soon as
-  //the new imageis loaded
-  if (image.src.split(".").pop() == "mp4") {
-    img.onloadeddata = function() {
-      screenAspectRatio =
-        remote
+  let getAssetAspectRation;
+  let eventName;
+  switch (img.tagName.toLowerCase()) {
+    case 'video':
+      getAssetAspectRatio = (asset) => { return asset.videoWidth / img.videoHeight };
+      eventName = 'onloadeddata';
+      break;
+    case 'img':
+      getAssetAspectRatio = (asset) => { return asset.naturalWidth / img.naturalHeight };
+      eventName = 'onload';
+      break;
+  }
+  if (eventName) {
+    img[eventName] = function() {
+      const screenAspectRatio = remote
         .getCurrentWindow()
         .webContents.getOwnerBrowserWindow()
         .getBounds().width /
@@ -535,41 +543,11 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
         .getCurrentWindow()
         .webContents.getOwnerBrowserWindow()
         .getBounds().height;
-      imageAspectRatio = img.naturalWidth / img.naturalHeight;
-      if (imageAspectRatio > screenAspectRatio) {
-        img.style.width = "100%";
-        div.style.width = "100%";
-      } else {
-        img.style.height = "100%";
-        div.style.height = "100%";
-      }
-      $(assetDiv).velocity("fadeIn", {
-        duration: fadeTime
-      });
-      $(currentImage).velocity("fadeOut", {
-        duration: fadeTime
-      });
-      if (!isPaused) {
-        currentTimeout = setTimeout(() => {
-          loadImage(true, fadeTime);
-        }, img.duration * 1000);
-      }
-      img.onloadeddata = null;
-      img = null;
-    };
-  } else {
-    img.onload = function() {
-      screenAspectRatio =
-        remote
-        .getCurrentWindow()
-        .webContents.getOwnerBrowserWindow()
-        .getBounds().width /
-        remote
-        .getCurrentWindow()
-        .webContents.getOwnerBrowserWindow()
-        .getBounds().height;
-      imageAspectRatio = img.naturalWidth / img.naturalHeight;
-      if (imageAspectRatio > screenAspectRatio) {
+
+      //calculate aspect ratio to show complete image on the screen and
+      //fade in new image while fading out the old image as soon as
+      //the new image is loaded
+      if (getAssetAspectRatio(img) > screenAspectRatio) {
         img.style.width = "100%";
         div.style.width = "100%";
       } else {
@@ -587,10 +565,10 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
           loadImage(true, config.fadeTime);
         }, config.interval);
       }
-      img.onload = null;
+      img['eventName'] = null;
       img = null;
     };
-  }
+  };
 
   div.appendChild(img);
   if (config.showSender) {
