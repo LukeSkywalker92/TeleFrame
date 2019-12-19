@@ -521,52 +521,56 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     caption.style.top = "2%";
   }
 
-  let getAssetAspectRation;
+  const imgLoaded = (img, div, getAssetAspectRatio) => {
+      const screenAspectRatio = remote
+      .getCurrentWindow()
+      .webContents.getOwnerBrowserWindow()
+      .getBounds().width /
+      remote
+      .getCurrentWindow()
+      .webContents.getOwnerBrowserWindow()
+      .getBounds().height;
+
+    //calculate aspect ratio to show complete image on the screen and
+    //fade in new image while fading out the old image as soon as
+    //the new image is loaded
+    if (getAssetAspectRatio(img) > screenAspectRatio) {
+      img.style.width = "100%";
+      div.style.width = "100%";
+    } else {
+      img.style.height = "100%";
+      div.style.height = "100%";
+    }
+    $(assetDiv).velocity("fadeIn", {
+      duration: fadeTime
+    });
+    $(currentImage).velocity("fadeOut", {
+      duration: fadeTime
+    });
+    if (!isPaused && images.length > 1) {
+      currentTimeout = setTimeout(() => {
+        loadImage(true, config.fadeTime);
+      }, config.interval);
+    }
+    img['eventName'] = null;
+    img = null;
+  };
+
   let eventName;
   switch (img.tagName.toLowerCase()) {
     case 'video':
-      getAssetAspectRatio = (asset) => { return asset.videoWidth / img.videoHeight };
-      eventName = 'onloadeddata';
+      img.onloadeddata = function() {
+        imgLoaded(img, div, (asset) => { return asset.videoWidth / img.videoHeight });
+      };
       break;
     case 'img':
-      getAssetAspectRatio = (asset) => { return asset.naturalWidth / img.naturalHeight };
-      eventName = 'onload';
+      img.onload = function() {
+        imgLoaded(img, div, (asset) => { return asset.naturalWidth / img.naturalHeight });
+      };
       break;
   }
   if (eventName) {
     img[eventName] = function() {
-      const screenAspectRatio = remote
-        .getCurrentWindow()
-        .webContents.getOwnerBrowserWindow()
-        .getBounds().width /
-        remote
-        .getCurrentWindow()
-        .webContents.getOwnerBrowserWindow()
-        .getBounds().height;
-
-      //calculate aspect ratio to show complete image on the screen and
-      //fade in new image while fading out the old image as soon as
-      //the new image is loaded
-      if (getAssetAspectRatio(img) > screenAspectRatio) {
-        img.style.width = "100%";
-        div.style.width = "100%";
-      } else {
-        img.style.height = "100%";
-        div.style.height = "100%";
-      }
-      $(assetDiv).velocity("fadeIn", {
-        duration: fadeTime
-      });
-      $(currentImage).velocity("fadeOut", {
-        duration: fadeTime
-      });
-      if (!isPaused && images.length > 1) {
-        currentTimeout = setTimeout(() => {
-          loadImage(true, config.fadeTime);
-        }, config.interval);
-      }
-      img['eventName'] = null;
-      img = null;
     };
   };
 
