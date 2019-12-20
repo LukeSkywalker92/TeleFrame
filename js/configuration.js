@@ -5,6 +5,14 @@ const configPath = __dirname + '/../config/config.json';
 const writeConfigIgnoreKeys = ['phrases'];
 const STRINGIFY_SEPARATOR = 2
 
+/**
+ * Prepares the user configuration for writing
+ * @param  {Object} conf     current config object
+ * @param  {Object} defConf  default config object
+ * @param  {Object} userConf uner configuration to write
+ * @param  {string} key      Object key where to write the value
+ * @param  {(string|string[]|number|number[]|boolean|Object)} value the value to write
+ */
 const prepareUserConfig = (conf, defConf, userConf, key, value) => {
   if (writeConfigIgnoreKeys.indexOf(key) > -1) {
     return;
@@ -66,12 +74,13 @@ const mergeConfig = (conf) => {
 
 /**
  * Returns the default configuration object
- * @return {Object} default configuration
+ * @return {Object} default Configuration
  */
 configuration.getDefaults = () => JSON.parse(defConfPlain);
 
 /**
- * Write from defaulConfig deviating options to the config file
+ * Write from defaultConfig deviating options to the config file
+ * Notice: Arrays are always copied completely
  */
 configuration.writeConfig = () => {
   let userConfig = {};
@@ -81,8 +90,6 @@ configuration.writeConfig = () => {
   fs.writeFileSync(configPath, JSON.stringify(userConfig, null, STRINGIFY_SEPARATOR));
 };
 
-
-//check for old user config
 if (fs.existsSync(configPath)) {
   mergeConfig(require(configPath));
 } else {
