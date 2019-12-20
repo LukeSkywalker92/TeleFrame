@@ -92,7 +92,7 @@ if (fs.existsSync(configPath)) {
   // backup the old config
   fs.renameSync(oldConfig, oldConfig.replace('.js', '.backup.js'));
   // // remove default values
-  config.writeConfig();
+  configuration.writeConfig();
 }
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
