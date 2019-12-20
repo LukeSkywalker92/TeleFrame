@@ -6,8 +6,7 @@ const inputhandler = require("./js/inputHandler");
 const voicerecorder = require("./js/voiceRecorder");
 const schedules = require("./js/schedules");
 const CommandExecutor = require("./js/systemCommands");
-const config = Object.assign({}, require("./js/defaultConfig"), require("./config/config"));
-
+const config = require("./js/configuration");
 
 //create global variables
 global.config = config;
