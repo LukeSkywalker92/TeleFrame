@@ -48,7 +48,11 @@ const prepareUserConfig = (conf, defConf, userConf, key, value) => {
 };
 
 
-// merge configuration
+/**
+ * Merge the given configuration object to the current configuration
+ * @param  {[type]} conf [description]
+ * @return {[type]}      [description]
+ */
 const mergeConfig = (conf) => {
   /**
    * Set value from mergeConf to destConf

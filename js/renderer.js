@@ -523,7 +523,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
         .getCurrentWindow()
         .webContents.getOwnerBrowserWindow()
         .getBounds().height;
-      imageAspectRatio = img.naturalWidth / img.naturalHeight;
+      imageAspectRatio = img.videoWidth / img.videoHeight;
       if (imageAspectRatio > screenAspectRatio) {
         img.style.width = "100%";
         div.style.width = "100%";
