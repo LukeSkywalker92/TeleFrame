@@ -65,6 +65,7 @@ typings/
 
 config/config.js*
 config/config.backup.*
+config/texts.js
 
 images/*
 !images/.gitkeep

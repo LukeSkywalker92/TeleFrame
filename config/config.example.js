@@ -9,8 +9,6 @@ var config = {
   fadeTime: 1500,
   interval: 10 * 1000,
   imageCount: 30,
-  newPhotoMessage: "New image from",
-  newVideoMessage: "New video from",
   showSender: true,
   showCaption: true,
   toggleMonitor: false,
@@ -18,19 +16,10 @@ var config = {
   turnOffHour: 22,
   // show confirm message before delete an image
   confirmDeleteImage: true,
-  deleteMessage: "Really remove?",
-  deleteConfirmText: "Remove",
-  deleteCancelText: "Cancel",
   // show confirm message before shutdown
   confirmShutdown: true,
-  shutdownMessage: "Really shutdown?",
-  shutdownConfirmText: "Shutdown",
-  shutdownCancelText: "Cancel",
   // show confirm message before reboot
   confirmReboot: true,
-  rebootMessage: "Really rboot?",
-  rebootConfirmText: "Reboot",
-  rebootCancelText: "Cancel",
   touchBar: {
     height: "75px",
     // timout to automatically hide the touchbar.
@@ -57,12 +46,16 @@ var config = {
   voiceReply: {
     key: "a",
     maxRecordTime: 60*1000,
-    recordingMessageTitle: "Voice Message",
-    recordingPreMessage: "Recording for",
-    recordingPostMessage: "in progress...",
-    recordingDone: "Voice message sent sucessfully!",
-    recordingError: "Voice message has failed!"
-  }
+  },
+  // language configuration.
+  // Set the language option to one of the available languages.
+  // The language files can be found in 'config/i18n/<xx>.js'.
+  // For example, to use German, uncomment the next line.
+  //   language: 'de',
+  // You also can define your own phrases.
+  // To do that, copy one of the 'config/i18n/<xx>.js'
+  // to 'config/texts.js' and change the phrases as you like.
+  // If the file 'config/texts.js' exists, it will be loaded preferentially.
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
