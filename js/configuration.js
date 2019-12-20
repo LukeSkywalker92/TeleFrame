@@ -106,6 +106,9 @@ if (fs.existsSync(configPath)) {
   configuration.writeConfig();
 }
 
+// load the phrases
+require('./initLanguage')(configuration);
+
 /*************** DO NOT EDIT THE LINE BELOW ***************/
 if (typeof module !== "undefined") {
   module.exports = configuration;
