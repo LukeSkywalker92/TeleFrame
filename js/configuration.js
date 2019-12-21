@@ -98,10 +98,23 @@ if (fs.existsSync(configPath)) {
   mergeConfig(require(configPath));
 } else {
   // convert old configuration file
-  const oldConfig = configPath.replace('.json', '.js');
-  mergeConfig(require(oldConfig));
+  const oldConfigPath = configPath.replace('.json', '.js');
+  const oldConfig = require(oldConfigPath);
+  // clean config: remove text constants
+  [
+    'newPhotoMessage', 'newVideoMessage', 'deleteConfirmText',
+    'deleteCancelText', 'shutdownMessage', 'shutdownConfirmText',
+    'shutdownCancelText', 'rebootMessage', 'rebootConfirmText', 'rebootCancelText'
+  ].forEach(key => delete oldConfig[key]);
+  // clean config: remove voiceReply text constants
+  [
+    'recordingMessageTitle', 'recordingPreMessage', 'recordingPostMessage',
+    'recordingDone', 'recordingError'
+  ].forEach(key => delete oldConfig.voiceReply[key]);
+
+  mergeConfig(oldConfig);
   // backup the old config
-  fs.renameSync(oldConfig, oldConfig.replace('.js', '.backup.js'));
+  fs.renameSync(oldConfigPath, oldConfigPath.replace('.js', '.backup.js'));
   // // remove default values
   configuration.writeConfig();
 }
