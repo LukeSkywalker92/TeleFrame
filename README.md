@@ -66,10 +66,11 @@ Also note that:
 
 ## Configuration
 
-1. Copy `TeleFrame/config/config.js.example` to `TeleFrame/config/config.js`. \
+1. Copy `TeleFrame/config/config.example.json` to `TeleFrame/config/config.json`. \
    **Note:** If you used the installer script. This step is already done for you.
 
 2. Modify your required settings.
+  **Note:** You only need to define settings that differ from the standard configuration.
 
 
 The following properties can be configured:
