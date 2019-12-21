@@ -438,7 +438,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   var img;
   if (image.src.split(".").pop() == "mp4") {
     img = document.createElement("video");
-    img.muted = !config.playVideoAudio;
+    img.muted = !config.playVideoAudio || isMuted;
     img.autoplay = true;
   } else {
     img = document.createElement("img");
