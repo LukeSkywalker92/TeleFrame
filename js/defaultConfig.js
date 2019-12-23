@@ -6,6 +6,11 @@ var defaultConfig = {
   // Use this to only allow certain users to send photos to your TeleFrame. See hints in README.md
   whitelistChats: [],
 
+  // Define the language to use.
+  // If the language is not defined, the system language is loaded, if available.
+  // If no language file could be determined, English is used by default.
+  // language: "en",
+
   // Play a sound on recieving a message, set `false` to turn off
   playSoundOnRecieve: "sound1.mp3",
 
