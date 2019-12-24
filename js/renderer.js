@@ -1,5 +1,5 @@
 // Imports
-const {remote, ipcRenderer} = require("electron");
+const {remote, ipcRenderer, webFrame} = require("electron");
 const $ = require("jquery");
 window.jQuery = $;
 const Swal = require("sweetalert2");
@@ -8,49 +8,75 @@ const chroma = require("chroma-js");
 const velocity = require("velocity-animate");
 const logger = remote.getGlobal("rendererLogger");
 const config = remote.getGlobal("config");
+const {TouchBar, TouchBarElement} = require("./js/touchBar.js")
 
 // Inform that Renderer started
 logger.info("Renderer started ...");
+
+
 
 // Create variables
 var images = remote.getGlobal("images");
 var container = document.getElementById("container");
 var isPaused = false;
+var isMuted = false;
 var currentImageIndex = images.length;
 var startTime, endTime, longpress, timeout, recordSwal, currentChatId, currentMessageId, currentTimeout;
 
-// configure sound notification sound
-if (config.playSoundOnRecieve != false) {
-  var audio = new Audio(__dirname + "/sound1.mp3");
+var touchBarElements = {
+  "previousImage": new TouchBarElement("far fa-arrow-alt-circle-left", previousImage),
+  "play": new TouchBarElement("far fa-play-circle", play),
+  "pause": new TouchBarElement("far fa-pause-circle", pause),
+  "playPause": new TouchBarElement("far fa-pause-circle", playPause),
+  "nextImage": new TouchBarElement("far fa-arrow-alt-circle-right", nextImage),
+  "record": new TouchBarElement("fas fa-microphone-alt", record),
+  "starImage": new TouchBarElement("far fa-star", starImage),
+  "deleteImage": new TouchBarElement("far fa-trash-alt", deleteImage),
+  "mute": new TouchBarElement("fas fa-volume-up", mute),
+  "shutdown": new TouchBarElement("fas fa-power-off", shutdown),
+  "reboot": new TouchBarElement("fas fa-redo-alt", reboot),
 }
 
-// handle touch events for navigation and voice reply
-$("body").on('touchstart', function() {
-  startTime = new Date().getTime();
-  currentImageForVoiceReply = images[currentImageIndex]
-});
 
-$("body").on('touchend', function(event) {
-  endTime = new Date().getTime();
-  longpress = (endTime - startTime > 500) ? true : false;
-  tapPos = event.originalEvent.changedTouches[0].pageX
-  containerWidth = $("body").width()
-  if (tapPos / containerWidth < 0.2) {
-    previousImage()
-  } else if (tapPos / containerWidth > 0.8) {
-    nextImage()
-  } else {
-    if (longpress) {
-      ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
+// configure sound notification sound
+if (config.playSoundOnRecieve !== false) {
+  var audio = new Audio(__dirname + "/sounds/" + (config.playSoundOnRecieve || 'sound1.mp3'));
+}
+
+if (config.touchBar) {
+  touchBar = new TouchBar(touchBarElements, config.touchBar)
+} else {
+  // handle touch events for navigation and voice reply
+  $("body").on('touchstart', function() {
+    startTime = new Date().getTime();
+    currentImageForVoiceReply = images[currentImageIndex]
+  });
+
+  $("body").on('touchend', function(event) {
+    event.preventDefault();
+    endTime = new Date().getTime();
+    longpress = (endTime - startTime > 500) ? true : false;
+    tapPos = event.originalEvent.changedTouches[0].pageX
+    containerWidth = $("body").width()
+    if (tapPos / containerWidth < 0.2) {
+      previousImage()
+    } else if (tapPos / containerWidth > 0.8) {
+      nextImage()
     } else {
-      if (isPaused) {
-        play()
+      if (longpress) {
+        ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
       } else {
-        pause()
+        if (isPaused) {
+          play()
+        } else {
+          pause()
+        }
       }
     }
-  }
-});
+  });
+}
+
+
 
 // handle pressed record button
 ipcRenderer.on("recordButtonPressed", function(event, arg) {
@@ -66,14 +92,17 @@ ipcRenderer.on("recordStarted", function(event, arg) {
   spinner.classList.add("spinner");
   message.appendChild(spinner);
   let text = document.createElement("p");
-  messageText = config.voiceReply.recordingPreMessage
+  messageText = config.phrases.recordingPreMessage
                     + ' ' + currentImageForVoiceReply['chatName']
-                    + ' ' + config.voiceReply.recordingPostMessage;
+                    + ' ' + config.phrases.recordingPostMessage;
   text.innerHTML = messageText
   message.appendChild(text);
   recordSwal = Swal.fire({
-    title: config.voiceReply.recordingMessageTitle,
+    title: config.phrases.recordingMessageTitle,
     showConfirmButton: false,
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    allowEnterKey: false,
     html: message
   });
 });
@@ -82,15 +111,15 @@ ipcRenderer.on("recordStarted", function(event, arg) {
 ipcRenderer.on("recordStopped", function(event, arg) {
   let message = document.createElement("div");
   let text = document.createElement("p");
-  text.innerHTML = config.voiceReply.recordingDone
+  text.innerHTML = config.phrases.recordingDone
                     + ' ' + currentImageForVoiceReply['chatName'];
   message.appendChild(text);
   recordSwal.close();
   Swal.fire({
     html: message,
-    title: config.voiceReply.recordingMessageTitle,
+    title: config.phrases.recordingMessageTitle,
     showConfirmButton: false,
-    type: "success",
+    icon: "success",
     timer: 5000
   });
 });
@@ -99,12 +128,12 @@ ipcRenderer.on("recordStopped", function(event, arg) {
 ipcRenderer.on("recordError", function(event, arg) {
   let message = document.createElement("div");
   let text = document.createElement("p");
-  text.innerHTML = config.voiceReply.recordingError;
+  text.innerHTML = config.phrases.recordingError;
   message.appendChild(text);
   recordSwal.close();
   Swal.fire({
     html: message,
-    title: config.voiceReply.recordingMessageTitle,
+    title: config.phrases.recordingMessageTitle,
     showConfirmButton: false,
     icon: "error",
     timer: 5000
@@ -113,8 +142,8 @@ ipcRenderer.on("recordError", function(event, arg) {
 
 // handle new incoming image
 ipcRenderer.on("newImage", function(event, arg) {
-  newImage(arg.sender, arg.type);
-  if (config.playSoundOnRecieve != false) {
+  newImage(arg.sender, arg.type, arg.images);
+  if ((config.playSoundOnRecieve != false) && (isMuted == false)) {
     audio.play();
   }
 });
@@ -159,7 +188,7 @@ function showPause() {
 
 function hidePause() {
   let node = document.getElementById("pauseBox");
-  if (node.parentNode) {
+  if (node && node.parentNode) {
     node.parentNode.removeChild(node);
   }
 }
@@ -183,6 +212,7 @@ function pause() {
   isPaused = true;
   clearTimeout(currentTimeout);
   showPause(isPaused);
+  setTouchbarIconStatus();
 }
 
 function play() {
@@ -191,6 +221,189 @@ function play() {
   isPaused = false;
   loadImage(true, 0);
   hidePause(isPaused);
+  setTouchbarIconStatus();
+}
+
+function playPause() {
+  if (isPaused) {
+    play()
+  } else {
+    pause()
+  }
+}
+
+function record() {
+  if (images.length == 0) {
+    return;
+  }
+  currentImageForVoiceReply = images[currentImageIndex]
+  ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
+}
+
+function starImage() {
+  if (images.length == 0) {
+    return;
+  }
+  if (images[currentImageIndex].starred) {
+    images[currentImageIndex].starred = false
+    ipcRenderer.send("unstarImage", images);
+  } else {
+    images[currentImageIndex].starred = true
+    ipcRenderer.send("starImage", images);
+  }
+  setTouchbarIconStatus();
+}
+
+function deleteImage() {
+  if (images.length == 0) {
+    return;
+  }
+  // to ensure to show the correctly next image
+  const doDeleteImage =  () => {
+    ipcRenderer.send("deleteImage", currentImageIndex);
+    images.splice(currentImageIndex, 1)
+    if (images.length == 0) {
+      $(container).empty();
+      $(container).append('<h1>TeleFrame</h1>');
+    }
+    currentImageIndex = (currentImageIndex > 0 ? currentImageIndex - 1 : images.length);
+  };
+  if (config.confirmDeleteImage === false) {
+    doDeleteImage();
+    return;
+  }
+  var paused = isPaused;
+  pause();
+  touchBar.hide();
+  Swal.fire({
+    title: config.phrases.deleteMessage,
+    background: 'rgba(255,255,255,0.8)',
+    confirmButtonText: config.phrases.deleteConfirmText,
+    cancelButtonText: config.phrases.deleteCancelText,
+    showCancelButton: true,
+    focusCancel: true,
+    confirmButtonColor: '#a00',
+    icon: "warning"
+  }).then(result => {
+    if (result.value) {
+      doDeleteImage();
+    } else {
+      currentImageIndex = (currentImageIndex > 0 ? currentImageIndex - 1 : images.length);
+    }
+    if (!paused) {
+      play();
+    } else {
+      loadImage(true, 0);
+    }
+    touchBar.show();
+  });
+}
+
+function mute() {
+  if (isMuted) {
+    isMuted = false;
+    touchBarElements["mute"].iconElement.classList = "fas fa-volume-up"
+  } else {
+    isMuted = true;
+    touchBarElements["mute"].iconElement.classList = "fas fa-volume-mute"
+  }
+}
+
+function shutdown() {
+  const doShutdown = () => executeSystemCommand("sudo shutdown -h now");
+
+  if (config.confirmShutdown === false) {
+     doShutdown();
+    return;
+  }
+  touchBar.hide();
+  Swal.fire({
+    title: config.phrases.shutdownMessage,
+    background: 'rgba(255,255,255,0.8)',
+    confirmButtonText: config.phrases.shutdownConfirmText,
+    cancelButtonText: config.phrases.shutdownCancelText,
+    showCancelButton: true,
+    focusCancel: true,
+    confirmButtonColor: '#a00',
+    icon: "warning"
+  }).then(result => {
+    if (result.value) {
+       doShutdown();
+    } else {
+      touchBar.show();
+    }
+  });
+}
+
+function reboot() {
+  const doReboot = () => executeSystemCommand("sudo reboot");
+
+  if (config.confirmReboot === false) {
+     doReboot();
+    return;
+  }
+  touchBar.hide();
+  Swal.fire({
+    title: config.phrases.rebootMessage,
+    background: 'rgba(255,255,255,0.8)',
+    confirmButtonText: config.phrases.rebootConfirmText,
+    cancelButtonText: config.phrases.rebootCancelText,
+    showCancelButton: true,
+    focusCancel: true,
+    confirmButtonColor: '#a00',
+    icon: "warning"
+  }).then(result => {
+    if (result.value) {
+       doReboot();
+    } else {
+      touchBar.show();
+    }
+  });
+}
+
+function setTouchbarIconStatus() {
+  if (images.length > 0) {
+    touchBarElements["record"].iconElement.classList = "fas fa-microphone-alt";
+    touchBarElements["deleteImage"].iconElement.classList = "far fa-trash-alt";
+    if (images[currentImageIndex].starred) {
+      touchBarElements["starImage"].iconElement.classList = "fas fa-star";
+    } else {
+      touchBarElements["starImage"].iconElement.classList = "far fa-star";
+    }
+    if (isPaused) {
+      touchBarElements["playPause"].iconElement.classList = "far fa-pause-circle";
+    } else {
+      touchBarElements["playPause"].iconElement.classList = "far fa-play-circle";
+    }
+  }
+  if (images.length > 1) {
+    touchBarElements["previousImage"].iconElement.classList = "far fa-arrow-alt-circle-left";
+    touchBarElements["nextImage"].iconElement.classList = "far fa-arrow-alt-circle-right";
+  }
+  if (images.length < 2) {
+    touchBarElements["playPause"].iconElement.classList += " disabled-icon";
+    touchBarElements["previousImage"].iconElement.classList = "far fa-arrow-alt-circle-left disabled-icon";
+    touchBarElements["nextImage"].iconElement.classList = "far fa-arrow-alt-circle-right disabled-icon";
+    if (images.length == 0) {
+      touchBarElements["record"].iconElement.classList = "fas fa-microphone-alt disabled-icon";
+      touchBarElements["deleteImage"].iconElement.classList = "far fa-trash-alt disabled-icon";
+      touchBarElements["starImage"].iconElement.classList = "far fa-star disabled-icon";
+    }
+  }
+}
+
+function executeSystemCommand(command) {
+  ipcRenderer.send("executeSystemCommand", command);
+}
+
+function dummyCallback() {
+  Swal.fire({
+    html: "This is not yet implemented",
+    title: "Ooops",
+    showConfirmButton: false,
+    icon: "error",
+    timer: 5000
+  });
 }
 
 //load image to slideshow
@@ -217,6 +430,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   }
 
   var image = images[currentImageIndex];
+  setTouchbarIconStatus();
 
   //get current container and create needed elements
   var currentImage = container.firstElementChild;
@@ -224,7 +438,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   var img;
   if (image.src.split(".").pop() == "mp4") {
     img = document.createElement("video");
-    img.muted = !config.playVideoAudio;
+    img.muted = !config.playVideoAudio || isMuted;
     img.autoplay = true;
   } else {
     img = document.createElement("img");
@@ -309,7 +523,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
         .getCurrentWindow()
         .webContents.getOwnerBrowserWindow()
         .getBounds().height;
-      imageAspectRatio = img.naturalWidth / img.naturalHeight;
+      imageAspectRatio = img.videoWidth / img.videoHeight;
       if (imageAspectRatio > screenAspectRatio) {
         img.style.width = "100%";
         div.style.width = "100%";
@@ -328,6 +542,8 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
           loadImage(true, fadeTime);
         }, img.duration * 1000);
       }
+      img.onloadeddata = null;
+      img = null;
     };
   } else {
     img.onload = function() {
@@ -354,11 +570,13 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
       $(currentImage).velocity("fadeOut", {
         duration: fadeTime
       });
-      if (!isPaused) {
+      if (!isPaused && images.length > 1) {
         currentTimeout = setTimeout(() => {
           loadImage(true, config.fadeTime);
         }, config.interval);
       }
+      img.onload = null;
+      img = null;
     };
   }
 
@@ -370,7 +588,12 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     div.appendChild(caption);
   }
   setTimeout(function() {
-    container.removeChild(currentImage);
+	// remove all child containers but not the last one - active image
+    for (let i = 0; i < container.children.length - 1; i++) {
+        console.log('loadImage: remove child:', i, container.children[i].tagName);
+        container.removeChild(container.children[i]);
+    }
+    webFrame.clearCache()
   }, fadeTime)
 
   container.appendChild(div);
@@ -387,24 +610,25 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
 }
 
 //notify user of incoming image and restart slideshow with the newest image
-function newImage(sender, type) {
-  images = remote.getGlobal("images");
+function newImage(sender, type, newImageArray) {
+  images = newImageArray;
+  console.log(images);
   if (type == "image") {
     Swal.fire({
-      title: config.newPhotoMessage + " " + sender,
+      title: config.phrases.newPhotoMessage + " " + sender,
       showConfirmButton: false,
       timer: 5000,
-      type: "success"
+      icon: "success"
     }).then((value) => {
       currentImageIndex = images.length;
       loadImage(true, 0);
     });
   } else if (type == "video") {
     Swal.fire({
-      title: config.newVideoMessage + " " + sender,
+      title: config.phrases.newVideoMessage + " " + sender,
       showConfirmButton: false,
       timer: 5000,
-      type: "success"
+      icon: "success"
     }).then((value) => {
       currentImageIndex = images.length;
       loadImage(true, 0);

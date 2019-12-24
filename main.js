@@ -1,12 +1,16 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const { logger, rendererLogger } = require("./js/logger");
-const config = require("./config/config");
 const telebot = require("./js/bot");
 const imagewatcher = require("./js/imageWatchdog");
 const inputhandler = require("./js/inputHandler");
 const voicerecorder = require("./js/voiceRecorder");
 const schedules = require("./js/schedules");
+<<<<<<< .merge_file_a36340
 const CommandExecutor = require("./js/systemCommands")
+=======
+const CommandExecutor = require("./js/systemCommands");
+const config = require("./js/configuration");
+>>>>>>> .merge_file_a38376
 
 //create global variables
 global.config = config;
@@ -28,7 +32,8 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true
-    }
+    },
+    frame: false
   });
 
   win.setFullScreen(config.fullscreen);
@@ -44,8 +49,10 @@ function createWindow() {
     config.imageCount,
     global.images,
     emitter,
-    logger
+    logger,
+    ipcMain
   );
+  imageWatchdog.init()
 
   var bot = new telebot(
     config.botToken,
@@ -79,7 +86,9 @@ function createWindow() {
   }
 
   // Open the DevTools.
-  // win.webContents.openDevTools()
+  if (config.develop) {
+    win.webContents.openDevTools()
+  }
   bot.startBot();
 
   // Emitted when the window is closed.
