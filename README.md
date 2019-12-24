@@ -168,7 +168,7 @@ Now the action on the TeleFrame can be triggered by sending the corresponding co
 | **Option**              | **Description**                                                                           |
 | ----------------------- | ----------------------------------------------------------------------------------------- |
 | `name`                  | Name of the action                                                                        |
-| `command`               | Command to execute onf TeleFrame                                                          |
+| `command`               | Command to execute on TeleFrame                                                          |
 | `enable`                | When set to True, the command is added to the bot                                         |
 
 
