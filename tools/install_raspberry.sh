@@ -136,10 +136,8 @@ else
 	exit;
 fi
 
-# Use sample config for start TeleFrame
-cp config/config.example.js config/config.js
-# Put token into config
-sed -i "s/\(botToken *: *\).*/\1'$token',/" config/config.js
+# Create config for start TeleFrame containing the token
+echo -e "{\n  \"botToken\": \"$token\"\n}" > config/config.json
 
 # Create image directory
 echo -e "\e[96mCreating image directory ...\e[90m"
