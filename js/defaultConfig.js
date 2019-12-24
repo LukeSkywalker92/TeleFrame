@@ -5,7 +5,7 @@ var defaultConfig = {
 
   // Use this to only allow certain users to send photos to your TeleFrame. See hints in README.md
   whitelistChats: [],
-  
+
   // Use this to name individual users as Admin. See hints in README.md
   whitelistAdmins: [],
 
@@ -113,24 +113,24 @@ var defaultConfig = {
     // How long the recorder will record if there is no silence detected (in milliseconds)
     maxRecordTime: 60*1000,
   },
-  
+
   // Defines an object with the config for sending Admin-Commands to the TeleFrame
   adminAction: {
 	//Global Switch to enable the Admin-Actions
-    allowAdminAction: false,
-    
+    allowAdminAction: true,
+
 	//Defines an array of action-objects
 	actions: [
 		// Example Admin-Action:
 		{
 			// Name of the action
-			name: "echo", 
-			// Command to execute on TeleFrame 
-			command: 'echo test', 
-			// Switch to add the command to the bot  
+			name: "echo",
+			// Command to execute on TeleFrame
+			command: 'echo test',
+			// Switch to add the command to the bot
 			enable: true
 		},
-		
+
 		// Admin-Action for Rebooting the device
 		{name: "reboot", command: "sudo reboot", enable: true},
 		// Admin-Action for shuting the device down
@@ -143,7 +143,7 @@ var defaultConfig = {
 		{name: "stopOpenvpn", command: "systemctl openvpn stop", enable: true}
     ]
   }
-  
+
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/

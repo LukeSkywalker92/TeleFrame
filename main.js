@@ -5,12 +5,8 @@ const imagewatcher = require("./js/imageWatchdog");
 const inputhandler = require("./js/inputHandler");
 const voicerecorder = require("./js/voiceRecorder");
 const schedules = require("./js/schedules");
-<<<<<<< .merge_file_a36340
-const CommandExecutor = require("./js/systemCommands")
-=======
 const CommandExecutor = require("./js/systemCommands");
 const config = require("./js/configuration");
->>>>>>> .merge_file_a38376
 
 //create global variables
 global.config = config;
