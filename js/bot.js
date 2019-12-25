@@ -189,14 +189,7 @@ var Bot = class {
           this.logger.warn(action.command);
           ctx.reply("Triggered Action '"+action.name+"'");
 
-          // this is NOT working
-          //this.emitter.send("executeSystemCommand", "sudo 123");
-
-          // this is working but not really an ipc
-          //this.ipcMain._events.executeSystemCommand("executeSystemCommand", "sudo 123");
-
-          // old execution
-          /*exec(action.command, (error, stdout, stderr) => {
+          exec(action.command, (error, stdout, stderr) => {
             if (error) {
               console.error(stderr);
               ctx.reply("ERROR!!!\n\nExitcode: "+error.code+"\nStdErr: "+stderr);
@@ -206,7 +199,6 @@ var Bot = class {
             console.log(stdout)
             ctx.reply("SUCCESS!!!\n\n"+stdout);
           });
-          */
         })
 
         }
