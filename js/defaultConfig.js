@@ -37,8 +37,11 @@ var defaultConfig = {
 
   // Defines how many different images are shown in the slideshow.
   imageCount: 30,
-
-  //When set to true, TeleFrame will show the name of the sender when the image is shown
+  
+  // Defines if old images are deleted, when they are no longer used in the slideshow (see 'imageCount'). Starred images will not be deleted.
+  autoDeleteImages: true,
+  
+  // When set to true, TeleFrame will show the name of the sender when the image is shown
   showSender: true,
 
   // When set to true, TeleFrame will show the caption of the image when the image is shown.

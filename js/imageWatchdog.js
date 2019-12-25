@@ -1,13 +1,15 @@
 const fs = require('fs');
 
 var ImageWatchdog = class {
-  constructor(imageFolder, imageCount, images, emitter, logger, ipcMain) {
+  constructor(imageFolder, imageCount, autoDeleteImages, images, emitter, logger, ipcMain) {
     this.imageFolder = imageFolder;
     this.imageCount = imageCount;
+    this.autoDeleteImages = autoDeleteImages;
     this.images = images;
     this.logger = logger;
     this.emitter = emitter;
     this.ipcMain = ipcMain;
+
 
     //get paths of already downloaded images
     if (fs.existsSync(this.imageFolder + '/' + "images.json")) {
@@ -23,8 +25,8 @@ var ImageWatchdog = class {
                       console.log("starred")
                       this.imageCount++;
                     }
-                  }
                 }
+            }
         }
       });
 
@@ -67,23 +69,34 @@ var ImageWatchdog = class {
       'chatName': chatName,
       'messageId': messageId
     });
+    
     console.log(this.imageCount);
-    while (this.images.length-1 >= this.imageCount) {
+    while (this.images.length > this.imageCount) {
       console.log("yay");
-      console.log(this.images.splice(this.getOldestUnstarredImageIndex(), 1));
+      var idx2bedeleted = this.getOldestUnstarredImageIndex();
+      if (this.autoDeleteImages) {
+        try {
+            var oldSrc = this.images[idx2bedeleted].src;
+            fs.unlinkSync(oldSrc);
+            this.logger.info("Deleted file " + oldSrc);
+        } catch(err) {
+            this.logger.error('An error occured while deleting the file ' + oldSrc + ':\n' + err);
+        }
+        }
+      console.log(this.images.splice(idx2bedeleted, 1));
     }
     console.log(this.images.length);
     console.log(this.imageCount);
     //notify frontend, that new image arrived
-		var type;
-		if (src.split('.').pop() == 'mp4') {
-			type = 'video';
-		} else {
-			type = 'image';
-		}
+    var type;
+    if (src.split('.').pop() == 'mp4') {
+        type = 'video';
+    } else {
+	type = 'image';
+    }
     this.emitter.send('newImage', {
       sender: sender,
-			type: type,
+      type: type,
       images: this.images
     });
     this.saveImageArray();
@@ -106,7 +119,7 @@ var ImageWatchdog = class {
     var jsonContent = JSON.stringify(this.images);
     fs.writeFile(this.imageFolder + '/' + "images.json", jsonContent, 'utf8', function(err) {
       if (err) {
-        self.logger.error("An error occured while writing JSON Object to File.");
+        this.logger.error("An error occured while writing JSON Object to File.");
         return console.log(err);
       }
     });
