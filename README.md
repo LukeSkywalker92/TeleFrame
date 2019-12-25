@@ -79,6 +79,7 @@ The following properties can be configured:
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `botToken`           | The token of the Telegram Bot, which will recieve the images. How to create a bot and get the token is explained [here](https://core.telegram.org/bots#6-botfather). |
 | `whitelistChats`     | Use this to only allow certain users to send photos to your TeleFrame. See hints below.                                                                              |
+| `whitelistAdmins`    | Use this to increase individual users as admin.                                                                                                                      |
 | `playSoundOnRecieve` | Play a sound on recieving a message, set `false` to turn off.                                                                                                        |
 | `showVideos`         | When set to true, videos that are send to the bot are also shown.                                                                                                    |
 | `playVideoAudio`     | If recieved videos should be played with sound or not.                                                                                                               |
@@ -87,6 +88,7 @@ The following properties can be configured:
 | `fadeTime`           | The fading time between two images.                                                                                                                                  |
 | `interval`           | The time that an image is shown.                                                                                                                                     |
 | `imageCount`         | Defines how many different images are shown in the slideshow.                                                                                                        |
+| `autoDeleteImages`   | Defines if old images should be deleted, when they are no longer used in the slideshow (see 'imageCount'). Starred images will not be deleted.                       |
 | `showSender`         | When set to true, TeleFrame will show the name of the sender when the image is shown.                                                                                |
 | `showCaption`        | When set to true, TeleFrame will show the caption of the image when the image is shown.                                                                              |
 | `fullscreen`         | When set to true, TeleFrame will run in fullscreen mode.                                                                                                             |
@@ -100,6 +102,8 @@ The following properties can be configured:
 | `voiceReply`         | Defines an object with the config for sending voicemessages with TeleFrame, see info bellow                                                                          |
 | `touchBar`           | Defines an object with the config for using a touch bar for executing commands instead of the default touch gestures.                                                |
 | `language`           | Defines the language to use.  See `config.example.js` 'Language configuration' for details                                                                           |
+| `adminAction`        | Defines an object with the config for sending Admin-Commands to the TeleFrame, see info bellow                                                                          |
+
 
 ## Whitelist Chats
 
@@ -134,6 +138,41 @@ A very simple way to respond to the images is by using TeleFrame`s voice reply f
 | ----------------------- | ----------------------------------------------------------------------------------------- |
 | `key`                   | The keyboardkey to start the voice recording                                              |
 | `maxRecordTime`         | How long the recorder will record if there is no silence detected (in milliseconds)       |
+
+## Sending Admin-Commands to the TeleFrame
+
+As administrator of a TeleFrame, it could be very useful to execute commands on the TeleFrame computer.
+With the TeleFrame-Bot you are able to send these commands without logging on to the remote computer.
+
+Examples for such admin actions could be:
+- Reboot the Raspberry Pi
+- Restart of the TeleFrame application
+- Open a VPN connection
+- Close a VPN connection
+- ....
+
+To enable Admin-Action on the TeleFrame, following settings must be made in the Config file:
+- Adding the Chat-ID to the list of Administators (whitelistAdmins)
+- Activating the Admin Actions (allowAdminAction)
+- Adding an Action Object (actions) [see adminAction-Object]
+- Activation of the action object (enable)
+
+Now the action on the TeleFrame can be triggered by sending the corresponding command (e.g. /reboot for the command named "reboot").
+
+### adminAction-object
+| **Option**              | **Description**                                                                           |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| `allowAdminAction`      | Global Switch to enable the Admin-Actions                                                 |
+| `actions`               | Defines an array of action-objects, see info bellow                                       |
+
+### action-object
+| **Option**              | **Description**                                                                           |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| `name`                  | Name of the action                                                                        |
+| `command`               | Command to execute on TeleFrame                                                          |
+| `enable`                | When set to True, the command is added to the bot                                         |
+
+
 
 ## Touchscreen support
 * Navigate through the images by touching at the left or right side of your touchscreen.

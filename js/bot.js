@@ -3,6 +3,7 @@ const Telegram = require("telegraf/telegram");
 const Extra = require('telegraf/extra')
 const download = require("image-downloader");
 const moment = require("moment");
+const exec = require("child_process").exec;
 
 const fs = require(`fs`);
 
@@ -13,8 +14,12 @@ var Bot = class {
     imageWatchdog,
     showVideo,
     whitelistChats,
+    whitelistAdmins,
     voiceReply,
-    logger
+    logger,
+    emitter,
+    ipcMain,
+    config
   ) {
     var self = this;
     this.bot = new Telegraf(botToken);
@@ -24,7 +29,11 @@ var Bot = class {
     this.imageWatchdog = imageWatchdog;
     this.showVideo = showVideo;
     this.whitelistChats = whitelistChats;
+    this.whitelistAdmins = whitelistAdmins;
     this.voiceReply = voiceReply;
+    this.config = config;
+    this.emitter = emitter;
+    this.ipcMain = ipcMain;
 
     //get bot name
     this.bot.telegram.getMe().then((botInfo) => {
@@ -57,6 +66,29 @@ var Bot = class {
         );
         ctx.reply(
           "Hey there, this bot is whitelisted, pls add your chat id to the config file"
+        );
+
+        //Break if Chat is not whitelisted
+        return ;
+      }
+
+      return next();
+    }
+
+
+    //Middleware Check for whitelisted  ChatID
+    const isAdminWhitelisted = (ctx, next) => {
+      if (
+          this.whitelistAdmins.indexOf(ctx.message.chat.id) == -1
+      ){
+        this.logger.info(
+          "Admin-Whitelist triggered:",
+          ctx.message.chat.id,
+          this.whitelistAdmins,
+          this.whitelistAdmins.indexOf(ctx.message.chat.id)
+        );
+        ctx.reply(
+          "Hey the Admin-Actions of this bot are whitelisted, pls add your chat id to the config file"
         );
 
         //Break if Chat is not whitelisted
@@ -143,8 +175,41 @@ var Bot = class {
       this.logger.info(ctx.chat);
     });
 
+
+    //Add Admin Actions from config to Bot-Command
+    if(this.config.adminAction.allowAdminAction ){
+      var actions = this.config.adminAction.actions;
+      this.logger.info("Add Admin-Actions");
+
+      actions.forEach(action => {
+        //only add action if comman isn't (empty or null) and action is enabled
+        if(!!action.command && action.enable){
+        this.bot.command(action.name, isAdminWhitelisted, (ctx) => {
+          this.logger.warn("Command received: "+action.name);
+          this.logger.warn(action.command);
+          ctx.reply("Triggered Action '"+action.name+"'");
+
+          exec(action.command, (error, stdout, stderr) => {
+            if (error) {
+              console.error(stderr);
+              ctx.reply("ERROR!!!\n\nExitcode: "+error.code+"\nStdErr: "+stderr);
+              return;
+            }
+
+            console.log(stdout)
+            ctx.reply("SUCCESS!!!\n\n"+stdout);
+          });
+        })
+
+        }
+      });
+
+    }
+
     this.logger.info("Bot created!");
   }
+
+
 
   startBot() {
     //Start bot
@@ -190,6 +255,7 @@ var Bot = class {
       }.bind(this)
     );
   }
+
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
