@@ -269,8 +269,8 @@ function deleteImage() {
     ipcRenderer.send("deleteImage", currentImageIndex);
     images.splice(currentImageIndex, 1)
     if (images.length == 0) {
-      $($container).empty();
-      $($container).append('<h1>TeleFrame</h1>');
+      $container.empty();
+      $container.append('<h1>TeleFrame</h1>');
     }
     currentImageIndex = (currentImageIndex > 0 ? currentImageIndex - 1 : images.length);
   };
