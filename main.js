@@ -1,12 +1,12 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const { logger, rendererLogger } = require("./js/logger");
-const config = require("./config/config");
 const telebot = require("./js/bot");
 const imagewatcher = require("./js/imageWatchdog");
 const inputhandler = require("./js/inputHandler");
 const voicerecorder = require("./js/voiceRecorder");
 const schedules = require("./js/schedules");
-const CommandExecutor = require("./js/systemCommands")
+const CommandExecutor = require("./js/systemCommands");
+const config = require("./js/configuration");
 
 //create global variables
 global.config = config;

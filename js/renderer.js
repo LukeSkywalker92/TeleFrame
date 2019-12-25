@@ -39,8 +39,8 @@ var touchBarElements = {
 
 
 // configure sound notification sound
-if (config.playSoundOnRecieve != false) {
-  var audio = new Audio(__dirname + "/sounds/" + config.playSoundOnRecieve);
+if (config.playSoundOnRecieve !== false) {
+  var audio = new Audio(__dirname + "/sounds/" + (config.playSoundOnRecieve || 'sound1.mp3'));
 }
 
 if (config.touchBar) {
@@ -92,13 +92,13 @@ ipcRenderer.on("recordStarted", function(event, arg) {
   spinner.classList.add("spinner");
   message.appendChild(spinner);
   let text = document.createElement("p");
-  messageText = config.voiceReply.recordingPreMessage
+  messageText = config.phrases.recordingPreMessage
                     + ' ' + currentImageForVoiceReply['chatName']
-                    + ' ' + config.voiceReply.recordingPostMessage;
+                    + ' ' + config.phrases.recordingPostMessage;
   text.innerHTML = messageText
   message.appendChild(text);
   recordSwal = Swal.fire({
-    title: config.voiceReply.recordingMessageTitle,
+    title: config.phrases.recordingMessageTitle,
     showConfirmButton: false,
     allowOutsideClick: false,
     allowEscapeKey: false,
@@ -111,13 +111,13 @@ ipcRenderer.on("recordStarted", function(event, arg) {
 ipcRenderer.on("recordStopped", function(event, arg) {
   let message = document.createElement("div");
   let text = document.createElement("p");
-  text.innerHTML = config.voiceReply.recordingDone
+  text.innerHTML = config.phrases.recordingDone
                     + ' ' + currentImageForVoiceReply['chatName'];
   message.appendChild(text);
   recordSwal.close();
   Swal.fire({
     html: message,
-    title: config.voiceReply.recordingMessageTitle,
+    title: config.phrases.recordingMessageTitle,
     showConfirmButton: false,
     icon: "success",
     timer: 5000
@@ -128,12 +128,12 @@ ipcRenderer.on("recordStopped", function(event, arg) {
 ipcRenderer.on("recordError", function(event, arg) {
   let message = document.createElement("div");
   let text = document.createElement("p");
-  text.innerHTML = config.voiceReply.recordingError;
+  text.innerHTML = config.phrases.recordingError;
   message.appendChild(text);
   recordSwal.close();
   Swal.fire({
     html: message,
-    title: config.voiceReply.recordingMessageTitle,
+    title: config.phrases.recordingMessageTitle,
     showConfirmButton: false,
     icon: "error",
     timer: 5000
@@ -268,7 +268,7 @@ function deleteImage() {
     }
     currentImageIndex = (currentImageIndex > 0 ? currentImageIndex - 1 : images.length);
   };
-  if (!config.confirmDeleteImage) {
+  if (config.confirmDeleteImage === false) {
     doDeleteImage();
     return;
   }
@@ -276,10 +276,10 @@ function deleteImage() {
   pause();
   touchBar.hide();
   Swal.fire({
-    title: config.deleteMessage || 'Really remove?',
+    title: config.phrases.deleteMessage,
     background: 'rgba(255,255,255,0.8)',
-    confirmButtonText: config.deleteConfirmText || 'Remove',
-    cancelButtonText: config.deleteCancelText || 'Cancel',
+    confirmButtonText: config.phrases.deleteConfirmText,
+    cancelButtonText: config.phrases.deleteCancelText,
     showCancelButton: true,
     focusCancel: true,
     confirmButtonColor: '#a00',
@@ -312,16 +312,16 @@ function mute() {
 function shutdown() {
   const doShutdown = () => executeSystemCommand("sudo shutdown -h now");
 
-  if (!config.confirmShutdown) {
+  if (config.confirmShutdown === false) {
      doShutdown();
     return;
   }
   touchBar.hide();
   Swal.fire({
-    title: config.shutdownMessage || 'Really shutdown?',
+    title: config.phrases.shutdownMessage,
     background: 'rgba(255,255,255,0.8)',
-    confirmButtonText: config.shutdownConfirmText || 'Shutdown',
-    cancelButtonText: config.shutdownCancelText || 'Cancel',
+    confirmButtonText: config.phrases.shutdownConfirmText,
+    cancelButtonText: config.phrases.shutdownCancelText,
     showCancelButton: true,
     focusCancel: true,
     confirmButtonColor: '#a00',
@@ -338,16 +338,16 @@ function shutdown() {
 function reboot() {
   const doReboot = () => executeSystemCommand("sudo reboot");
 
-  if (!config.confirmReboot) {
+  if (config.confirmReboot === false) {
      doReboot();
     return;
   }
   touchBar.hide();
   Swal.fire({
-    title: config.rebootMessage || 'Really reboot?',
+    title: config.phrases.rebootMessage,
     background: 'rgba(255,255,255,0.8)',
-    confirmButtonText: config.rebootConfirmText || 'Reboot',
-    cancelButtonText: config.rebootCancelText || 'Cancel',
+    confirmButtonText: config.phrases.rebootConfirmText,
+    cancelButtonText: config.phrases.rebootCancelText,
     showCancelButton: true,
     focusCancel: true,
     confirmButtonColor: '#a00',
@@ -438,7 +438,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   var img;
   if (image.src.split(".").pop() == "mp4") {
     img = document.createElement("video");
-    img.muted = !config.playVideoAudio;
+    img.muted = !config.playVideoAudio || isMuted;
     img.autoplay = true;
   } else {
     img = document.createElement("img");
@@ -523,7 +523,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
         .getCurrentWindow()
         .webContents.getOwnerBrowserWindow()
         .getBounds().height;
-      imageAspectRatio = img.naturalWidth / img.naturalHeight;
+      imageAspectRatio = img.videoWidth / img.videoHeight;
       if (imageAspectRatio > screenAspectRatio) {
         img.style.width = "100%";
         div.style.width = "100%";
@@ -615,7 +615,7 @@ function newImage(sender, type, newImageArray) {
   console.log(images);
   if (type == "image") {
     Swal.fire({
-      title: config.newPhotoMessage + " " + sender,
+      title: config.phrases.newPhotoMessage + " " + sender,
       showConfirmButton: false,
       timer: 5000,
       icon: "success"
@@ -625,10 +625,10 @@ function newImage(sender, type, newImageArray) {
     });
   } else if (type == "video") {
     Swal.fire({
-      title: config.newVideoMessage + " " + sender,
+      title: config.phrases.newVideoMessage + " " + sender,
       showConfirmButton: false,
       timer: 5000,
-      type: "success"
+      icon: "success"
     }).then((value) => {
       currentImageIndex = images.length;
       loadImage(true, 0);
