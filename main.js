@@ -43,6 +43,7 @@ function createWindow() {
   var imageWatchdog = new imagewatcher(
     config.imageFolder,
     config.imageCount,
+    config.autoDeleteImages,
     global.images,
     emitter,
     logger,
@@ -56,8 +57,12 @@ function createWindow() {
     imageWatchdog,
     config.showVideos,
     config.whitelistChats,
+    config.whitelistAdmins,
     config.voiceReply,
-    logger
+    logger,
+    emitter,
+    ipcMain,
+    config
   );
 
   var inputHandler = new inputhandler(config, emitter, bot, logger);
