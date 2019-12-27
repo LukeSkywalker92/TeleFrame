@@ -12,6 +12,7 @@
   "autoDeleteImages": true,
   "showSender": true,
   "showCaption": true,
+  "senderAndCaptionDuration": 50,
   "useFullscreenForCaptionAndSender": true,
   "toggleMonitor": false,
   "turnOnHour": 9,

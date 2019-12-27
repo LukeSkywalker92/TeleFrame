@@ -37,15 +37,20 @@ var defaultConfig = {
 
   // Defines how many different images are shown in the slideshow.
   imageCount: 30,
-  
+
   // Defines if old images are deleted, when they are no longer used in the slideshow (see 'imageCount'). Starred images will not be deleted.
   autoDeleteImages: true,
-  
+
   // When set to true, TeleFrame will show the name of the sender when the image is shown
   showSender: true,
 
   // When set to true, TeleFrame will show the caption of the image when the image is shown.
   showCaption: true,
+
+  // Defines the percentage of the duration of <interval> to show sender and caption.
+  // minimum value: 10  = fade out after 10% of <interval>
+  // maximum value: 100 = full time. sender and caption does not fade out
+  senderAndCaptionDuration: 50,
 
   // To output sender caption, use the entire screen
   useFullscreenForCaptionAndSender: true,
