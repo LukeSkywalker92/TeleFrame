@@ -9,6 +9,10 @@ var defaultConfig = {
   // Use this to name individual users as Admin. See hints in README.md
   whitelistAdmins: [],
 
+  // Use this to configure the connected screen
+  // A standard HDMI screen is used by default.
+  screenConfig: "./config/screens/hdmi_default.js",
+
   // Define the language to use.
   // If the language is not defined, the system language is loaded, if available.
   // If no language file could be determined, English is used by default.
