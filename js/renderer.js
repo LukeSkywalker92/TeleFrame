@@ -583,6 +583,15 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
         $(this).css(css);
     });
 
+    //fade out sender and caption at half time of the shown image
+    let captionSenderTimeout = setTimeout(function() {
+      $([$sender, $caption]).each(function() {
+        $(this).velocity("fadeOut", {
+          duration: fadeTime / 2
+        });
+      });
+    }, config.interval * 0.01 * (Math.max(10, Math.min(100, parseInt(config.senderAndCaptionDuration) || 50))));
+
     $assetDiv.velocity("fadeIn", {
       duration: fadeTime
     });
@@ -592,8 +601,9 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     });
     if (!isPaused && images.length > 1) {
       currentTimeout = setTimeout(() => {
+        clearTimeout(captionSenderTimeout);
         loadImage(true, config.fadeTime);
-      }, config.interval);
+      }, ($asset.is('video') ? $asset.prop('duration') * 1000: config.interval));
     }
   });
 
@@ -605,15 +615,6 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   }, fadeTime)
 
   $container.append($assetDiv);
-
-  //fade out sender and caption at half time of the shown image
-  setTimeout(function() {
-    $([$sender, $caption]).each(function() {
-      $(this).velocity("fadeOut", {
-        duration: fadeTime / 2
-      });
-    });
-  }, config.interval * 0.01 * (Math.max(10, Math.min(100, parseInt(config.senderAndCaptionDuration) || 50))));
 }
 
 //notify user of incoming image and restart slideshow with the newest image
