@@ -8,8 +8,12 @@ const schedules = require("./js/schedules");
 const CommandExecutor = require("./js/systemCommands");
 const config = require("./js/configuration");
 
+const screen = require(config.screenConfig);
+logger.info("Configuring for: " +  screen.name);
+
 //create global variables
 global.config = config;
+global.screen = screen;
 global.rendererLogger = rendererLogger;
 global.images = [];
 
@@ -79,7 +83,7 @@ function createWindow() {
   // generate scheduler, when times for turning monitor off and on
   // are given in the config file
   if (config.toggleMonitor) {
-    var scheduler = new schedules(config, logger);
+    var scheduler = new schedules(config, screen, logger);
   }
 
   // Open the DevTools.
