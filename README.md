@@ -96,6 +96,7 @@ The following properties can be configured:
 | `toggleMonitor`      | When set to true, TeleFrame will switch the monitor off and on at the defined hours.                                                                                 |
 | `turnOnHour`         | Defines when the monitor should be turned on.                                                                                                                        |
 | `turnOffHour`        | Defines when the monitor should be turned off.                                                                                                                       |
+| `switchLedsOff`      | Defines if the 2 LEDs on the RaspberryPi should be switched off.                                                                                                     |
 | `confirmDeleteImage` | Defines if to show a confirm message before delete an image `true` or `false`                                                                                        |
 | `confirmShutdown`    | Defines if to show a confirm message before shutdown the system `true` or `false`                                                                                    |
 | `confirmReboot`      | Defines if to show a confirm message before rebooting the system `true` or `false`                                                                                   |
