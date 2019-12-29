@@ -60,6 +60,9 @@ var defaultConfig = {
   // Defines when the monitor shuld be turned off.
   turnOffHour: 22,
 
+  // Defines if the 2 LEDs of the Raspberry board are switched off
+  switchLedsOff: false,
+
   touchBar: {
     height: "75px",
     // timout to automatically hide the touchbar.

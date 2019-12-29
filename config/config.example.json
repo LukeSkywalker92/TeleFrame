@@ -16,6 +16,7 @@
   "toggleMonitor": false,
   "turnOnHour": 9,
   "turnOffHour": 22,
+  "switchLedsOff": false,
   "touchBar": {
     "height": "75px",
     "autoHideTimeout": 30000,
