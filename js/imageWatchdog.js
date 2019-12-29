@@ -20,13 +20,13 @@ var ImageWatchdog = class {
       	  if (fs.existsSync(jsonData[image].src)) {
       	    const stats = fs.statSync(jsonData[image].src);
       	    if (stats.size > 0) {
-                    this.images.push(jsonData[image]);
-                    if (jsonData[image].starred) {
-                      console.log("starred")
-                      this.imageCount++;
-                    }
-                }
+              this.images.push(jsonData[image]);
+              if (jsonData[image].starred) {
+                console.log("starred")
+                this.imageCount++;
+              }
             }
+          }
         }
       });
 
@@ -52,9 +52,25 @@ var ImageWatchdog = class {
     })
 
     this.ipcMain.on('deleteImage', (event, index) => {
+      if (this.images[index].starred) {
+        this.imageCount--;
+      }
+      this.autoDeleteImage(index);
       this.images.splice(index, 1)
       this.saveImageArray();
     })
+  }
+
+  autoDeleteImage(idx2bedeleted) {
+    if (this.autoDeleteImages) {
+      try {
+          var oldSrc = this.images[idx2bedeleted].src;
+          fs.unlinkSync(oldSrc);
+          this.logger.info("Deleted file " + oldSrc);
+      } catch(err) {
+          this.logger.error('An error occured while deleting the file ' + oldSrc + ':\n' + err);
+      }
+    }
   }
 
   newImage(src, sender, caption, chatId, chatName, messageId) {
@@ -69,20 +85,12 @@ var ImageWatchdog = class {
       'chatName': chatName,
       'messageId': messageId
     });
-    
+
     console.log(this.imageCount);
     while (this.images.length > this.imageCount) {
       console.log("yay");
       var idx2bedeleted = this.getOldestUnstarredImageIndex();
-      if (this.autoDeleteImages) {
-        try {
-            var oldSrc = this.images[idx2bedeleted].src;
-            fs.unlinkSync(oldSrc);
-            this.logger.info("Deleted file " + oldSrc);
-        } catch(err) {
-            this.logger.error('An error occured while deleting the file ' + oldSrc + ':\n' + err);
-        }
-        }
+      this.autoDeleteImage(idx2bedeleted);
       console.log(this.images.splice(idx2bedeleted, 1));
     }
     console.log(this.images.length);
@@ -90,9 +98,9 @@ var ImageWatchdog = class {
     //notify frontend, that new image arrived
     var type;
     if (src.split('.').pop() == 'mp4') {
-        type = 'video';
+      type = 'video';
     } else {
-	type = 'image';
+      type = 'image';
     }
     this.emitter.send('newImage', {
       sender: sender,
