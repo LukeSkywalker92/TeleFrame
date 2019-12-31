@@ -1,6 +1,7 @@
 {
   "botToken": "<your bot token>",
   "whitelistChats": [],
+  "screenConfig": "./config/screens/hdmi_default.js",
   "playSoundOnRecieve": "sound1.mp3",
   "showVideos": true,
   "playVideoAudio": false,
@@ -15,6 +16,7 @@
   "toggleMonitor": false,
   "turnOnHour": 9,
   "turnOffHour": 22,
+  "switchLedsOff": false,
   "touchBar": {
     "height": "75px",
     "autoHideTimeout": 30000,
