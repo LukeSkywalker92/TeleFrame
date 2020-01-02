@@ -609,7 +609,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
 
   setTimeout(function() {
 	  // remove all child containers but not the last one - active image
-	  console.log('Cleanup element count to be removed now:',$container.find('div.imgcontainer:first-child, div.basecontainer:first-child, h1:first-child').not(':last').length)
+	  //console.log('Cleanup element count to be removed now:',$container.find('div.imgcontainer:first-child, div.basecontainer:first-child, h1:first-child').not(':last').length)
     $container.find('div.imgcontainer:first-child, div.basecontainer:first-child, h1:first-child').not(':last').remove();
     webFrame.clearCache()
   }, fadeTime)
