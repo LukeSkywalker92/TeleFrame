@@ -8,6 +8,10 @@
  * To control the power switch an additional script and some hardware (optocoupler 
  * and a resistor) is required. 
  */
+// THIS VARIABLE NEEDS TO BE CONFIGURED MANUALLY
+// It depends on your individual setup, to which 
+// Pin the optocoupler is connected to.
+var PIN = 29;
  
 var screen = {
     name: "Sunfounder HDMI screen",
@@ -17,10 +21,9 @@ var screen = {
     hasTouch: true,
     hasBacklightCtl: false,
     hasBacklightDimming: false,
-    pin: 1,
-    cmdInit: "gpio mode " + this.pin + "out",
-    cmdBacklightOff: "bash ../tools/screen_switch.sh " + this.pin,
-    cmdBacklightOn:  "bash ../tools/screen_switch.sh " + this.pin,
+    cmdInit: "gpio mode " + PIN + " out",
+    cmdBacklightOff: "bash ./tools/screen_switch.sh " + PIN,
+    cmdBacklightOn:  "bash ./tools/screen_switch.sh " + PIN,
     cmdBacklightDimming: "",
 };
 
