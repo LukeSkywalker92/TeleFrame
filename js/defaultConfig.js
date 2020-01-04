@@ -55,6 +55,9 @@ var defaultConfig = {
 
   // Defines when the monitor shuld be turned off.
   turnOffHour: 22,
+  
+  // Defines if the bot should answer on images or videos with a short reply
+  botReply: false,
 
   touchBar: {
     height: "75px",

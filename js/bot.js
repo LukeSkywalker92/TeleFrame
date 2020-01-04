@@ -108,14 +108,26 @@ var Bot = class {
       } else if (ctx.updateSubTypes.indexOf('document') > -1) {
         fileId = ctx.message.document.file_id;
       }
+      
 
       this.telegram.getFileLink(fileId).then((link) => {
         // check for supported file types
         if (link.match(/\.(mp4|jpg|gif|png)$/) === null) {
+          if (config.botReply) {
+            ctx.reply(config.phrases.documentFormatError)  
+          }
           return;
         }
 
         let fileExtension = '.' + link.split('.').pop();
+        // let bot reply, if wanted
+        if (config.botReply) {
+            if (fileExtension.match(/\.(mp4|gif)$/)){
+              ctx.reply("\u{1F44D}\u{1F3A5}");  
+            } else if (fileExtension.match(/\.(jpg|png)$/)){
+              ctx.reply("\u{1F44D}\u{1F4F8}");
+            }
+        }
         if (fileExtension !== '.mp4' || this.showVideo) {
           download
             .image({

@@ -30,7 +30,9 @@ var i18n = {
   // The message of the recording dialog displayed on the frame when recording has finished
   recordingDone: "Voice message sent sucessfully!",
   // The error message of the recording dialog displayed when recording has failed
-  recordingError: "Voice message has failed!"
+  recordingError: "Voice message has failed!",
+  // The error message if the received document has unknown format
+  documentFormatError: "This document has an unknown format."
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
