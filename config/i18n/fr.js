@@ -31,6 +31,8 @@ var i18n = {
   recordingDone: "Le message vocal a bien été envoyé !",
   // The error message of the recording dialog displayed when recording has failed
   recordingError: "L'envoi du message vocal a échoué !"
+  // The error message if the received document has unknown format 
+  documentFormatError: "Le document reçu est dans un format inconnu." 
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
