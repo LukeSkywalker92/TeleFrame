@@ -10,9 +10,14 @@ var schedules = class {
     this.opts = {timeout: 15000};
     var self = this;
 
+    // check if the screen configuration needs to be initialized
+    if (this.screen.init && typeof this.screen.init === 'function') {
+      this.screen.init(config.screenSwitchOptions);
+    }
+
     // initialize the monitor control if required
     if(this.screen.cmdInit.length >0){
-	exec(this.screen.cmdInit , this.opts, function(error, stdout, stderr) {
+	     exec(this.screen.cmdInit , this.opts, function(error, stdout, stderr) {
         self.checkForExecError(error, stdout, stderr);
       });
     }

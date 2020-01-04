@@ -13,6 +13,12 @@ var defaultConfig = {
   // A standard HDMI screen is used by default.
   screenConfig: "./config/screens/hdmi_default.js",
 
+  // Object to define options for the specified screenConfig.
+  // Check the screens/<config>.js if it requires configuration.
+  // This obejct will be passed to the screen.configure() member, if defined.
+  // For example - screenSwitchOptions: { gpioPin: 27}
+  screenSwitchOptions: {},
+
   // Define the language to use.
   // If the language is not defined, the system language is loaded, if available.
   // If no language file could be determined, English is used by default.
@@ -41,10 +47,10 @@ var defaultConfig = {
 
   // Defines how many different images are shown in the slideshow.
   imageCount: 30,
-  
+
   // Defines if old images are deleted, when they are no longer used in the slideshow (see 'imageCount'). Starred images will not be deleted.
   autoDeleteImages: true,
-  
+
   // When set to true, TeleFrame will show the name of the sender when the image is shown
   showSender: true,
 

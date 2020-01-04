@@ -119,10 +119,16 @@ if (fs.existsSync(configPath)) {
   configuration.writeConfig();
 }
 
+// load the screen switch configuration
+const screen = require(__dirname + '/../' + configuration.screenConfig);
+
 // load the phrases
 require('./initLanguage')(configuration);
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
 if (typeof module !== "undefined") {
-  module.exports = configuration;
+  module.exports = {
+    config: configuration,
+    screen: screen
+  };
 }

@@ -7,9 +7,8 @@ const inputhandler = require("./js/inputHandler");
 const voicerecorder = require("./js/voiceRecorder");
 const schedules = require("./js/schedules");
 const CommandExecutor = require("./js/systemCommands");
-const config = require("./js/configuration");
+const {config, screen} = require("./js/configuration");
 
-const screen = require(config.screenConfig);
 logger.info("Configuring for: " +  screen.name);
 
 //create global variables
