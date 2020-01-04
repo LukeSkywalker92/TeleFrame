@@ -18,9 +18,9 @@ The following options are available:
 | `cmdBacklightOff`      | {string}   | execute command to turn screen on                                           |
 | `cmdBacklightOn`       | {string}   | execute command to turn screen off                                          |
 | `cmdBacklightDimming`: | {string}   | execute command to dimm the backlight - _currently not in use_              |
-| 'init'                 | {function} | **optionaly** function to initialize the commands using `screenSwitchOptions` `config.js`. See example above |
+| `init`                 | {function} | **optionaly** function to initialize the commands using `screenSwitchOptions` from `config.js`. See example above |
 
-If the commands require parameters which must be configured by the user - e.g. a GPIO pin for the RPI, the  can be defined optionally.
+If the commands require parameters which must be configured by the user - e.g. a GPIO pin for the RPI, the function `init` can be defined optionally.
 This function is called when the configuration is initialized and the object config.screenSwitchOptions is passed.
 
 Example config using `init` function
@@ -43,7 +43,7 @@ Example config using `init` function
   {
     "botToken": "...",
     ...
-    "screenConfig": "./test.js",
+    "screenConfig": "./screens/hdmi_sunfounder_10-1_Inch_touch_screen.js",
     "screenSwitchOptions": { "pin": 29 },
     ...
   }
