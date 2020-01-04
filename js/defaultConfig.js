@@ -57,7 +57,7 @@ var defaultConfig = {
   turnOffHour: 22,
   
   // Defines if the bot should answer on images or videos with a short reply
-  botReply: false,
+  botReply: true,
 
   touchBar: {
     height: "75px",
