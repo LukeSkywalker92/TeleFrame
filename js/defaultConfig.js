@@ -152,7 +152,28 @@ var defaultConfig = {
 		// Admin-Action for stoping the OpenVPN-Client
 		{name: "stopOpenvpn", command: "systemctl openvpn stop", enable: true}
     ]
+  },
+
+	// Defines the GPIO used
+	gpio: {
+		// #GPIO of the LED "playing"
+    playLed: 1, 
+		// #GPIO of the LED "paused"
+    pauseLed: 2,
+		// #GPIO of the LED "recording"
+    recordLed: 3,
+		// #GPIO of the button "previous"
+    previousButton: 4,
+		// #GPIO of the button "pause"
+    pauseButton: 5,
+		// #GPIO of the button "play"
+    playButton: 6,
+		// #GPIO of the button "record"
+    recordButton: 7,
+		// #GPIO of the button "next"
+    nextButton: 8 
   }
+ 
 
 };
 
