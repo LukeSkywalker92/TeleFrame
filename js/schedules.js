@@ -12,7 +12,7 @@ var schedules = class {
 
     // check if the screen configuration needs to be initialized
     if (this.screen.init && typeof this.screen.init === 'function') {
-      this.screen.init(config.screenSwitchOptions);
+      this.screen.init(config.screenSwitchOptions, this.logger);
     }
 
     // initialize the monitor control if required
