@@ -18,7 +18,7 @@ The following options are available:
 | `cmdBacklightOff`      | {string}   | execute command to turn screen on                                           |
 | `cmdBacklightOn`       | {string}   | execute command to turn screen off                                          |
 | `cmdBacklightDimming`: | {string}   | execute command to dimm the backlight - _currently not in use_              |
-| `init`                 | {function} | **optionaly** function to initialize the commands using `screenSwitchOptions` from `config.js`. See example above |
+| `init`                 | {function} | **optionaly** function to initialize the commands using `screenSwitchOptions` from `config.js`. See example below |
 
 If the commands require parameters which must be configured by the user - e.g. a GPIO pin for the RPI, the function `init` can be defined optionally.
 This function is called when the configuration is initialized and the object config.screenSwitchOptions is passed.
@@ -57,7 +57,10 @@ var screen = {
     hasBacklightCtl: false,
     hasBacklightDimming: false,
     cmdBacklightDimming: "",
-    // initialize the command strings
+    /**
+     * initialize the command strings
+     * @param  {Object} options THe screenSwitchOptions object from config.json
+     */
     init: options => {
       screen.cmdInit = "gpio mode " + options.pin + " out";
       screen.cmdBacklightOff = "bash ./tools/screen_switch.sh " + options.pin;

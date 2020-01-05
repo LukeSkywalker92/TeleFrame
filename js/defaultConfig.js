@@ -16,7 +16,7 @@ var defaultConfig = {
   // Object to define options for the specified screenConfig.
   // Check the screens/<config>.js if it requires configuration.
   // This obejct will be passed to the screen.configure() member, if defined.
-  // For example - screenSwitchOptions: { gpioPin: 27}
+  // For example - screenSwitchOptions: { pin: 29}
   screenSwitchOptions: {},
 
   // Define the language to use.
