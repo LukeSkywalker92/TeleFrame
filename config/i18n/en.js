@@ -30,7 +30,7 @@ var i18n = {
   // The message of the recording dialog displayed on the frame when recording has finished
   recordingDone: "Voice message sent sucessfully!",
   // The error message of the recording dialog displayed when recording has failed
-  recordingError: "Voice message has failed!"
+  recordingError: "Voice message has failed!",
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
