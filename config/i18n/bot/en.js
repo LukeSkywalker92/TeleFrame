@@ -33,7 +33,7 @@ var i18n = {
   videoReceived: '\u{1F44D}\u{1F3A5}',
 
   // image received
-  ImageReceived: '\u{1F44D}\u{1F4F8}',
+  imageReceived: '\u{1F44D}\u{1F4F8}',
 
 };
 
