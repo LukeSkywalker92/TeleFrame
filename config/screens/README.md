@@ -65,9 +65,9 @@ var screen = {
     init: (options, logger) => {
       // check configuration option
       if (typeof options.pin !== 'number') {
-        const errorMsg = 'Error! Missing configuration of <screenSwitchOptions.pin> in config.js';
+        const errorMsg = 'ERROR! screen.init() "' + screen.name + '"! Missing or invalid configuration of "screenSwitchOptions.pin" in config.js.';
         logger.warn(errorMsg);
-        ['cmdInit', 'cmdBacklightOff', 'cmdBacklightOn'].forEach((e) => screen[e] = errorMsg);
+        ['cmdInit', 'cmdBacklightOff', 'cmdBacklightOn'].forEach((e) => screen[e] = 'echo ' + errorMsg);
       } else {
         screen.cmdInit = "gpio mode " + options.pin + " out";
         screen.cmdBacklightOff = "bash ./tools/screen_switch.sh " + options.pin;
