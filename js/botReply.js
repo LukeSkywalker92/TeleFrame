@@ -14,7 +14,7 @@ const botReply = (ctx, constant, ...args) => {
   const langSender = ctx.from.language_code.substr(0, 2).toLowerCase();
   if (!botPhrases[langSender]) {
     try {
-      botPhrases[langSender] = require(langPath + langSender);
+      botPhrases[langSender] = Object.assign({}, botPhrases[langDefault], require(langPath + langSender));
     } catch (e) {
       // language file does'nt exist. Reference default language
       botPhrases[langSender] = botPhrases[langDefault];
