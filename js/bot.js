@@ -98,69 +98,51 @@ var Bot = class {
       return next();
     }
 
-
-    //Download incoming photo
-    this.bot.on("photo", isChatWhitelisted, (ctx) => {
-      this.telegram
-        .getFileLink(ctx.message.photo[ctx.message.photo.length - 1].file_id)
-        .then((link) => {
-          download
-            .image({
-              url: link,
-              dest: this.imageFolder + "/" + moment().format("x") + ".jpg"
-            })
-            .then(({ filename, image }) => {
-              var chatName = ''
-              if (ctx.message.chat.type == 'group') {
-                chatName = ctx.message.chat.title;
-              } else if (ctx.message.chat.type == 'private') {
-                chatName = ctx.message.from.first_name;
-              }
-              this.newImage(
-                filename,
-                ctx.message.from.first_name,
-                ctx.message.caption,
-                ctx.message.chat.id,
-                chatName,
-                ctx.message.message_id
-              );
-            })
-            .catch((err) => {
-              this.logger.error(err);
-            });
-        });
-    });
-
-    //Download incoming video
-    this.bot.on("video", isChatWhitelisted, (ctx) => {
-      if (this.showVideo) {
-        this.telegram.getFileLink(ctx.message.video.file_id).then((link) => {
-          download
-            .image({
-              url: link,
-              dest: this.imageFolder + "/" + moment().format("x") + ".mp4"
-            })
-            .then(({ filename, image }) => {
-              var chatName = ''
-              if (ctx.message.chat.type == 'group') {
-                chatName = ctx.message.chat.title;
-              } else if (ctx.message.chat.type == 'private') {
-                chatName = ctx.message.from.first_name;
-              }
-              this.newImage(
-                filename,
-                ctx.message.from.first_name,
-                ctx.message.caption,
-                ctx.message.chat.id,
-                chatName,
-                ctx.message.message_id
-              );
-            })
-            .catch((err) => {
-              this.logger.error(err);
-            });
-        });
+    //Download incoming assets
+    this.bot.on(['photo', 'video', 'document'], isChatWhitelisted, (ctx) => {
+      let fileId;
+      if (ctx.updateSubTypes.indexOf('photo') > -1) {
+        fileId = ctx.message.photo[ctx.message.photo.length - 1].file_id;
+      } else if (ctx.updateSubTypes.indexOf('video') > -1) {
+        fileId = ctx.message.video.file_id
+      } else if (ctx.updateSubTypes.indexOf('document') > -1) {
+        fileId = ctx.message.document.file_id;
       }
+
+      this.telegram.getFileLink(fileId).then((link) => {
+        // check for supported file types
+        if (link.match(/\.(mp4|jpg|gif|png)$/) === null) {
+          return;
+        }
+
+        let fileExtension = '.' + link.split('.').pop();
+        if (fileExtension !== '.mp4' || this.showVideo) {
+          download
+            .image({
+              url: link,
+              dest: this.imageFolder + "/" + moment().format("x") + fileExtension
+            })
+            .then(({ filename, image }) => {
+              var chatName = ''
+              if (ctx.message.chat.type == 'group') {
+                chatName = ctx.message.chat.title;
+              } else if (ctx.message.chat.type == 'private') {
+                chatName = ctx.message.from.first_name;
+              }
+              this.newImage(
+                filename,
+                ctx.message.from.first_name,
+                ctx.message.caption,
+                ctx.message.chat.id,
+                chatName,
+                ctx.message.message_id
+              );
+            })
+            .catch((err) => {
+              this.logger.error(err);
+            });
+          }
+        });
     });
 
     this.bot.catch((err) => {

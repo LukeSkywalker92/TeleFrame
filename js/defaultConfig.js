@@ -13,6 +13,12 @@ var defaultConfig = {
   // A standard HDMI screen is used by default.
   screenConfig: "./config/screens/hdmi_default.js",
 
+  // Object to define options for the specified screenConfig.
+  // Check the screens/<config>.js if it requires configuration.
+  // This obejct will be passed to the screen.configure() member, if defined.
+  // For example - screenSwitchOptions: { pin: 29}
+  screenSwitchOptions: {},
+
   // Define the language to use.
   // If the language is not defined, the system language is loaded, if available.
   // If no language file could be determined, English is used by default.
@@ -41,10 +47,10 @@ var defaultConfig = {
 
   // Defines how many different images are shown in the slideshow.
   imageCount: 30,
-  
+
   // Defines if old images are deleted, when they are no longer used in the slideshow (see 'imageCount'). Starred images will not be deleted.
   autoDeleteImages: true,
-  
+
   // When set to true, TeleFrame will show the name of the sender when the image is shown
   showSender: true,
 
@@ -152,7 +158,28 @@ var defaultConfig = {
 		// Admin-Action for stoping the OpenVPN-Client
 		{name: "stopOpenvpn", command: "systemctl openvpn stop", enable: true}
     ]
+  },
+
+	// Defines the GPIO used
+	gpio: {
+		// #GPIO of the LED "playing"
+    playLed: 1, 
+		// #GPIO of the LED "paused"
+    pauseLed: 2,
+		// #GPIO of the LED "recording"
+    recordLed: 3,
+		// #GPIO of the button "previous"
+    previousButton: 4,
+		// #GPIO of the button "pause"
+    pauseButton: 5,
+		// #GPIO of the button "play"
+    playButton: 6,
+		// #GPIO of the button "record"
+    recordButton: 7,
+		// #GPIO of the button "next"
+    nextButton: 8 
   }
+ 
 
 };
 
