@@ -4,6 +4,7 @@ module.exports = (config) => {
   // initialize localized texts
   const configPath = __dirname + '/../config/';
   const langPath =  configPath + 'i18n/';
+  const defaultLangFile = langPath + 'en.js';
   let langFile = configPath + 'texts.js';
   let mergeCurrentConfigTexts = false;
   // Does users language file 'config/tests.js' exist?
@@ -22,7 +23,7 @@ module.exports = (config) => {
         // whithout country - 'en'
         langFile =  langPath + `${envLang.substr(0, envLang.indexOf('_'))}.js`;
         if(!fs.existsSync(langFile)) {
-          langFile = langPath + 'en.js';
+          langFile = defaultLangFile;
         }
       }
       // keep the texts defined in the current config
@@ -30,7 +31,7 @@ module.exports = (config) => {
     }
   }
   // load the language
-  config.phrases = require(langFile);
+  config.phrases = Object.assign({}, require(defaultLangFile), (langFile !== defaultLangFile ? require(langFile) : {}));
 
   // remove unused text configuration options
   for (const phraseKey in Object.keys(config.phrases)) {
