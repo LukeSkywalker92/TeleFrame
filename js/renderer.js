@@ -17,11 +17,13 @@ logger.info("Renderer started ...");
 
 // Create variables
 var images = remote.getGlobal("images");
-var container = document.getElementById("container");
+var $container = $('#container');
+$container.css('overflow', 'hidden');
+
 var isPaused = false;
 var isMuted = false;
 var currentImageIndex = images.length;
-var startTime, endTime, longpress, timeout, recordSwal, currentChatId, currentMessageId, currentTimeout;
+var startTime, endTime, longpress, recordSwal, currentTimeout;
 
 var touchBarElements = {
   "previousImage": new TouchBarElement("far fa-arrow-alt-circle-left", previousImage),
@@ -40,7 +42,7 @@ var touchBarElements = {
 
 // configure sound notification sound
 if (config.playSoundOnRecieve !== false) {
-  var audio = new Audio(__dirname + "/sounds/" + (config.playSoundOnRecieve || 'sound1.mp3'));
+  var audio = new Audio(__dirname + "/sounds/" + config.playSoundOnRecieve);
 }
 
 if (config.touchBar) {
@@ -167,30 +169,34 @@ ipcRenderer.on("play", function(event, arg) {
 
 // functions to show and hide pause icon
 function showPause() {
-  var pauseBox = document.createElement("div");
-  var div1 = document.createElement("div");
-  var div2 = document.createElement("div");
+  var $pauseBox = $('<div id="pauseBox"/>');
+  $pauseBox.css({
+    height :'50px',
+    width: '45px',
+    position: 'absolute',
+    top: '20px',
+    right: '20px'
+  });
 
-  pauseBox.id = "pauseBox";
-  pauseBox.style =
-    "height:50px;width:45px;position:absolute;top:20px;right:20px";
+  var $divBar = $("<div/>");
+  $divBar.css({
+    height: '50px',
+    'width': '15px',
+    'background-color': 'blue',
+    float: 'left',
+    'border-radius': '2px'
+  });
 
-  pauseBox.appendChild(div1);
-  pauseBox.appendChild(div2);
+  $pauseBox.append($divBar, $divBar.clone().css({
+    float: 'right',
+    'border-radius': '2px'
+  }));
 
-  div1.style =
-    "height:50px;width:15px;background-color:blue;float:left;border-radius:2px";
-  div2.style =
-    "height:50px;width:15px;background-color:blue;float:right;border-radius:2px";
-
-  container.appendChild(pauseBox);
+  $container.append($pauseBox);
 }
 
 function hidePause() {
-  let node = document.getElementById("pauseBox");
-  if (node && node.parentNode) {
-    node.parentNode.removeChild(node);
-  }
+  $("#pauseBox").remove();
 }
 
 // functions for navigation
@@ -263,8 +269,8 @@ function deleteImage() {
     ipcRenderer.send("deleteImage", currentImageIndex);
     images.splice(currentImageIndex, 1)
     if (images.length == 0) {
-      $(container).empty();
-      $(container).append('<h1>TeleFrame</h1>');
+      $container.empty();
+      $container.append('<h1>TeleFrame</h1>');
     }
     currentImageIndex = (currentImageIndex > 0 ? currentImageIndex - 1 : images.length);
   };
@@ -433,18 +439,37 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   setTouchbarIconStatus();
 
   //get current container and create needed elements
-  var currentImage = container.firstElementChild;
-  var div = document.createElement("div");
-  var img;
-  if (image.src.split(".").pop() == "mp4") {
-    img = document.createElement("video");
-    img.muted = !config.playVideoAudio || isMuted;
-    img.autoplay = true;
+  var $currentImage = $container.children('div.basecontainer, div.imgcontainer, h1').first();
+
+  var $div = $('<div class="imgcontainer"/>');
+  //set class names and style attributes
+  var $assetDiv = null;
+  if (config.useFullscreenForCaptionAndSender) {
+      $assetDiv = $("<div/>");
+      $assetDiv.addClass("basecontainer");
+      $assetDiv.append($div);
+      $assetDiv.css({
+        display: 'none',
+      });
+      $div.css('display', 'block');
   } else {
-    img = document.createElement("img");
+    $assetDiv = $div;
   }
-  var sender = document.createElement("span");
-  var caption = document.createElement("span");
+
+  var $asset;
+  if (image.src.split(".").pop() == "mp4") {
+    $asset = $("<video/>");
+    $asset.prop('muted',  !config.playVideoAudio);
+    $asset.prop('autoplay', true);
+  } else {
+    $asset = $("<img/>");
+  }
+  $asset.attr('src', image.src);
+  $asset.addClass("image");
+
+  $('.sender, .caption').remove();
+  var $sender = $('<span class="sender"/>');
+  var $caption = $('<span class="caption"/>');
 
   //create background and font colors for sender and caption
   var backgroundColor = randomColor({
@@ -468,172 +493,149 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     });
   }
 
-  //set class names and style attributes
-  img.src = image.src;
-  img.className = "image";
-  div.className = "imgcontainer";
-  sender.className = "sender";
-  caption.className = "caption";
-  caption.id = "caption";
-  sender.innerHTML = image.sender;
-  caption.innerHTML = image.caption;
-  sender.style.backgroundColor = backgroundColor;
-  caption.style.backgroundColor = backgroundColor;
-  sender.style.color = fontColor;
-  caption.style.color = fontColor;
+  $sender.html(image.sender);
+  $caption.html(image.caption);
+  $([$sender, $caption]).each(function() {
+    $(this).css({
+      backgroundColor: backgroundColor,
+      color: fontColor
+    });
+  });
 
   //generate some randomness for positions of sender and caption
   if (Math.random() >= 0.5) {
-    sender.style.left = 0;
-    sender.style.borderTopRightRadius = "10px";
-    sender.style.borderBottomRightRadius = "10px";
+    $sender.css({
+      left: 0,
+      'border-top-right-radius': "10px",
+      'border-bottom-right-radius': "10px"
+    });
   } else {
-    sender.style.right = 0;
-    sender.style.borderTopLeftRadius = "10px";
-    sender.style.borderBottomLeftRadius = "10px";
+    $sender.css({
+      right: 0,
+      'border-top-left-radius': "10px",
+      'border-bottom-left-radius': "10px"
+    });
   }
   if (Math.random() >= 0.5) {
-    caption.style.left = 0;
-    caption.style.borderTopRightRadius = "10px";
-    caption.style.borderBottomRightRadius = "10px";
+    $caption.css({
+      left: 0,
+      'border-top-right-radius': "10px",
+      'border-bottom-right-radius': "10px"
+    });
   } else {
-    caption.style.right = 0;
-    caption.style.borderTopLeftRadius = "10px";
-    caption.style.borderBottomLeftRadius = "10px";
+    $caption.css({
+      right: 0,
+      'border-top-left-radius': "10px",
+      'border-bottom-left-radius': "10px"
+    });
   }
   if (Math.random() >= 0.5) {
-    sender.style.top = "2%";
-    caption.style.bottom = "2%";
+    $sender.css('top', "2%");
+    $caption.css('bottom', "2%");
   } else {
-    sender.style.bottom = "2%";
-    caption.style.top = "2%";
+    $sender.css('bottom', "2%");
+    $caption.css('top', "2%");
   }
 
-  //calculate aspect ratio to show complete image on the screen and
-  //fade in new image while fading out the old image as soon as
-  //the new imageis loaded
-  if (image.src.split(".").pop() == "mp4") {
-    img.onloadeddata = function() {
-      screenAspectRatio =
-        remote
-        .getCurrentWindow()
-        .webContents.getOwnerBrowserWindow()
-        .getBounds().width /
-        remote
-        .getCurrentWindow()
-        .webContents.getOwnerBrowserWindow()
-        .getBounds().height;
-      imageAspectRatio = img.videoWidth / img.videoHeight;
-      if (imageAspectRatio > screenAspectRatio) {
-        img.style.width = "100%";
-        div.style.width = "100%";
-      } else {
-        img.style.height = "100%";
-        div.style.height = "100%";
-      }
-      $(div).velocity("fadeIn", {
-        duration: fadeTime
-      });
-      $(currentImage).velocity("fadeOut", {
-        duration: fadeTime
-      });
-      if (!isPaused) {
-        currentTimeout = setTimeout(() => {
-          loadImage(true, fadeTime);
-        }, img.duration * 1000);
-      }
-      img.onloadeddata = null;
-      img = null;
-    };
-  } else {
-    img.onload = function() {
-      screenAspectRatio =
-        remote
-        .getCurrentWindow()
-        .webContents.getOwnerBrowserWindow()
-        .getBounds().width /
-        remote
-        .getCurrentWindow()
-        .webContents.getOwnerBrowserWindow()
-        .getBounds().height;
-      imageAspectRatio = img.naturalWidth / img.naturalHeight;
-      if (imageAspectRatio > screenAspectRatio) {
-        img.style.width = "100%";
-        div.style.width = "100%";
-      } else {
-        img.style.height = "100%";
-        div.style.height = "100%";
-      }
-      $(div).velocity("fadeIn", {
-        duration: fadeTime
-      });
-      $(currentImage).velocity("fadeOut", {
-        duration: fadeTime
-      });
-      if (!isPaused && images.length > 1) {
-        currentTimeout = setTimeout(() => {
-          loadImage(true, config.fadeTime);
-        }, config.interval);
-      }
-      img.onload = null;
-      img = null;
-    };
-  }
 
-  div.appendChild(img);
+  $div.append($asset);
   if (config.showSender) {
-    div.appendChild(sender);
+    $assetDiv.append($sender);
   }
   if (config.showCaption && image.caption !== undefined) {
-    div.appendChild(caption);
+    $assetDiv.append($caption);
   }
-  setTimeout(function() {
-	// remove all child containers but not the last one - active image
-    for (let i = 0; i < container.children.length - 1; i++) {
-        console.log('loadImage: remove child:', i, container.children[i].tagName);
-        container.removeChild(container.children[i]);
+
+  $asset.one(($asset.is('video') ? 'loadeddata' : 'load'), {currentAsset: $currentImage},
+  function(event) {
+    let $currentAsset = event.data.currentAsset;
+    let $asset = $(this);
+    let $assetDiv = $asset.parents('.basecontainer, .imgcontainer');
+    const screenAspectRatio = remote
+        .getCurrentWindow()
+        .webContents.getOwnerBrowserWindow()
+        .getBounds().width /
+        remote
+        .getCurrentWindow()
+        .webContents.getOwnerBrowserWindow()
+        .getBounds().height;
+
+    const assetAspectRatio = ($asset.is('video')
+        ? $asset.videoWidth / $asset.videoHeight
+        : $asset.naturalWidth / $asset.naturalHeight);
+
+    //calculate aspect ratio to show complete image on the screen and
+    //fade in new image while fading out the old image as soon as
+    //the new image is loaded
+    let css;
+    if (assetAspectRatio > screenAspectRatio) {
+      css = {
+        width: "100%",
+        height: "auto"
+      };
+    } else {
+      css = {
+        height: "100%",
+        width: "auto"
+      };
     }
+    $([$asset, $asset.closest('.imgcontainer')]).each( function(){
+        $(this).css(css);
+    });
+
+    //fade out sender and caption at half time of the shown image
+    let captionSenderTimeout = setTimeout(function() {
+      $([$sender, $caption]).each(function() {
+        $(this).velocity("fadeOut", {
+          duration: fadeTime / 2
+        });
+      });
+    }, config.interval * 0.01 * (Math.max(10, Math.min(100, parseInt(config.senderAndCaptionDuration) || 50))));
+
+    $assetDiv.velocity("fadeIn", {
+      duration: fadeTime
+    });
+    $currentAsset.velocity("fadeOut", {
+      duration: fadeTime,
+      complete: () => $currentAsset.remove()
+    });
+    if (!isPaused && images.length > 1) {
+      currentTimeout = setTimeout(() => {
+        clearTimeout(captionSenderTimeout);
+        loadImage(true, config.fadeTime);
+      }, ($asset.is('video') ? $asset.prop('duration') * 1000: config.interval));
+    }
+  });
+
+  setTimeout(function() {
+	  // remove all child containers but not the last one - active image
+	  //console.log('Cleanup element count to be removed now:',$container.find('div.imgcontainer:first-child, div.basecontainer:first-child, h1:first-child').not(':last').length)
+    $container.find('div.imgcontainer:first-child, div.basecontainer:first-child, h1:first-child').not(':last').remove();
     webFrame.clearCache()
   }, fadeTime)
 
-  container.appendChild(div);
-
-  //fade out sender and caption at half time of the shown image
-  setTimeout(function() {
-    $(sender).velocity("fadeOut", {
-      duration: fadeTime / 2
-    });
-    $(caption).velocity("fadeOut", {
-      duration: fadeTime / 2
-    });
-  }, config.interval / 2);
+  $container.append($assetDiv);
 }
 
 //notify user of incoming image and restart slideshow with the newest image
 function newImage(sender, type, newImageArray) {
   images = newImageArray;
-  console.log(images);
-  if (type == "image") {
-    Swal.fire({
-      title: config.phrases.newPhotoMessage + " " + sender,
-      showConfirmButton: false,
-      timer: 5000,
-      icon: "success"
-    }).then((value) => {
-      currentImageIndex = images.length;
-      loadImage(true, 0);
-    });
-  } else if (type == "video") {
-    Swal.fire({
-      title: config.phrases.newVideoMessage + " " + sender,
-      showConfirmButton: false,
-      timer: 5000,
-      icon: "success"
-    }).then((value) => {
-      currentImageIndex = images.length;
-      loadImage(true, 0);
-    });
+  let message;
+  if (type == 'image') {
+    message = config.phrases.newPhotoMessage;
+  } else {
+    message = config.phrases.newVideoMessage;
   }
+  Swal.fire({
+    title: message
+          + " " + sender,
+    showConfirmButton: false,
+    timer: 5000,
+    icon: "success"
+  }).then((value) => {
+    currentImageIndex = images.length;
+    loadImage(true, 0);
+  });
 }
 
 //start slideshow of images

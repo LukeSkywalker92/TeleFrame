@@ -4,6 +4,7 @@ module.exports = (config) => {
   // initialize localized texts
   const configPath = __dirname + '/../config/';
   const langPath =  configPath + 'i18n/';
+  const defaultLangFile = langPath + 'en.js';
   let langFile = configPath + 'texts.js';
   let mergeCurrentConfigTexts = false;
   // Does users language file 'config/tests.js' exist?
@@ -15,14 +16,14 @@ module.exports = (config) => {
       // fallback - load the language file for the current environment setting
       // in addition, always merge the current configuration last in order
       // to keep the texts of the user settings.
-      let envLang = process.env.LANG;
+      let envLang = process.env.LANG || ''; // fallback to empty string to support development under windows
       // including country - 'en_US'
-      langFile =  langPath + `${envLang.substr(0, envLang.indexOf('.'))}.js`;
+      langFile = langPath + `${envLang.substr(0, envLang.indexOf('.'))}.js`;
       if(!fs.existsSync(langFile)) {
         // whithout country - 'en'
         langFile =  langPath + `${envLang.substr(0, envLang.indexOf('_'))}.js`;
         if(!fs.existsSync(langFile)) {
-          langFile = langPath + 'en.js';
+          langFile = defaultLangFile;
         }
       }
       // keep the texts defined in the current config
@@ -30,14 +31,14 @@ module.exports = (config) => {
     }
   }
   // load the language
-  config.phrases = require(langFile);
+  config.phrases = Object.assign({}, require(defaultLangFile), (langFile !== defaultLangFile ? require(langFile) : {}));
 
   // remove unused text configuration options
   for (const phraseKey in Object.keys(config.phrases)) {
     if (mergeCurrentConfigTexts && typeof config[phraseKey] === 'string') {
       config.phrases[phraseKey] = config[phraseKey];
     }
-    if (typeof config.voiceReply[phraseKey] === 'string') {
+    if (config.voiceReply !== null && typeof config.voiceReply[phraseKey] === 'string') {
       if (mergeCurrentConfigTexts) {
         config.phrases[phraseKey] = config.voiceReply[phraseKey];
       }
