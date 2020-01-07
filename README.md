@@ -120,6 +120,7 @@ The touchBar object takes the height of the touchbar, optionally the autoHideTim
 
 | **Element**             | **Description**                                                                           |
 | ----------------------- | ----------------------------------------------------------------------------------------- |
+| `showNewest`            | Navigate last arrived image. 																													|
 | `previousImage`         | Navigate to the previous Image. 																													|
 | `nextImage`  						| Navigate to the next Image. 																															|
 | `play`         					| Resume slideshow. 																																				|

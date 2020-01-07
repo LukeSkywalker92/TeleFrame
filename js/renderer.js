@@ -385,7 +385,7 @@ function setTouchbarIconStatus() {
     } else {
       $('.playPause > i').removeClass('fa-pause-circle').addClass('fa-play-circle');
     }
-    $('.deleteImage').removeClass('disabled-icon');
+    $('.record, .deleteImage, .starImage').find('i').removeClass('disabled-icon');
   }
   if (images.length > 1) {
     $('.previousImage, .nextImage, .showNewest, .playPause').find('i').removeClass('disabled-icon');

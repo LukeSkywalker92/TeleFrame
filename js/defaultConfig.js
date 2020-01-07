@@ -73,7 +73,7 @@ var defaultConfig = {
 
   // Defines when the monitor shuld be turned off.
   turnOffHour: 22,
-  
+
   // Defines if the bot should answer on images or videos with a short reply
   botReply: true,
 
@@ -88,10 +88,13 @@ var defaultConfig = {
 
     // Defines an objectspecifying the touchbar icons to enable
     elements: [
-      // Navigate to the previous Image.
+      // Show the recently arrived images.
+      "showNewest",
+
+      // Navigate to the previous image.
       "previousImage",
 
-      //Navigate to the next Image.
+      //Navigate to the next image.
       "nextImage",
 
       //  Resume slideshow.
@@ -170,8 +173,6 @@ var defaultConfig = {
 		{name: "stopOpenvpn", command: "systemctl openvpn stop", enable: true}
     ]
   }
- 
-
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
