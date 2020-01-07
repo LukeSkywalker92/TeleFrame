@@ -57,6 +57,14 @@ var defaultConfig = {
   // When set to true, TeleFrame will show the caption of the image when the image is shown.
   showCaption: true,
 
+  // Defines the percentage of the duration of <interval> to show sender and caption.
+  // minimum value: 10  = fade out after 10% of <interval>
+  // maximum value: 100 = full time. sender and caption does not fade out
+  senderAndCaptionDuration: 50,
+
+  // To output sender caption, use the entire screen
+  useFullscreenForCaptionAndSender: true,
+
   // When set to true, TeleFrame will switch the monitor off and on at the defined hours.
   toggleMonitor: false,
 
