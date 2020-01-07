@@ -27,7 +27,7 @@ class TouchBar {
     config.elements.forEach(function (name) {
       const element = self.elements[name]
       const el = document.createElement('div')
-      el.classList = "touchBarElement"
+      el.classList = name + " touchBarElement"
       el.style.lineHeight = self.height
       el.style.fontSize = ($('#touch-bar-container').height()*0.8) + 'px';
       $(el).on('touchend', function(event) {

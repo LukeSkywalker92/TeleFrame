@@ -14,7 +14,6 @@ const {TouchBar, TouchBarElement} = require("./js/touchBar.js")
 logger.info("Renderer started ...");
 
 
-
 // Create variables
 var images = remote.getGlobal("images");
 var $container = $('#container');
@@ -26,6 +25,7 @@ var currentImageIndex = images.length;
 var startTime, endTime, longpress, recordSwal, currentTimeout;
 
 var touchBarElements = {
+  "showNewest": new TouchBarElement("fas fa-history", showNewAssets),
   "previousImage": new TouchBarElement("far fa-arrow-alt-circle-left", previousImage),
   "play": new TouchBarElement("far fa-play-circle", play),
   "pause": new TouchBarElement("far fa-pause-circle", pause),
@@ -307,12 +307,11 @@ function deleteImage() {
 
 function mute() {
   if (isMuted) {
-    isMuted = false;
-    touchBarElements["mute"].iconElement.classList = "fas fa-volume-up"
+    $('.mute > i').removeClass('fa-volume-mute').addClass('fa-volume-up');
   } else {
-    isMuted = true;
-    touchBarElements["mute"].iconElement.classList = "fas fa-volume-mute"
+    $('.mute > i').removeClass('fa-volume-up').addClass('fa-volume-mute');
   }
+  isMuted = !isMuted;
 }
 
 function shutdown() {
@@ -367,33 +366,34 @@ function reboot() {
   });
 }
 
+function showNewAssets() {
+  clearTimeout(currentTimeout);
+  $('.showNewest >  i').removeClass('new-asset fa-image fa-images').addClass('fa-history');
+
+  loadImage(false, 0, true);
+}
+
 function setTouchbarIconStatus() {
   if (images.length > 0) {
-    touchBarElements["record"].iconElement.classList = "fas fa-microphone-alt";
-    touchBarElements["deleteImage"].iconElement.classList = "far fa-trash-alt";
     if (images[currentImageIndex].starred) {
-      touchBarElements["starImage"].iconElement.classList = "fas fa-star";
+      $('.starImage > i').removeClass('far').addClass('fas');
     } else {
-      touchBarElements["starImage"].iconElement.classList = "far fa-star";
+      $('.starImage > i').removeClass('fas').addClass('far');
     }
     if (isPaused) {
-      touchBarElements["playPause"].iconElement.classList = "far fa-pause-circle";
+      $('.playPause > i').removeClass('fa-play-circle').addClass('fa-pause-circle');
     } else {
-      touchBarElements["playPause"].iconElement.classList = "far fa-play-circle";
+      $('.playPause > i').removeClass('fa-pause-circle').addClass('fa-play-circle');
     }
   }
   if (images.length > 1) {
-    touchBarElements["previousImage"].iconElement.classList = "far fa-arrow-alt-circle-left";
-    touchBarElements["nextImage"].iconElement.classList = "far fa-arrow-alt-circle-right";
+    $('.previousImage, .nextImage, .showNewest, .playPause').find('i').removeClass('disabled-icon');
   }
   if (images.length < 2) {
-    touchBarElements["playPause"].iconElement.classList += " disabled-icon";
-    touchBarElements["previousImage"].iconElement.classList = "far fa-arrow-alt-circle-left disabled-icon";
-    touchBarElements["nextImage"].iconElement.classList = "far fa-arrow-alt-circle-right disabled-icon";
+    $('.playPause, .previousImage, .nextImage').find('i').addClass('disabled-icon');
+    $('.showNewest > i').removeClass('new-asset fa-image fa-images').addClass('fa-history disabled-icon')
     if (images.length == 0) {
-      touchBarElements["record"].iconElement.classList = "fas fa-microphone-alt disabled-icon";
-      touchBarElements["deleteImage"].iconElement.classList = "far fa-trash-alt disabled-icon";
-      touchBarElements["starImage"].iconElement.classList = "far fa-star disabled-icon";
+      $('.record, .deleteImage, .starImage').find('i').addClass('disabled-icon');
     }
   }
 }
@@ -424,7 +424,9 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   }
 
   // get image path and increase currentImageIndex for next image
-  if (isNext) {
+  if (goToLatest) {
+    currentImageIndex = currentImageIndex = 0;
+  } else if (isNext) {
     if (currentImageIndex >= images.length - 1) {
       currentImageIndex = 0;
     } else {
@@ -608,8 +610,8 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   });
 
   setTimeout(function() {
-	  // remove all child containers but not the last one - active image
-	  //console.log('Cleanup element count to be removed now:',$container.find('div.imgcontainer:first-child, div.basecontainer:first-child, h1:first-child').not(':last').length)
+    // remove all child containers but not the last one - active image
+    //console.log('Cleanup element count to be removed now:',$container.find('div.imgcontainer:first-child, div.basecontainer:first-child, h1:first-child').not(':last').length)
     $container.find('div.imgcontainer:first-child, div.basecontainer:first-child, h1:first-child').not(':last').remove();
     webFrame.clearCache()
   }, fadeTime)
@@ -620,6 +622,16 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
 //notify user of incoming image and restart slideshow with the newest image
 function newImage(sender, type, newImageArray) {
   images = newImageArray;
+
+  if(images.length > 1) {
+    const $icon = $('.showNewest > i');
+    if ($icon.hasClass('new-asset')) {
+      $icon.removeClass('fa-image').addClass('fa-images');
+    } else {
+      $icon.removeClass('fa-images fa-history').addClass('fa-image new-asset');
+    }
+  }
+
   let message;
   if (type == 'image') {
     message = config.phrases.newPhotoMessage;
