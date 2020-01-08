@@ -59,7 +59,19 @@ var ImageWatchdog = class {
       this.images.splice(index, 1)
       this.saveImageArray();
     })
+
+    this.ipcMain.on('removeImageUnseen', event => {
+      for (let i = 0; i < this.images.length; i++) {
+        if(images[i].unseen) {
+          delete this.images[i].unseen;
+        } else {
+          break;
+        }
+      }
+      this.saveImageArray();
+    })
   }
+
 
   autoDeleteImage(idx2bedeleted) {
     if (this.autoDeleteImages) {
@@ -83,7 +95,8 @@ var ImageWatchdog = class {
       'caption': caption,
       'chatId': chatId,
       'chatName': chatName,
-      'messageId': messageId
+      'messageId': messageId,
+      'unseen': true
     });
 
     console.log(this.imageCount);

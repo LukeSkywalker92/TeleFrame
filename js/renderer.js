@@ -368,8 +368,17 @@ function reboot() {
 
 function showNewAssets() {
   clearTimeout(currentTimeout);
-  $('.showNewest >  i').removeClass('new-asset fa-image fa-images').addClass('fa-history');
-
+  if (images.findIndex(e => e.unseen) > -1) {
+    $('.showNewest >  i').removeClass('new-asset fa-image fa-images').addClass('fa-history');
+    for (let i = 0; i < images.length; i++) {
+      if(images[i].unseen) {
+        delete images[i].unseen;
+      } else {
+        break;
+      }
+    }
+    ipcRenderer.send("removeImageUnseen");
+  }
   loadImage(false, 0, true);
 }
 
@@ -386,9 +395,15 @@ function setTouchbarIconStatus() {
       $('.playPause > i').removeClass('fa-pause-circle').addClass('fa-play-circle');
     }
     $('.record, .deleteImage, .starImage').find('i').removeClass('disabled-icon');
+    if (images[0].unseen) {
+      $('.showNewest > i').removeClass('fa-history fa-images').addClass('fa-image new-asset');
+    }
   }
   if (images.length > 1) {
     $('.previousImage, .nextImage, .showNewest, .playPause').find('i').removeClass('disabled-icon');
+    if (images[1].unseen) {
+      $('.showNewest > i').removeClass('fa-image').addClass('fa-images');
+    }
   }
   if (images.length < 2) {
     $('.playPause, .previousImage, .nextImage').find('i').addClass('disabled-icon');
@@ -623,15 +638,6 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
 //notify user of incoming image and restart slideshow with the newest image
 function newImage(sender, type, newImageArray) {
   images = newImageArray;
-
-  if(images.length > 1) {
-    const $icon = $('.showNewest > i');
-    if ($icon.hasClass('new-asset')) {
-      $icon.removeClass('fa-image').addClass('fa-images');
-    } else {
-      $icon.removeClass('fa-images fa-history').addClass('fa-image new-asset');
-    }
-  }
 
   let message;
   if (type == 'image') {
