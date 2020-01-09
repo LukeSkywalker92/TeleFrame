@@ -397,6 +397,8 @@ function setTouchbarIconStatus() {
     $('.record, .deleteImage, .starImage').find('i').removeClass('disabled-icon');
     if (images[0].unseen) {
       $('.showNewest > i').removeClass('fa-history fa-images').addClass('fa-image new-asset');
+    } else {
+      $('.showNewest > i').removeClass('fa-image new-asset').addClass('fa-history');
     }
   }
   if (images.length > 1) {
