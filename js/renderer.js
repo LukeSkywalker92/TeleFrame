@@ -461,6 +461,9 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
 
   //get current container and create needed elements
   var $currentImage = $container.children('div.basecontainer, div.imgcontainer, h1').first();
+  if (fadeTime === 0) {
+    $currentImage.remove();
+  }
 
   var $div = $('<div class="imgcontainer"/>');
   //set class names and style attributes
@@ -613,27 +616,32 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
       });
     }, config.interval * 0.01 * (Math.max(10, Math.min(100, parseInt(config.senderAndCaptionDuration) || 50))));
 
-    $assetDiv.velocity("fadeIn", {
-      duration: fadeTime
-    });
-    $currentAsset.velocity("fadeOut", {
-      duration: fadeTime,
-      complete: () => $currentAsset.remove()
-    });
+    if (fadeTime === 0) {
+      $assetDiv.show();
+    } else {
+      $assetDiv.velocity("fadeIn", {
+        duration: fadeTime
+      });
+      $currentAsset.velocity("fadeOut", {
+        duration: fadeTime,
+        complete: () => $currentAsset.remove()
+      });
+    }
     if (!isPaused && images.length > 1) {
       currentTimeout = setTimeout(() => {
         clearTimeout(captionSenderTimeout);
         loadImage(true, config.fadeTime);
-      }, ($asset.is('video') ? $asset.prop('duration') * 1000: config.interval));
+      }, ($asset.is('video') ? $asset.prop('duration') * 1000 : config.interval));
     }
   });
 
-  setTimeout(function() {
-    // remove all child containers but not the last one - active image
-    //console.log('Cleanup element count to be removed now:',$container.find('div.imgcontainer:first-child, div.basecontainer:first-child, h1:first-child').not(':last').length)
-    $container.find('div.imgcontainer:first-child, div.basecontainer:first-child, h1:first-child').not(':last').remove();
-    webFrame.clearCache()
-  }, fadeTime)
+  // Cleanup should no longer be necessary
+  // setTimeout(function() {
+  //   // remove all child containers but not the last one - active image
+  //   console.log('Cleanup element count to be removed now:',$container.find('div.imgcontainer:first-child, div.basecontainer:first-child, h1:first-child').not(':last').length)
+  //   $container.find('div.imgcontainer:first-child, div.basecontainer:first-child, h1:first-child').not(':last').remove();
+  //   webFrame.clearCache()
+  // }, fadeTime)
 
   $container.append($assetDiv);
 }
