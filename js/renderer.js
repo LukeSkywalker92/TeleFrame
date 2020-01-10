@@ -22,7 +22,8 @@ $container.css('overflow', 'hidden');
 var isPaused = false;
 var isMuted = false;
 var currentImageIndex = images.length;
-var startTime, endTime, longpress, recordSwal, currentTimeout;
+var currentImageForVoiceReply;
+var startTime, endTime, longpress, tapPos, containerWidth, recordSwal, currentTimeout;
 
 var touchBarElements = {
   "showNewest": new TouchBarElement("fas fa-history", showNewAssets),
@@ -94,7 +95,7 @@ ipcRenderer.on("recordStarted", function(event, arg) {
   spinner.classList.add("spinner");
   message.appendChild(spinner);
   let text = document.createElement("p");
-  messageText = config.phrases.recordingPreMessage
+  let messageText = config.phrases.recordingPreMessage
                     + ' ' + currentImageForVoiceReply['chatName']
                     + ' ' + config.phrases.recordingPostMessage;
   text.innerHTML = messageText
