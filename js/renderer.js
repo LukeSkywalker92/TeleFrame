@@ -621,7 +621,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
         $(this).css(css);
     });
 
-    $assetDiv.createCaptionSender(image, fadeTime);
+    $assetDiv.createCaptionSender(image);
 
     if (fadeTime === 0) {
       $assetDiv.show();
