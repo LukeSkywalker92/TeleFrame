@@ -8,11 +8,6 @@
  * To control the power switch an additional script and some hardware (optocoupler 
  * and a resistor) is required. 
  */
-// THIS VARIABLE NEEDS TO BE CONFIGURED MANUALLY
-// It depends on your individual setup, to which 
-// Pin the optocoupler is connected to.
-var PIN = 29;
- 
 var screen = {
     name: "Sunfounder HDMI screen",
     xres: 1280,
@@ -21,10 +16,24 @@ var screen = {
     hasTouch: true,
     hasBacklightCtl: false,
     hasBacklightDimming: false,
-    cmdInit: "gpio mode " + PIN + " out",
-    cmdBacklightOff: "bash ./tools/screen_switch.sh " + PIN,
-    cmdBacklightOn:  "bash ./tools/screen_switch.sh " + PIN,
     cmdBacklightDimming: "",
+    /**
+     * initialize the command strings
+     * @param  {Object} options The screenSwitchOptions object from config.json
+     * @param  {Object} logger The logger object from schedules
+     */
+    init: (options, logger) => {
+      // check configuration option
+      if (typeof options.pin !== 'number') {
+        const errorMsg = 'ERROR! screen.init() "' + screen.name + '"! Missing or invalid configuration of "screenSwitchOptions.pin" in config.js.';
+        logger.warn(errorMsg);
+        ['cmdInit', 'cmdBacklightOff', 'cmdBacklightOn'].forEach((e) => screen[e] = 'echo ' + errorMsg);
+      } else {
+        screen.cmdInit = "gpio mode " + options.pin + " out";
+        screen.cmdBacklightOff = "bash ./tools/screen_switch.sh " + options.pin;
+        screen.cmdBacklightOn =  "bash ./tools/screen_switch.sh " + options.pin;
+      }      
+    }
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
