@@ -30,7 +30,7 @@ var i18n = {
   // Text der ausgegeben wird, wenn die Sprachnachricht gesendet wurde
   recordingDone: "Sprachnachricht erfolgreich gesendet!",
   // Text der ausgegeben wird, wenn ein Fehler bei der Aufzeichnug der Sprachnachricht auftrat
-  recordingError: "Aufzeichnung fehlgeschlagen!"
+  recordingError: "Aufzeichnung fehlgeschlagen!",
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/

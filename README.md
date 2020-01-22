@@ -97,6 +97,7 @@ The following properties can be configured:
 | `turnOnHour`         | Defines when the monitor should be turned on.                                                                                                                        |
 | `turnOffHour`        | Defines when the monitor should be turned off.                                                                                                                       |
 | `switchLedsOff`      | Defines if the 2 LEDs on the RaspberryPi should be switched off.                                                                                                     |
+| `botReply`           | Defines if the bot should answer on images or videos with a short reply (:+1: :camera_flash: for images, :+1: :movie_camera: for movies). Also throws a warning on receiving unknown file extensions. |
 | `confirmDeleteImage` | Defines if to show a confirm message before delete an image `true` or `false`                                                                                        |
 | `confirmShutdown`    | Defines if to show a confirm message before shutdown the system `true` or `false`                                                                                    |
 | `confirmReboot`      | Defines if to show a confirm message before rebooting the system `true` or `false`                                                                                   |

@@ -39,7 +39,6 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true
     },
-    frame: false
   });
 
   win.setFullScreen(config.fullscreen);
