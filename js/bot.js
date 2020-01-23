@@ -150,7 +150,10 @@ var Bot = class {
               this.logger.error(err);
             });
           }
-        });
+        })
+        .catch((err) => {
+          this.logger.error('Download: ' + err.toString());
+          ctx.reply('Sorry: ' + err.toString());        });
     });
 
     this.bot.catch((err) => {
