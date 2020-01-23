@@ -73,7 +73,7 @@ var defaultConfig = {
 
   // Defines when the monitor shuld be turned off.
   turnOffHour: 22,
-  
+
   // Defines if the bot should answer on images or videos with a short reply
   botReply: true,
 
@@ -88,10 +88,13 @@ var defaultConfig = {
 
     // Defines an objectspecifying the touchbar icons to enable
     elements: [
-      // Navigate to the previous Image.
+      // Show the recently arrived images.
+      "showNewest",
+
+      // Navigate to the previous image.
       "previousImage",
 
-      //Navigate to the next Image.
+      //Navigate to the next image.
       "nextImage",
 
       //  Resume slideshow.
@@ -169,29 +172,7 @@ var defaultConfig = {
 		// Admin-Action for stoping the OpenVPN-Client
 		{name: "stopOpenvpn", command: "systemctl openvpn stop", enable: true}
     ]
-  },
-
-	// Defines the GPIO used
-	gpio: {
-		// #GPIO of the LED "playing"
-    playLed: 1, 
-		// #GPIO of the LED "paused"
-    pauseLed: 2,
-		// #GPIO of the LED "recording"
-    recordLed: 3,
-		// #GPIO of the button "previous"
-    previousButton: 4,
-		// #GPIO of the button "pause"
-    pauseButton: 5,
-		// #GPIO of the button "play"
-    playButton: 6,
-		// #GPIO of the button "record"
-    recordButton: 7,
-		// #GPIO of the button "next"
-    nextButton: 8 
   }
- 
-
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/

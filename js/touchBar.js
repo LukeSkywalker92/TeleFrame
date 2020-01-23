@@ -25,20 +25,24 @@ class TouchBar {
       config.elements = Object.keys(elements)
     }
     config.elements.forEach(function (name) {
-      const element = self.elements[name]
-      const el = document.createElement('div')
-      el.classList = "touchBarElement"
-      el.style.lineHeight = self.height
-      el.style.fontSize = ($('#touch-bar-container').height()*0.8) + 'px';
-      $(el).on('touchend', function(event) {
-        // don't bubble up events to prevent disappearing sweetalert messages
-        event.preventDefault();
-        clearTimeout(self.autoHideTimerId);
-        self.startAutoHideTimer();
-        element.callback()
-      });
-      el.appendChild(element.iconElement)
-      touchBar.appendChild(el)
+      try {
+        const element = self.elements[name];
+        const el = document.createElement('div');
+        el.classList = name + " touchBarElement";
+        el.style.lineHeight = self.height;
+        el.style.fontSize = ($('#touch-bar-container').height()*0.8) + 'px';
+        $(el).on('touchend', function(event) {
+          // don't bubble up events to prevent disappearing sweetalert messages
+          event.preventDefault();
+          clearTimeout(self.autoHideTimerId);
+          self.startAutoHideTimer();
+          element.callback();
+        });
+        el.appendChild(element.iconElement);
+        touchBar.appendChild(el);
+      } catch(error) {
+        console.error(`Failed to create touchbar element "${name}"!`, error);
+      }
     })
 
     touchBarContainer.appendChild(touchBarBlur);

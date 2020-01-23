@@ -148,3 +148,7 @@ h1 {
 .disabled-icon {
   color: #333;
 }
+
+.new-asset {
+  color: greenyellow;
+}

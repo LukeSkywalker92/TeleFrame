@@ -14,7 +14,6 @@ const {TouchBar, TouchBarElement} = require("./js/touchBar.js")
 logger.info("Renderer started ...");
 
 
-
 // Create variables
 var images = remote.getGlobal("images");
 var $container = $('#container');
@@ -23,9 +22,12 @@ $container.css('overflow', 'hidden');
 var isPaused = false;
 var isMuted = false;
 var currentImageIndex = images.length;
-var startTime, endTime, longpress, recordSwal, currentTimeout;
+var currentImageForVoiceReply;
+var startTime, endTime, longpress, tapPos, containerWidth, recordSwal, currentTimeout, captionSenderTimeout;
+var touchBar;
 
 var touchBarElements = {
+  "showNewest": new TouchBarElement("fas fa-history", showNewAssets),
   "previousImage": new TouchBarElement("far fa-arrow-alt-circle-left", previousImage),
   "play": new TouchBarElement("far fa-play-circle", play),
   "pause": new TouchBarElement("far fa-pause-circle", pause),
@@ -94,7 +96,7 @@ ipcRenderer.on("recordStarted", function(event, arg) {
   spinner.classList.add("spinner");
   message.appendChild(spinner);
   let text = document.createElement("p");
-  messageText = config.phrases.recordingPreMessage
+  let messageText = config.phrases.recordingPreMessage
                     + ' ' + currentImageForVoiceReply['chatName']
                     + ' ' + config.phrases.recordingPostMessage;
   text.innerHTML = messageText
@@ -307,12 +309,11 @@ function deleteImage() {
 
 function mute() {
   if (isMuted) {
-    isMuted = false;
-    touchBarElements["mute"].iconElement.classList = "fas fa-volume-up"
+    $('.mute > i').removeClass('fa-volume-mute').addClass('fa-volume-up');
   } else {
-    isMuted = true;
-    touchBarElements["mute"].iconElement.classList = "fas fa-volume-mute"
+    $('.mute > i').removeClass('fa-volume-up').addClass('fa-volume-mute');
   }
+  isMuted = !isMuted;
 }
 
 function shutdown() {
@@ -367,33 +368,52 @@ function reboot() {
   });
 }
 
+function showNewAssets() {
+  clearTimeout(currentTimeout);
+  if (images.findIndex(e => e.unseen) > -1) {
+    $('.showNewest >  i').removeClass('new-asset fa-image fa-images').addClass('fa-history');
+    for (let i = 0; i < images.length; i++) {
+      if(images[i].unseen) {
+        delete images[i].unseen;
+      } else {
+        break;
+      }
+    }
+    ipcRenderer.send("removeImageUnseen");
+  }
+  loadImage(false, 0, true);
+}
+
 function setTouchbarIconStatus() {
   if (images.length > 0) {
-    touchBarElements["record"].iconElement.classList = "fas fa-microphone-alt";
-    touchBarElements["deleteImage"].iconElement.classList = "far fa-trash-alt";
     if (images[currentImageIndex].starred) {
-      touchBarElements["starImage"].iconElement.classList = "fas fa-star";
+      $('.starImage > i').removeClass('far').addClass('fas');
     } else {
-      touchBarElements["starImage"].iconElement.classList = "far fa-star";
+      $('.starImage > i').removeClass('fas').addClass('far');
     }
     if (isPaused) {
-      touchBarElements["playPause"].iconElement.classList = "far fa-pause-circle";
+      $('.playPause > i').removeClass('fa-play-circle').addClass('fa-pause-circle');
     } else {
-      touchBarElements["playPause"].iconElement.classList = "far fa-play-circle";
+      $('.playPause > i').removeClass('fa-pause-circle').addClass('fa-play-circle');
+    }
+    $('.record, .deleteImage, .starImage').find('i').removeClass('disabled-icon');
+    if (images[0].unseen) {
+      $('.showNewest > i').removeClass('fa-history fa-images').addClass('fa-image new-asset');
+    } else {
+      $('.showNewest > i').removeClass('fa-image new-asset').addClass('fa-history');
     }
   }
   if (images.length > 1) {
-    touchBarElements["previousImage"].iconElement.classList = "far fa-arrow-alt-circle-left";
-    touchBarElements["nextImage"].iconElement.classList = "far fa-arrow-alt-circle-right";
+    $('.previousImage, .nextImage, .showNewest, .playPause').find('i').removeClass('disabled-icon');
+    if (images[1].unseen) {
+      $('.showNewest > i').removeClass('fa-image').addClass('fa-images');
+    }
   }
   if (images.length < 2) {
-    touchBarElements["playPause"].iconElement.classList += " disabled-icon";
-    touchBarElements["previousImage"].iconElement.classList = "far fa-arrow-alt-circle-left disabled-icon";
-    touchBarElements["nextImage"].iconElement.classList = "far fa-arrow-alt-circle-right disabled-icon";
+    $('.playPause, .previousImage, .nextImage').find('i').addClass('disabled-icon');
+    $('.showNewest > i').removeClass('new-asset fa-image fa-images').addClass('fa-history disabled-icon')
     if (images.length == 0) {
-      touchBarElements["record"].iconElement.classList = "fas fa-microphone-alt disabled-icon";
-      touchBarElements["deleteImage"].iconElement.classList = "far fa-trash-alt disabled-icon";
-      touchBarElements["starImage"].iconElement.classList = "far fa-star disabled-icon";
+      $('.record, .deleteImage, .starImage').find('i').addClass('disabled-icon');
     }
   }
 }
@@ -412,6 +432,100 @@ function dummyCallback() {
   });
 }
 
+/**
+ * Create the caption and sender containers
+ * @param  {Object} image    entry of images array
+ */
+$.fn.createCaptionSender = function(image) {
+  let $assetDiv = $(this);
+  clearTimeout(captionSenderTimeout);
+  if (config.showCaption || config.showSender) {
+    var $sender = $('<span class="sender"/>');
+    var $caption = $('<span class="caption"/>');
+
+    //create background and font colors for sender and caption
+    var backgroundColor = randomColor({
+      luminosity: "dark",
+      alpha: 1
+    });
+    var fontColor = randomColor({
+      luminosity: "light",
+      alpha: 1
+    });
+    //when contrast between background color and font color is too small to
+    //make the text readable, recreate colors
+    while (chroma.contrast(backgroundColor, fontColor) < 4.5) {
+      backgroundColor = randomColor({
+        luminosity: "dark",
+        alpha: 1
+      });
+      fontColor = randomColor({
+        luminosity: "light",
+        alpha: 1
+      });
+    }
+
+    $sender.html(image.sender);
+    $caption.html(image.caption);
+    $([$sender, $caption]).each(function() {
+      $(this).css({
+        backgroundColor: backgroundColor,
+        color: fontColor
+      });
+    });
+
+    //generate some randomness for positions of sender and caption
+    if (Math.random() >= 0.5) {
+      $sender.css({
+        left: 0,
+        'border-top-right-radius': "10px",
+        'border-bottom-right-radius': "10px"
+      });
+    } else {
+      $sender.css({
+        right: 0,
+        'border-top-left-radius': "10px",
+        'border-bottom-left-radius': "10px"
+      });
+    }
+    if (Math.random() >= 0.5) {
+      $caption.css({
+        left: 0,
+        'border-top-right-radius': "10px",
+        'border-bottom-right-radius': "10px"
+      });
+    } else {
+      $caption.css({
+        right: 0,
+        'border-top-left-radius': "10px",
+        'border-bottom-left-radius': "10px"
+      });
+    }
+    if (Math.random() >= 0.5) {
+      $sender.css('top', "2%");
+      $caption.css('bottom', "2%");
+    } else {
+      $sender.css('bottom', "2%");
+      $caption.css('top', "2%");
+    }
+    if (config.showSender) {
+      $assetDiv.append($sender);
+    }
+    if (config.showCaption && image.caption !== undefined) {
+      $assetDiv.append($caption);
+    }
+    //fade out sender and caption at half time of the shown image
+    captionSenderTimeout = setTimeout(() => {
+      $('.sender, .caption').each(function() {
+        $(this).velocity("fadeOut", {
+          duration: config.fadeTime / 2,
+          complete: function() { $(this).remove(); }
+        });
+      });
+    }, config.interval * 0.01 * (Math.max(10, Math.min(100, parseInt(config.senderAndCaptionDuration) || 50))));
+  }
+};
+
 //load image to slideshow
 function loadImage(isNext, fadeTime, goToLatest = false) {
   clearTimeout(currentTimeout);
@@ -424,7 +538,9 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   }
 
   // get image path and increase currentImageIndex for next image
-  if (isNext) {
+  if (goToLatest) {
+    currentImageIndex = 0;
+  } else if (isNext) {
     if (currentImageIndex >= images.length - 1) {
       currentImageIndex = 0;
     } else {
@@ -441,21 +557,23 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   //get current container and create needed elements
   var $currentImage = $container.children('div.basecontainer, div.imgcontainer, h1').first();
 
+  // create asset container
   var $div = $('<div class="imgcontainer"/>');
-  //set class names and style attributes
   var $assetDiv = null;
   if (config.useFullscreenForCaptionAndSender) {
-      $assetDiv = $("<div/>");
-      $assetDiv.addClass("basecontainer");
-      $assetDiv.append($div);
-      $assetDiv.css({
-        display: 'none',
-      });
-      $div.css('display', 'block');
+    // Create an additional container to display sender/caption on the full screen
+    $assetDiv = $("<div/>");
+    $assetDiv.addClass("basecontainer");
+    $assetDiv.append($div);
+    $assetDiv.css({
+      display: 'none',
+    });
+    $div.css('display', 'block');
   } else {
     $assetDiv = $div;
   }
 
+  // create asset container
   var $asset;
   if (image.src.split(".").pop() == "mp4") {
     $asset = $("<video/>");
@@ -467,90 +585,16 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   $asset.attr('src', image.src);
   $asset.addClass("image");
 
-  $('.sender, .caption').remove();
-  var $sender = $('<span class="sender"/>');
-  var $caption = $('<span class="caption"/>');
-
-  //create background and font colors for sender and caption
-  var backgroundColor = randomColor({
-    luminosity: "dark",
-    alpha: 1
-  });
-  var fontColor = randomColor({
-    luminosity: "light",
-    alpha: 1
-  });
-  //when contrast between background color and font color is too small to
-  //make the text readable, recreate colors
-  while (chroma.contrast(backgroundColor, fontColor) < 4.5) {
-    backgroundColor = randomColor({
-      luminosity: "dark",
-      alpha: 1
-    });
-    fontColor = randomColor({
-      luminosity: "light",
-      alpha: 1
-    });
-  }
-
-  $sender.html(image.sender);
-  $caption.html(image.caption);
-  $([$sender, $caption]).each(function() {
-    $(this).css({
-      backgroundColor: backgroundColor,
-      color: fontColor
-    });
-  });
-
-  //generate some randomness for positions of sender and caption
-  if (Math.random() >= 0.5) {
-    $sender.css({
-      left: 0,
-      'border-top-right-radius': "10px",
-      'border-bottom-right-radius': "10px"
-    });
-  } else {
-    $sender.css({
-      right: 0,
-      'border-top-left-radius': "10px",
-      'border-bottom-left-radius': "10px"
-    });
-  }
-  if (Math.random() >= 0.5) {
-    $caption.css({
-      left: 0,
-      'border-top-right-radius': "10px",
-      'border-bottom-right-radius': "10px"
-    });
-  } else {
-    $caption.css({
-      right: 0,
-      'border-top-left-radius': "10px",
-      'border-bottom-left-radius': "10px"
-    });
-  }
-  if (Math.random() >= 0.5) {
-    $sender.css('top', "2%");
-    $caption.css('bottom', "2%");
-  } else {
-    $sender.css('bottom', "2%");
-    $caption.css('top', "2%");
-  }
-
-
   $div.append($asset);
-  if (config.showSender) {
-    $assetDiv.append($sender);
-  }
-  if (config.showCaption && image.caption !== undefined) {
-    $assetDiv.append($caption);
-  }
+
+  $container.append($assetDiv);
 
   $asset.one(($asset.is('video') ? 'loadeddata' : 'load'), {currentAsset: $currentImage},
   function(event) {
     let $currentAsset = event.data.currentAsset;
+    delete event.data.currentAsset;
     let $asset = $(this);
-    let $assetDiv = $asset.parents('.basecontainer, .imgcontainer');
+    let $assetDiv = $asset.parents('.basecontainer, .imgcontainer').last();
     const screenAspectRatio = remote
         .getCurrentWindow()
         .webContents.getOwnerBrowserWindow()
@@ -569,57 +613,61 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     //the new image is loaded
     let css;
     if (assetAspectRatio > screenAspectRatio) {
-      css = {
-        width: "100%",
-        height: "auto"
-      };
+      css = { width: "100%" };
     } else {
-      css = {
-        height: "100%",
-        width: "auto"
-      };
+      css = { height: "100%" };
     }
     $([$asset, $asset.closest('.imgcontainer')]).each( function(){
         $(this).css(css);
     });
 
-    //fade out sender and caption at half time of the shown image
-    let captionSenderTimeout = setTimeout(function() {
-      $([$sender, $caption]).each(function() {
-        $(this).velocity("fadeOut", {
-          duration: fadeTime / 2
-        });
-      });
-    }, config.interval * 0.01 * (Math.max(10, Math.min(100, parseInt(config.senderAndCaptionDuration) || 50))));
+    $assetDiv.createCaptionSender(image);
 
-    $assetDiv.velocity("fadeIn", {
-      duration: fadeTime
-    });
-    $currentAsset.velocity("fadeOut", {
-      duration: fadeTime,
-      complete: () => $currentAsset.remove()
-    });
+    if (fadeTime === 0) {
+      $assetDiv.show();
+      $currentAsset.remove();
+      cleanUp(true);
+    } else {
+      $assetDiv.velocity("fadeIn", {
+        duration: fadeTime
+      });
+      $currentAsset.velocity("fadeOut", {
+        duration: fadeTime,
+        complete: function() {
+          $(this).remove();
+          cleanUp();
+        }
+      });
+    }
+
     if (!isPaused && images.length > 1) {
       currentTimeout = setTimeout(() => {
-        clearTimeout(captionSenderTimeout);
         loadImage(true, config.fadeTime);
-      }, ($asset.is('video') ? $asset.prop('duration') * 1000: config.interval));
+      }, ($asset.is('video') ? $asset.prop('duration') * 1000 : config.interval));
     }
+
   });
+}
 
-  setTimeout(function() {
-	  // remove all child containers but not the last one - active image
-	  //console.log('Cleanup element count to be removed now:',$container.find('div.imgcontainer:first-child, div.basecontainer:first-child, h1:first-child').not(':last').length)
-    $container.find('div.imgcontainer:first-child, div.basecontainer:first-child, h1:first-child').not(':last').remove();
-    webFrame.clearCache()
-  }, fadeTime)
-
-  $container.append($assetDiv);
+const cleanUp = (cleanContainers) => {
+  const cleanUpSelector = (config.useFullscreenForCaptionAndSender
+   ? 'div.basecontainer'
+   : 'div.imgcontainer') + ', h1';
+  // console.log('Cleanup element count to be removed now:',
+  //  $container.children(removeSelector).not(':last').length,
+  //  'all containers:', ($container.find(removeSelector).length));
+  if (cleanContainers) {
+    $container.children(cleanUpSelector).not(':last').remove();
+  }
+  webFrame.clearCache()
 }
 
 //notify user of incoming image and restart slideshow with the newest image
 function newImage(sender, type, newImageArray) {
   images = newImageArray;
+  setTouchbarIconStatus();
+  clearTimeout(currentTimeout);
+
   let message;
   if (type == 'image') {
     message = config.phrases.newPhotoMessage;
