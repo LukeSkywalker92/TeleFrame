@@ -22,12 +22,13 @@ const options = {
 };
 
 var VoiceRecorder = class {
-  constructor(config, emitter, bot, logger, ipcMain) {
+  constructor(config, emitter, bot, logger, ipcMain, addonHandler) {
     this.config = config;
     this.logger = logger;
     this.emitter = emitter;
     this.bot = bot;
     this.ipcMain = ipcMain;
+    this.addonHandler = addonHandler;
   }
 
   init() {
@@ -39,6 +40,7 @@ var VoiceRecorder = class {
     if (config.voiceReply.key !== undefined) {
       globalShortcut.register(config.voiceReply.key, () => {
         this.emitter.send("recordButtonPressed");
+        addonHandler.executeEventCallbacks('recordButtonPressed');
       });
     }
 
@@ -89,6 +91,7 @@ var VoiceRecorder = class {
       function() {
         logger.warn(`Recording ended.`);
         this.emitter.send("recordStopped");
+
         clearInterval(maxRecTime);
       }.bind(this)
     );

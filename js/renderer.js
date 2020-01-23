@@ -154,11 +154,11 @@ ipcRenderer.on("newImage", function(event, arg) {
 
 // handle navigation
 ipcRenderer.on("next", function(event, arg) {
-  nextImage()
+  nextImage(arg)
 });
 
 ipcRenderer.on("previous", function(event, arg) {
-  previousImage()
+  previousImage(arg)
 });
 
 ipcRenderer.on("pause", function(event, arg) {
@@ -169,32 +169,75 @@ ipcRenderer.on("play", function(event, arg) {
   play()
 });
 
+ipcRenderer.on("playPause", function(event, arg) {
+  playPause()
+});
+
+ipcRenderer.on("newest", function(event, arg) {
+  showNewAssets()
+});
+
+ipcRenderer.on("delete", function(event, arg) {
+  deleteImage()
+});
+
+ipcRenderer.on("star", function(event, arg) {
+  starImage()
+});
+
+ipcRenderer.on("mute", function(event, arg) {
+  mute()
+});
+
+ipcRenderer.on("reboot", function(event, arg) {
+  reboot()
+});
+
+ipcRenderer.on("shutdown", function(event, arg) {
+  shutdown()
+});
+
+ipcRenderer.on("askConfirm", function(event, arg) {
+  $('.swal2-confirm').trigger('click')
+});
+
+ipcRenderer.on("askCancel", function(event, arg) {
+  $('.swal2-cancel').trigger('click')
+});
+
+
+
 // functions to show and hide pause icon
 function showPause() {
-  var $pauseBox = $('<div id="pauseBox"/>');
-  $pauseBox.css({
-    height :'50px',
-    width: '45px',
-    position: 'absolute',
-    top: '20px',
-    right: '20px'
-  });
+  if ($('#pauseBox').length > 0)
+  {
+    $container.append($('#pauseBox').detach());
+  } else {
+    var $pauseBox = $('<div id="pauseBox"/>');
+    $pauseBox.css({
+      height :'50px',
+      width: '45px',
+      position: 'absolute',
+      top: '20px',
+      right: '20px'
+    });
 
-  var $divBar = $("<div/>");
-  $divBar.css({
-    height: '50px',
-    'width': '15px',
-    'background-color': 'blue',
-    float: 'left',
-    'border-radius': '2px'
-  });
+    var $divBar = $("<div/>");
+    $divBar.css({
+      height: '50px',
+      'width': '15px',
+      'background-color': 'blue',
+      float: 'left',
+      'border-radius': '2px'
+    });
 
-  $pauseBox.append($divBar, $divBar.clone().css({
-    float: 'right',
-    'border-radius': '2px'
-  }));
+    $pauseBox.append($divBar, $divBar.clone().css({
+      float: 'right',
+      'border-radius': '2px'
+    }));
 
-  $container.append($pauseBox);
+    $container.append($pauseBox);
+  }
 }
 
 function hidePause() {
@@ -202,15 +245,13 @@ function hidePause() {
 }
 
 // functions for navigation
-function nextImage() {
-  if (isPaused) hidePause();
-  loadImage(true, 0);
+function nextImage(fadeTime) {
+  loadImage(true, (fadeTime || 0));
   if (isPaused) showPause();
 }
 
-function previousImage() {
-  if (isPaused) hidePause();
-  loadImage(false, 0);
+function previousImage(fadeTime) {
+  loadImage(false, (fadeTime || 0));
   if (isPaused) showPause();
 }
 
@@ -219,8 +260,9 @@ function pause() {
 
   isPaused = true;
   clearTimeout(currentTimeout);
-  showPause(isPaused);
+  showPause();
   setTouchbarIconStatus();
+  ipcRenderer.send("paused", isPaused);
 }
 
 function play() {
@@ -228,8 +270,9 @@ function play() {
 
   isPaused = false;
   loadImage(true, 0);
-  hidePause(isPaused);
+  hidePause();
   setTouchbarIconStatus();
+  ipcRenderer.send("paused", isPaused);
 }
 
 function playPause() {
@@ -254,10 +297,10 @@ function starImage() {
   }
   if (images[currentImageIndex].starred) {
     images[currentImageIndex].starred = false
-    ipcRenderer.send("unstarImage", images);
+    ipcRenderer.send("unstarImage", currentImageIndex);
   } else {
     images[currentImageIndex].starred = true
-    ipcRenderer.send("starImage", images);
+    ipcRenderer.send("starImage", currentImageIndex);
   }
   setTouchbarIconStatus();
 }
@@ -314,6 +357,7 @@ function mute() {
     $('.mute > i').removeClass('fa-volume-up').addClass('fa-volume-mute');
   }
   isMuted = !isMuted;
+  ipcRenderer.send("muted", isMuted);
 }
 
 function shutdown() {
@@ -400,7 +444,7 @@ function setTouchbarIconStatus() {
     if (images[0].unseen) {
       $('.showNewest > i').removeClass('fa-history fa-images').addClass('fa-image new-asset');
     } else {
-      $('.showNewest > i').removeClass('fa-image new-asset').addClass('fa-history');
+      $('.showNewest > i').removeClass('fa-image fa-images new-asset').addClass('fa-history');
     }
   }
   if (images.length > 1) {
@@ -553,6 +597,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
 
   var image = images[currentImageIndex];
   setTouchbarIconStatus();
+  ipcRenderer.send('changingActiveImage', currentImageIndex, fadeTime);
 
   //get current container and create needed elements
   var $currentImage = $container.children('div.basecontainer, div.imgcontainer, h1').first();
@@ -646,6 +691,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
       }, ($asset.is('video') ? $asset.prop('duration') * 1000 : config.interval));
     }
 
+    ipcRenderer.send('changedActiveImage', currentImageIndex);
   });
 }
 
@@ -686,5 +732,6 @@ function newImage(sender, type, newImageArray) {
   });
 }
 
+ipcRenderer.send('renderer-ready');
 //start slideshow of images
 loadImage(true, config.fadeTime);

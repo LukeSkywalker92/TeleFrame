@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 var ImageWatchdog = class {
-  constructor(imageFolder, imageCount, autoDeleteImages, images, emitter, logger, ipcMain) {
+  constructor(imageFolder, imageCount, autoDeleteImages, images, emitter, logger, ipcMain, addonHandler) {
     this.imageFolder = imageFolder;
     this.imageCount = imageCount;
     this.autoDeleteImages = autoDeleteImages;
@@ -9,6 +9,7 @@ var ImageWatchdog = class {
     this.logger = logger;
     this.emitter = emitter;
     this.ipcMain = ipcMain;
+    this.addonHandler = addonHandler;
 
 
     //get paths of already downloaded images
@@ -22,16 +23,18 @@ var ImageWatchdog = class {
       	    if (stats.size > 0) {
               this.images.push(jsonData[image]);
               if (jsonData[image].starred) {
-                console.log("starred")
+                //console.log("starred")
                 this.imageCount++;
               }
             }
           }
         }
+        this.addonHandler.executeEventCallbacks('images-loaded');
       });
 
     } else {
       this.saveImageArray()
+      this.addonHandler.executeEventCallbacks('images-loaded');
     }
   }
 
@@ -39,15 +42,15 @@ var ImageWatchdog = class {
 
   init() {
 
-    this.ipcMain.on('starImage', (event, images) => {
+    this.ipcMain.on('starImage', (event, index) => {
       this.imageCount++;
-      this.images = images;
+      this.images[index].starred = true;
       this.saveImageArray();
     })
 
-    this.ipcMain.on('unstarImage', (event, images) => {
+    this.ipcMain.on('unstarImage', (event, index) => {
       this.imageCount--;
-      this.images = images;
+      this.images[index].starred = false;
       this.saveImageArray();
     })
 
@@ -99,15 +102,18 @@ var ImageWatchdog = class {
       'unseen': true
     });
 
-    console.log(this.imageCount);
+    //console.log(this.imageCount);
     while (this.images.length > this.imageCount) {
       console.log("yay");
       var idx2bedeleted = this.getOldestUnstarredImageIndex();
       this.autoDeleteImage(idx2bedeleted);
-      console.log(this.images.splice(idx2bedeleted, 1));
+      //console.log(this.images.splice(idx2bedeleted, 1));
+      this.images.splice(idx2bedeleted, 1);
+
     }
-    console.log(this.images.length);
-    console.log(this.imageCount);
+    // console.log(this.images.length);
+    // console.log(this.imageCount);
+
     //notify frontend, that new image arrived
     var type;
     if (src.split('.').pop() == 'mp4') {
@@ -115,11 +121,13 @@ var ImageWatchdog = class {
     } else {
       type = 'image';
     }
-    this.emitter.send('newImage', {
+    const img = {
       sender: sender,
       type: type,
       images: this.images
-    });
+    };
+    this.emitter.send('newImage', img);
+    this.addonHandler.executeEventCallbacks('newImage');
     this.saveImageArray();
   }
 

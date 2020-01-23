@@ -8,6 +8,7 @@ const voicerecorder = require("./js/voiceRecorder");
 const schedules = require("./js/schedules");
 const CommandExecutor = require("./js/systemCommands");
 const {config, screen} = require("./js/configuration");
+const initAddonInterface = require('./js/addonInterface').initAddonInterface;
 
 logger.info("Configuring for: " +  screen.name);
 
@@ -48,6 +49,9 @@ function createWindow() {
   // get instance of webContents for sending messages to the frontend
   const emitter = win.webContents;
 
+  // initialize the addon handler
+  const addonInterface =  initAddonInterface(global.images, logger, emitter, ipcMain, config);
+
   // create imageWatchdog and bot
   var imageWatchdog = new imagewatcher(
     config.imageFolder,
@@ -56,7 +60,9 @@ function createWindow() {
     global.images,
     emitter,
     logger,
-    ipcMain
+    ipcMain,
+    // load addons
+    addonInterface
   );
   imageWatchdog.init()
 
@@ -81,7 +87,7 @@ function createWindow() {
   commandExecutor.init();
 
   if (config.voiceReply !== null) {
-    var voiceReply = new voicerecorder(config, emitter, bot, logger, ipcMain);
+    var voiceReply = new voicerecorder(config, emitter, bot, logger, ipcMain, addonInterface);
     voiceReply.init();
   }
 
@@ -96,6 +102,13 @@ function createWindow() {
     win.webContents.openDevTools()
   }
   bot.startBot();
+
+  addonInterface.executeEventCallbacks('teleFrame-ready', {
+    config: config,
+    imageWatchdog: imageWatchdog,
+    bot: bot,
+    voiceReply: voiceReply
+  });
 
   // Emitted when the window is closed.
   win.on("closed", () => {

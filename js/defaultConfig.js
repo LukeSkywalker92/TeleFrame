@@ -172,6 +172,18 @@ var defaultConfig = {
 		// Admin-Action for stoping the OpenVPN-Client
 		{name: "stopOpenvpn", command: "systemctl openvpn stop", enable: true}
     ]
+  },
+
+  // options for the addonHandler class
+  addonInterface: {
+    // configure which types should be logged
+    logging: ['info', 'warn', 'error'],
+    // The AddonInterface will try to load all configured addons.
+    // To enable an addon it requiers at least the directory name from
+    // the addons folder as the key and an empty config object.
+    // for example: "testAddon": {}
+    addons: {
+    }
   }
 };
 
