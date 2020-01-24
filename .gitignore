@@ -72,7 +72,7 @@ images/*
 
 addons/*
 !addons/.gitkeep
-!addons/README-addons.md
+!addons/README.md
 
 
 audiofiles/*

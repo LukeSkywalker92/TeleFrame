@@ -121,12 +121,11 @@ var ImageWatchdog = class {
     } else {
       type = 'image';
     }
-    const img = {
+    this.emitter.send('newImage', {
       sender: sender,
       type: type,
       images: this.images
-    };
-    this.emitter.send('newImage', img);
+    });
     this.addonHandler.executeEventCallbacks('newImage');
     this.saveImageArray();
   }

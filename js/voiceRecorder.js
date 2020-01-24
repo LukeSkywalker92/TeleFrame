@@ -40,7 +40,6 @@ var VoiceRecorder = class {
     if (config.voiceReply.key !== undefined) {
       globalShortcut.register(config.voiceReply.key, () => {
         this.emitter.send("recordButtonPressed");
-        addonHandler.executeEventCallbacks('recordButtonPressed');
       });
     }
 
@@ -55,6 +54,7 @@ var VoiceRecorder = class {
     let maxRecTime;
 
     this.emitter.send("recordStarted");
+    this.addonHandler.executeEventCallbacks('recordStarted');
 
     let audioRecorder = new AudioRecorder(options, logger);
     logger.log("Start recording");
@@ -91,6 +91,7 @@ var VoiceRecorder = class {
       function() {
         logger.warn(`Recording ended.`);
         this.emitter.send("recordStopped");
+        this.addonHandler.executeEventCallbacks('recordStopped');
 
         clearInterval(maxRecTime);
       }.bind(this)
@@ -101,6 +102,7 @@ var VoiceRecorder = class {
       function() {
         logger.warn(`Recording error.`);
         this.emitter.send("recordError");
+        this.addonHandler.executeEventCallbacks('recordError');
         clearInterval(maxRecTime);
       }.bind(this)
     );
@@ -110,6 +112,7 @@ var VoiceRecorder = class {
         logger.log("MAX Stop recording");
         audioRecorder.stop();
         this.emitter.send("recordStopped");
+        this.addonHandler.executeEventCallbacks('recordStopped');
       }.bind(this),
       config.voiceReply.maxRecordTime
     );

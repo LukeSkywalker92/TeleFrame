@@ -179,7 +179,7 @@ var defaultConfig = {
     // configure which types should be logged
     logging: ['info', 'warn', 'error'],
     // The AddonInterface will try to load all configured addons.
-    // To enable an addon it requiers at least the directory name from
+    // To enable an addon it requires at least the directory name from
     // the addons folder as the key and an empty config object.
     // for example: "testAddon": {}
     addons: {
