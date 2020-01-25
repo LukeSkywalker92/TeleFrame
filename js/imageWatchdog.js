@@ -104,7 +104,7 @@ var ImageWatchdog = class {
 
     //console.log(this.imageCount);
     while (this.images.length > this.imageCount) {
-      console.log("yay");
+      //console.log("yay");
       var idx2bedeleted = this.getOldestUnstarredImageIndex();
       this.autoDeleteImage(idx2bedeleted);
       //console.log(this.images.splice(idx2bedeleted, 1));
@@ -132,10 +132,8 @@ var ImageWatchdog = class {
 
   getOldestUnstarredImageIndex() {
     for (var i = this.images.length-1; i > 0; i--) {
-      console.log(i);
       console.log(!this.images[i].starred);
        if (!this.images[i].starred) {
-         console.log(i);
          return i;
        }
     }
