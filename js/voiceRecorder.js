@@ -53,6 +53,12 @@ var VoiceRecorder = class {
     const logger = console;
     let maxRecTime;
 
+    if (!chatId || !messageId) {
+      this.emitter.send("recordError");
+      this.addonHandler.executeEventCallbacks('recordError');
+      return logger.warn(`Can'! reply! chatId or messageId is empty`);
+    }
+
     this.emitter.send("recordStarted");
     this.addonHandler.executeEventCallbacks('recordStarted');
 
