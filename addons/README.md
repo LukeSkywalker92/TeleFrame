@@ -7,7 +7,7 @@ A useful addon would be for example to switch an LED when new images arrive or d
 
 ## Contents
 
-- [How does it work](#how_does_it_work)
+- [How does it work](#how-does-it-work)
 
 - [API](#api)
 
