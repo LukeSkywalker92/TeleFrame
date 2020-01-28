@@ -50,7 +50,7 @@ function createWindow() {
   const emitter = win.webContents;
 
   // initialize the addon handler
-  const addonInterface =  initAddonInterface(global.images, logger, emitter, ipcMain, config);
+  const addonInterface = initAddonInterface(global.images, logger, emitter, ipcMain, config);
 
   // create imageWatchdog and bot
   var imageWatchdog = new imagewatcher(

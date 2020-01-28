@@ -153,58 +153,82 @@ ipcRenderer.on("newImage", function(event, arg) {
 });
 
 // handle navigation
-ipcRenderer.on("next", function(event, arg) {
+ipcRenderer.on('next', function(event, arg) {
   nextImage(arg)
 });
 
-ipcRenderer.on("previous", function(event, arg) {
+ipcRenderer.on('previous', function(event, arg) {
   previousImage(arg)
 });
 
-ipcRenderer.on("pause", function(event, arg) {
+ipcRenderer.on('pause', function(event, arg) {
   pause()
 });
 
-ipcRenderer.on("play", function(event, arg) {
+ipcRenderer.on('play', function(event, arg) {
   play()
 });
 
-ipcRenderer.on("playPause", function(event, arg) {
+ipcRenderer.on('playPause', function(event, arg) {
   playPause()
 });
 
-ipcRenderer.on("newest", function(event, arg) {
+ipcRenderer.on('newest', function(event, arg) {
   showNewAssets()
 });
 
-ipcRenderer.on("delete", function(event, arg) {
+ipcRenderer.on('delete', function(event, arg) {
   deleteImage()
 });
 
-ipcRenderer.on("star", function(event, arg) {
+ipcRenderer.on('star', function(event, arg) {
   starImage()
 });
 
-ipcRenderer.on("mute", function(event, arg) {
+ipcRenderer.on('mute', function(event, arg) {
   mute()
 });
 
-ipcRenderer.on("reboot", function(event, arg) {
+ipcRenderer.on('reboot', function(event, arg) {
   reboot()
 });
 
-ipcRenderer.on("shutdown", function(event, arg) {
+ipcRenderer.on('shutdown', function(event, arg) {
   shutdown()
 });
 
-ipcRenderer.on("askConfirm", function(event, arg) {
-  $('.swal2-confirm').trigger('click')
+ipcRenderer.on('askConfirm', function(event, arg) {
+  $('.swal2-confirm').trigger('click');
 });
 
-ipcRenderer.on("askCancel", function(event, arg) {
-  $('.swal2-cancel').trigger('click')
+ipcRenderer.on('askCancel', function(event, arg) {
+  $('.swal2-cancel').trigger('click');
 });
 
+ipcRenderer.on('messageBox', function(event, arg) {
+  if (typeof arg === 'object' && !Array.isArray(arg) && (arg.title || arg.html)) {
+    Swal.fire(Object.assign({
+      showConfirmButton: false,
+      timer: 5000,
+      // icon: 'success'
+    }, arg));
+  } else {
+    logger.warn(`Ignored event 'messageBox'! <arg> is not an object.`);
+  }
+});
+
+ipcRenderer.on('reloadRenderer', function(event, arg) {
+  remote.getCurrentWindow().reload();
+});
+
+ipcRenderer.on('imagesUpdated', function(event, arg) {
+  let validArg = (Array.isArray(arg) && (arg.length === 0 || arg[0].src));
+  if (validArg) {
+    images = arg;
+  } else {
+    logger.warn(`Ignored invalid argument for Event 'imagesUpdated'!`);
+  }
+});
 
 
 // functions to show and hide pause icon
@@ -671,7 +695,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     if (fadeTime === 0) {
       $assetDiv.show();
       $currentAsset.remove();
-      cleanUp(true);
+      cleanUp();
     } else {
       $assetDiv.velocity("fadeIn", {
         duration: fadeTime
@@ -695,17 +719,15 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   });
 }
 
-const cleanUp = (cleanContainers) => {
+const cleanUp = () => {
   const cleanUpSelector = (config.useFullscreenForCaptionAndSender
    ? 'div.basecontainer'
    : 'div.imgcontainer') + ', h1';
   // console.log('Cleanup element count to be removed now:',
   //  $container.children(removeSelector).not(':last').length,
   //  'all containers:', ($container.find(removeSelector).length));
-  if (cleanContainers) {
-    $container.children(cleanUpSelector).not(':last').remove();
-  }
-  webFrame.clearCache()
+  $container.children(cleanUpSelector).not(':last').remove();
+  webFrame.clearCache();
 }
 
 //notify user of incoming image and restart slideshow with the newest image

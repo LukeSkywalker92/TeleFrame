@@ -18,7 +18,10 @@ const validInputEvents = [
   'shutdown',
   'record',
   'askConfirm',
-  'askCancel'
+  'askCancel',
+  'messageBox',  // send info to the renderer. argument: config object for sweetalert2. Requires to define 'title' or 'html' { title: 'info to display' }
+  'imagesUpdated', // send the updated images array to the renderer. argument: the updated images object
+  'reloadRenderer',
 ];
 
 // listen event names
@@ -29,16 +32,16 @@ const validListenEvents = [
   'starImage',          // arguments: currentImageIndex
   'unstarImage',        // arguments: currentImageIndex
   'deleteImage',        // arguments: currentImageIndex
+  'imageDeleted',      // an imgae was deleted and the images array is up to date now
   'removeImageUnseen',
   'newImage',
   'paused',             // arguments: muted true|false
   'muted',              // arguments: muted true|false
-  'record',             // arguments: chatId, messageId
   'recordStarted',
   'recordStopped',
   'recordError',
   'changingActiveImage',  // before changing. arguments: currentImageIndex, fadeTime
-  'changedActiveImage'  // after changed. arguments: currentImageIndex
+  'changedActiveImage',   // after changed. arguments: currentImageIndex
 ];
 
 /**
@@ -92,7 +95,6 @@ class AddonInterface {
     //  references to the addon instances
     this.addons = [];
     // TeleFrame objects
-    this.fullConfig = config;
     this.emitter = emitter;
     this.ipcMain = ipcMain;
     this.images = images;
@@ -106,7 +108,7 @@ class AddonInterface {
       // remove invald characters from addon name
       addonName = removeInvalidAddonNameChars(addonName);
       if (config.addonInterface.addons[addonName].enabled === false) {
-        logger.warn(`Addon ${addonName} disabled in config.`);
+        this.logger.warn(`Addon ${addonName} disabled in config.`);
         return false;
       }
       if (addonName !== 'addonInterface' && typeof config.addonInterface.addons[addonName] === 'object') {
@@ -167,37 +169,21 @@ class AddonInterface {
       }
     });
 
-    // the addon listeners will be initialized when the renderer is ready
-    ipcMain.once('renderer-ready', () => {
-      this.logger.info('Initialize addons...');
-      const readyCallbacks = [];
-      // initialize wanted listeners
-      let execReady = false;
-      this.listeners.forEach(eventName => {
-        if (validListenEvents.indexOf(eventName) > -1) {
-          // execute callbacks for event 'renderer-ready' and then remove it
-          if (eventName === 'renderer-ready') {
-            execReady = true;
-          } else {
-            // install listener
-            ipcMain.on(eventName, (event, ...args) => {
-              this.executeEventCallbacks(eventName, ...args);
-            });
-            this.logger.info(`Installed listener '${eventName}'`);
-          }
-        } else {
-          this.logger.warn(`Ignore definition for unknown event listener: '${eventName}'! Use one of '${validListenEvents}'`);
-        }
-      });
-      if(execReady) {
-        this.executeEventCallbacks('renderer-ready');
-        // execute once - remove the event listener
-        this.listeners.splice(this.listeners.indexOf('renderer-ready'), 1);
+    // initialize the requested addon isteners
+    this.logger.info('Initialize addons...');
+    this.listeners.forEach(eventName => {
+      if (validListenEvents.indexOf(eventName) > -1) {
+        // install listener
+        ipcMain.on(eventName, (event, ...args) => {
+          this.executeEventCallbacks(eventName, ...args);
+        });
+        this.logger.info(`Installed listener '${eventName}'`);
+      } else {
+        this.logger.warn(`Ignore definition for unknown event listener: '${eventName}'! Use one of '${validListenEvents}'`);
       }
-      this.logger.info('Addons initialized.');
     });
 
-    this.logger.info('Addons loaded');
+    this.logger.info('Addons loaded and initialized');
   }
 
   /**
@@ -219,6 +205,150 @@ class AddonInterface {
       });
     }
   }
+
+  /**
+   * Initialize the instance of AddonInterface
+   * @param  {Array} images  TeleFrame images array
+   * @param  {Object} logger  TeleFrame main logger
+   * @param  {Object} emitter use to send input events
+   * @param  {Object} ipcMain use to install listeners
+   * @param  {Object} config  TeleFrame configuration
+   */
+  static initAddonInterface(images, logger, emitter, ipcMain, config) {
+    if (addonInterfaceObj !== null) {
+      throw new AddonError("Only one instance of the AddonInterface-class is allowed.");
+    }
+    new AddonInterface(images, logger, emitter, ipcMain, config);
+    return addonInterfaceObj;
+  }
+
+  /**
+   * [addonControl description]
+   * @param  {string} command   connand to use to control the addon
+   * @param  {string} addonName name of the addon
+   * @param  {Array} args      optional arguments
+   */
+  static addonControl(command, addonName, ...args) {
+    if (!command
+      || ['help', '--help', '-h'].indexOf(command) > -1
+      || (command !== 'status' && !addonName)) {
+
+      console.info(`\nUsage: node ${__filename} <command> <addonName> [...arguments]\n`);
+    }
+
+    // remove invald characters from addon name
+    addonName = removeInvalidAddonNameChars(addonName);
+
+    const {config} = require(__dirname + '/configuration');
+
+    if (command === 'status') {
+      let addonStatus = `
+Installed in the order they are loaded when enabled:
+-------------------------------------------------------------
+Addon                                              | enabled
+-------------------------------------------------------------
+`;
+      Object.keys(config.addonInterface.addons).forEach(addonName => {
+        addonStatus += `${addonName.padEnd(50, ' ')} | ${config.addonInterface.addons[addonName].enabled !== false}\n`;
+      });
+      console.log(addonStatus);
+    }
+
+    const addonPath = path.resolve(`${__dirname}/../addons/${addonName}`);
+
+    switch (command) {
+      case 'enable':
+        try {
+          if (!fs.existsSync(addonPath)) {
+            console.error(`Addon folder does'nt exist '${addonPath}'`);
+            process.exit(1);
+          }
+          let updateConfig = !config.addonInterface.addons[addonName];
+          if (config.addonInterface.addons[addonName] && config.addonInterface.addons[addonName].enabled === false) {
+             config.addonInterface.addons[addonName].enabled = true;
+          } else if (updateConfig) {
+            config.addonInterface.addons[addonName] = { enabled: true};
+          }
+          if (updateConfig) {
+            config.writeConfig();
+            console.info(`Enabled addon '${addonName}'.`);
+          } else {
+            console.info(`Nothing to do. Addon '${addonName}' was already enabled.`);
+          }
+        } catch(error) {
+          console.error(`Error enable addon '${addonName}'!\n`, error.stack);
+        }
+        break;
+      case 'disable':
+        try {
+          if (config.addonInterface.addons[addonName] && config.addonInterface.addons[addonName].enabled !== false) {
+            config.addonInterface.addons[addonName].enabled = false;
+            config.writeConfig();
+            console.info(`Disabled addon '${addonName}'.`);
+          } else {
+            console.info(`Nothing to do. Addon '${addonName}' was already disabled or not installed.`);
+          }
+        } catch(error) {
+          console.error(`Error updating config to enable addon '${addonName}'!\n`, error.stack);
+        }
+        break;
+      case 'remove':
+        try {
+          if (config.addonInterface.addons[addonName]) {
+            delete config.addonInterface.addons[addonName];
+            config.writeConfig();
+            console.info(`Removed addon '${addonName}'.`);
+          } else {
+            console.info(`Nothing to do. Addon '${addonName}' was not enabled or installed.`);
+          }
+        } catch(error) {
+          console.error(`Error updating config to remove addon '${addonName}'!\n`, error.stack);
+        }
+        break;
+      case 'config': // key value
+        if (args.length < 2) {
+          console.error(`Error configuring addon '${addonName}'! Too few argunments. Requires <key> <value> `);
+          process.exit(1);
+        }
+        if (!config.addonInterface.addons[addonName]) {
+          console.error(`Error configuring not installed addon '${addonName}'!`);
+          process.exit(1);
+        }
+
+        // try to load addon config object;
+        let configCtrl;
+        try {
+          configCtrl = require(addonPath).configCtrl;
+        } catch(error) {
+          console.error(`Failed to load configControl for addon '${addonName}!`, error.stack)
+        }
+
+        const setConfigValue = (key, value) => {
+          config.addonInterface.addons[addonName][key] = value;
+          return true;
+        }
+
+        try {
+          let writeConfig = false;
+          if (typeof configCtrl === 'function') {
+            console.info(`Use configCtrl function from addon '${addonName}'.`);
+            writeConfig = configCtrl(config.addonInterface.addons[addonName], setConfigValue, ...args);
+          } else {
+            config.addonInterface.addons[addonName][args[0]] = args[1];
+            writeConfig = setConfigValue(args[0], args[1]);
+
+          }
+          if (writeConfig) {
+            config.writeConfig();
+            console.info(`Config changed for addon '${addonName}'.`);
+          }
+        } catch(error) {
+          console.error(`Error updating config for addon '${addonName}'!\n`, error.stack);
+        }
+        break;
+    }
+
+  };  // addonControl
 
 };   // end class AddonInterface
 
@@ -352,137 +482,14 @@ class AddonBase {
 
 };  // class AddonBase
 
-/**
- * Initialize the instance of AddonInterface
- * @param  {Array} images  TeleFrame images array
- * @param  {Object} logger  TeleFrame main logger
- * @param  {Object} emitter use to send input events
- * @param  {Object} ipcMain use to install listeners
- * @param  {Object} config  TeleFrame configuration
- */
-const initAddonInterface = (images, logger, emitter, ipcMain, config) =>
-  addonInterfaceObj = new AddonInterface(images, logger, emitter, ipcMain, config);
-
-
-/**
- * [addonControl description]
- * @param  {string} addonName name of the addon
- * @param  {string} command   connand to use to control the addon
- * @param  {Array} args      optional arguments
- */
-const addonControl = (addonName, command, ...args) => {
-  if (!addonName || !command
-    || ['help', '--help', '-h'].indexOf(addonName) > -1) {
-
-    console.info(`\nUsage: node ${__filename} <addonName> <command> [...arguments]\n`);
-  }
-
-  // remove invald characters from addon name
-  addonName = removeInvalidAddonNameChars(addonName);
-
-  const {config} = require(__dirname + '/configuration');
-  const addonPath = path.resolve(`${__dirname}/../addons/${addonName}`);
-
-  switch (command) {
-    case 'enable':
-      try {
-        if (!fs.existsSync(addonPath)) {
-          console.error(`Addon folder does'nt exist '${addonPath}'`);
-          process.exit(1);
-        }
-        let updateConfig = !config.addonInterface.addons[addonName];
-        if (config.addonInterface.addons[addonName].enabled === false) {
-          delete config.addonInterface.addons[addonName].enabled;
-          updateConfig = true;
-        } else if (updateConfig) {
-          config.addonInterface.addons[addonName] = {};
-        }
-        if (updateConfig) {
-          config.writeConfig();
-          console.info(`Enabled addon '${addonName}'.`);
-        } else {
-          console.info(`Nothing to do. Addon '${addonName}' was already enabled.`);
-        }
-      } catch(error) {
-        console.error(`Error enable addon '${addonName}'!\n`, error.stack);
-      }
-      break;
-    case 'disable':
-      try {
-        if (config.addonInterface.addons[addonName] && config.addonInterface.addons[addonName].enabled !== false) {
-          config.addonInterface.addons[addonName].enabled = false;
-          config.writeConfig();
-          console.info(`Disabled addon '${addonName}'.`);
-        } else {
-          console.info(`Nothing to do. Addon '${addonName}' was already disabled.`);
-        }
-      } catch(error) {
-        console.error(`Error updating config to enable addon '${addonName}'!\n`, error.stack);
-      }
-      break;
-    case 'remove':
-      try {
-        if (config.addonInterface.addons[addonName]) {
-          delete config.addonInterface.addons[addonName];
-          config.writeConfig();
-          console.info(`Removed addon '${addonName}'.`);
-        } else {
-          console.info(`Nothing to do. Addon '${addonName}' was not enabled.`);
-        }
-      } catch(error) {
-        console.error(`Error updating config to remove addon '${addonName}'!\n`, error.stack);
-      }
-      break;
-    case 'config': // key value
-      if (args.length < 2) {
-        console.error(`Error configuring addon '${addonName}'! Too few argunments. Requires <key> <value> `);
-        process.exit(1);
-      }
-      if (!config.addonInterface.addons[addonName]) {
-        console.error(`Error configuring not installed addon '${addonName}'!`);
-        process.exit(1);
-      }
-
-      // try to load addon config object;
-      let configCtrl;
-      try {
-        configCtrl = require(addonPath).configCtrl;
-      } catch(__) {  }
-
-      const setConfigValue = (key, value) => {
-        config.addonInterface.addons[addonName][key] = value;
-        return true;
-      }
-
-      try {
-        let writeConfig = false;
-        if (typeof configCtrl === 'function') {
-          writeConfig = configCtrl(config.addonInterface.addons[addonName], setConfigValue, ...args);
-        } else {
-          console.info(`configCtrl function not exported from addon '${addonName}'.`);
-          config.addonInterface.addons[addonName][args[0]] = args[1];
-          writeConfig = setConfigValue(args[0], args[1]);
-
-        }
-        if (writeConfig) {
-          config.writeConfig();
-          console.info(`Config changed for addon '${addonName}'.`);
-        }
-      } catch(error) {
-        console.error(`Error updating config to remove addon '${addonName}'!\n`, error.stack);
-      }
-      break;
-  }
-
-};  // addonControl
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
 if (typeof module !== "undefined") {
   module.exports = {
-    initAddonInterface,
+    initAddonInterface: AddonInterface.initAddonInterface,
     AddonBase,
     AddonError,
-    addonControl
+    addonControl: AddonInterface.addonControl
   };
 
 }

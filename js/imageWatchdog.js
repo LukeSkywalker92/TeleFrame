@@ -61,6 +61,7 @@ var ImageWatchdog = class {
       this.autoDeleteImage(index);
       this.images.splice(index, 1)
       this.saveImageArray();
+      this.addonHandler.executeEventCallbacks('imageDeleted');
     })
 
     this.ipcMain.on('removeImageUnseen', event => {
