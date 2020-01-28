@@ -106,10 +106,21 @@ To try an addon, copy the example addon folder from `examples` one level up to `
 This addon listens for all available events and logs them.
 
 - Function example:
-`addons/examples/functionExampleMonitor`
+[`addons/examples/functionExampleMonitor`](addons/examples/functionExampleMonitor/index.js)
 
 - class example:
- `addons/examples/classExampleMonitor`
+[`addons/examples/classExampleMonitor`](addons/examples/classExampleMonitor/index.js)
+
+
+### Event monitoring example
+
+This addon listens for all available events and logs them.
+
+- Function example:
+[`addons/examples/functionExampleMonitor`](addons/examples/functionExampleAutoControl/index.js)
+
+- class example:
+[`addons/examples/classExampleMonitor`](addons/examples/classExampleAutoControl/index.js)
 
 
 #### Walkthrough to install an addon example
