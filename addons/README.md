@@ -7,19 +7,19 @@ A useful addon would be for example to switch an LED when new images arrive or d
 
 ## Contents
 
-- [How does it work](##how-does-it-work)
+- [How does it work](#how_does_it_work)
 
 - [API](#api)
 
 - [Configure addons]()
-- [Addon examples](##-Addon-examples)
+- [Addon examples](#Addon-examples)
 
   The provided example addons should demonstrate how the addon interface works. They should show what is possible and to illustrate the process. The examples are not useful in normal operation.
 
-  - [Event monitoring example](###event-monitoring-example)
-  - [Auto control example](###autoplay-example)
+  - [Event monitoring example](#event-monitoring-example)
+  - [Auto control example](#autoplay-example)
 
-- [Installing existing addons](##installing-existing-addons)
+- [Installing existing addons](#installing-existing-addons)
 
 
 
