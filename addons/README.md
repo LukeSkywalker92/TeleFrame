@@ -78,7 +78,7 @@ The base class from which addons are inherited. If you use the function interfac
    | `once`                | {boolean}         | The callbacks are only executed on the first occurrence of the event  |
 
    **Available listeners that can be registered**
-   
+
    <details>
    <summary>Click to show the events</summary>
    | Name                  | Description                                                                                 |
