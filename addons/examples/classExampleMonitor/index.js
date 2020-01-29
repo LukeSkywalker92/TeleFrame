@@ -1,6 +1,6 @@
 const {AddonBase} = require(`${__dirname}/../../js/addonInterface`);
 
-class ClassExampleMonitorAndConfig  extends AddonBase {
+class ClassExampleMonitor  extends AddonBase {
   constructor(config) {
     super(config);
 
@@ -44,5 +44,5 @@ class ClassExampleMonitorAndConfig  extends AddonBase {
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
 if (typeof module !== "undefined") {
-  module.exports = ClassExampleMonitorAndConfig;
+  module.exports = ClassExampleMonitor;
 }

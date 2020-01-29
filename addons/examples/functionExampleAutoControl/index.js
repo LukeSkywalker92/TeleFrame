@@ -48,9 +48,15 @@ const functionExampleAutoControl = (interface) => {
         });
         interface.sendEvent('play');
       }
-
     }, randomIntegerBetween(3000, 5000));
   };
+
+  // when the renderer is ready start the auto control timer
+  interface.registerListener('renderer-ready', () => {
+    setTimeout(() => autoControl(), 23000);
+    interface.logger.info('Started auto control timer');
+  });
+};
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
 if (typeof module !== "undefined") {

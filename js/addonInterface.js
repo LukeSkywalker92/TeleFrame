@@ -26,17 +26,17 @@ const validInputEvents = [
 
 // listen event names
 const validListenEvents = [
-  'renderer-ready',     // fired only one time. The AddonInterface initalize the adoon event listeners
-  'images-loaded',      // fired only one time.
-  'teleFrame-ready',    // fired only one time. arguments: prepared and running TeleFrame objects { config, imageWatchdog, bot, voiceReply}
+  'renderer-ready',     // renderer was initialized
+  'images-loaded',      // fired only once when the images object was initialized
+  'teleFrame-ready',    // Fired only once when TeleFrame has initialized the objects. Arguments: prepared and running TeleFrame objects { config, imageWatchdog, bot, voiceReply}
   'starImage',          // arguments: currentImageIndex
   'unstarImage',        // arguments: currentImageIndex
   'deleteImage',        // arguments: currentImageIndex
-  'imageDeleted',      // an imgae was deleted and the images array is up to date now
-  'removeImageUnseen',
-  'newImage',
-  'paused',             // arguments: muted true|false
-  'muted',              // arguments: muted true|false
+  'imageDeleted',       // an image was deleted and the images array is up to date now
+  'removeImageUnseen',  // Request to remove the unseen status of all images
+  'newImage',           // New image notification
+  'paused',             // Notification that the pause status has changed. Arguments: paused true|false
+  'muted',              // Notification that the mute status has changed. Arguments: paused true|false
   'recordStarted',
   'recordStopped',
   'recordError',
@@ -428,7 +428,7 @@ class AddonBase {
   }
 
   /**
-   * Returns the logger instanze
+   * Returns the logger instance
    * @return {Object} logger
    */
   get logger() {
@@ -436,7 +436,7 @@ class AddonBase {
   }
 
   /**
-   * Returns the logger instanze
+   * Returns the config instance
    * @return {Object} logger
    */
   get config() {

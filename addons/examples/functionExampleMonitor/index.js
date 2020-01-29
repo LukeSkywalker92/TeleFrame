@@ -39,8 +39,6 @@ const functionExampleMonitorAndConfig = (interface) => {
   });
 
   interface.registerListener('removeImageUnseen', () => interface.logger.info('removeImageUnseen'));
-
-
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/

@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "botonly": "node botonly.js"
+    "botonly": "node botonly.js",
+    "install": "(chmod 755 tools/addon_control.sh >nul 2>&1)||echo addon_control.sh can only be used on linux systems"
   },
   "repository": {
     "type": "git",

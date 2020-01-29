@@ -2,25 +2,22 @@
 
 The addon interface is provided for easy implementation of extensions without having to deal with too many internas of the TeleFrame code.
 
-A useful addon would be for example to switch an LED when new images arrive or display a notifications on the TeleFrame screen.
+A useful addon would be for example to switch an LED when new images arrive or display a notifications on the TeleFrame screen. The newImageLED and the webRemote demo addons are available to download. See [Installing existing addons](#installing-existing-addons-from-github).
 
 
 ## Contents
 
 - [How does it work](#how-does-it-work)
-
 - [API](#api)
-
-- [Configure addons]()
-- [Addon examples](#Addon-examples)
+- [Configure addons](#configure-addons)
+- [Addon examples](#addon-examples)
 
   The provided example addons should demonstrate how the addon interface works. They should show what is possible and to illustrate the process. The examples are not useful in normal operation.
 
   - [Event monitoring example](#event-monitoring-example)
-  - [Auto control example](#autoplay-example)
+  - [Auto control example](#auto-control-example)
 
-- [Installing existing addons](#installing-existing-addons)
-
+- [Installing existing addons](#installing-existing-addons-from-github)
 
 
 ## How does it work
@@ -43,10 +40,115 @@ An addon *function* gets a preconfigured interface object to access the required
 
 A _class_ derived from `AddonBase` itself has the required methods and properties.
 
-Below you will find skeletons that can be used as starting point for programming your addons `addon/<myAddon>/index.js`.
+Below you will find skeletons that can be used as starting point for coding your addons `addon/<myAddon>/index.js`.
+**Skeletons** are available to use the [function interface](#skeleton-for-the-function-interface) and the [class interface](#skeleton-for-the-class-interface).
 
 
+### Class AddonBase
 
+The base class from which addons are inherited. If you use the function interface, a preconfigured object of this class is created automatically.
+
+#### Methods
+
+-  **constructor(config)**
+   **Arguments**
+   | Name                  | Type             | Description
+   ------------------------|------------------|----------------------
+   | addonConfig           | {Object}         | configuration object for the addon
+
+-  **registerListener(eventName, callbacks)**
+
+   Register listeners for events sent from the TeleFrame renderer
+
+   **Arguments**
+   | Name                  | Type             | Description
+   ------------------------|------------------|----------------------
+   | **eventName**         | {string\|Array}   | name or array of names for the event to listen to
+   | **callbacks**         | {Function\|Array} | function/array of functions to execute when the event was fired
+
+   **Available listeners that can be registered**
+   <details>
+   <summary>Click to show the events</summary>
+
+   | Name                  | Description
+   ------------------------|----------------------
+   | `renderer-ready`      | Renderer was initialized
+   | `images-loaded`       | Fired only once when the images object was initialized
+   | `teleFrame-ready`     | Fired only once when TeleFrame has initialized the objects. *Arguments*: prepared and running TeleFrame objects { config, imageWatchdog, bot, voiceReply}
+   | `starImage`           | Request to star an image. *Argument*: currentImageIndex
+   | `unstarImage`         | Request to unstar an image. *Argument*: currentImageIndex
+   | `deleteImage`         | Request to delete an image. *Argument*: currentImageIndex
+   | `deleteImage`         | Notification that an image has been deleted. *Argument*: currentImageIndex
+   | `removeImageUnseen`   | Request to remove the unseen status of all images
+   | `newImage`            | New image notification
+   | `paused`              | Notification that the pause status has changed. *Argument*: paused true|false
+   | `muted`               | Notification that the mute status has changed. *Argument*: paused true|false
+   | `recordStarted`       | Notification that a recording started
+   | `recordStopped`       | Notification that a recording stopped
+   | `recordError`         | Notification that a recording failed
+   | `changingActiveImage` | Notification before changing the current image. *Argument*: currentImageIndex, fadeTime
+   | `changedActiveImage`  | Notification that the current image has been changed. *Argument*: currentImageIndex
+    </details>
+
+-  **sendEvent(eventName, ...args)**
+
+   Send an input event to the TeleFrame renderer
+
+   **Arguments**
+   | Name              | Type             | Description
+   --------------------|------------------|----------------------
+   | **eventName**     | {string}         | name of the event to send to the TeleFrame renderer
+   | **args**          | {Array}          | optional arguments to send
+
+   **Available Input events that can be sent**
+   <details>
+   <summary>Click to show the events</summary>
+
+   | Name              | Description
+   --------------------|----------------------
+   | `next`            | Show the next image/video
+   | `previous`        | Show the previous image/video
+   | `pause`           | Enter pause mode
+   | `play`            | Ends  pause mode
+   | `playPause`       | Toggle play/pause
+   | `newest`          | Show the newest image and terminate notification
+   | `delete`          | Delete an image/video
+   | `star`            | Toggle starring status of an image/video
+   | `mute`            | Toggle mute status
+   | `reboot`          | Reboot the system
+   | `shutdown`        | Shutdown the system
+   | `askConfirm`      | Executes the confirm button of a question dialogue
+   | `askCancel`       | Executes the cancel button of a question dialogue
+   | `messageBox`      | Send info to the renderer. *Argument*: config object for sweetalert2. Requires to define 'title' or 'html' { title: 'info to display' }
+   | `imagesUpdated`   | Send the updated images array to the renderer. *Argument*: the updated images object
+   | `reloadRenderer`  | Restart the renderer
+
+   </details>
+
+#### Properties
+
+- **config**
+  The configuration options for the addon.
+
+- **logger**
+  The logger object supports the methods `.info`, `.warn` and `.error` to output messages and supports multiple arguments.
+
+  *exmaple write log output*
+  <details>
+  <summary>Click to show the code</summary>
+
+  ```js
+// function interface
+interface.logger.info('Info from addon');
+interface.logger.warn('Warning from addon');
+interface.logger.error('Error from addon');
+//
+// class interface
+this.logger.info('Info from addon');
+this.logger.warn('Warning from addon');
+this.logger.error('Error from addon');
+```  
+  </details>
 
 ### Skeleton for the **function interface**
 <details>
@@ -57,36 +159,33 @@ Below you will find skeletons that can be used as starting point for programming
  * Listen to all available events and output to the logger
  * @param  {AddonBase inherited} interface   object to register and send events
  */
-const MayExampleAddonFunction = (interface) => {
-
-  // register event listeners to something awesome
-  //interface.registerListener('newImage', () => interface.logger.warn('New image arrived.'));
+const MyExampleAddonFunction = (interface) => {
+  // register event listeners to do something awesome
+  //interface.registerListener('newImage', () => interface.logger.info('New image arrived.'));
 };
 
-/*************** DO NOT EDIT THE LINE BELOW ***************/
 if (typeof module !== 'undefined') {
-  module.exports = MayExampleAddonFunction;
+  module.exports = MyExampleAddonFunction;
 }
 ```
 </details>
-
 
 ### Skeleton for the **class interface**
 <details>
 <summary>click to show the code</summary>
 
 ```js
-const {AddonBase} = require(`${__dirname}/../../js/addonInterface`);
+const {AddonBase} = require('${__dirname}/../../js/addonInterface');
 
 class MyExampleAddonClass  extends AddonBase {
   constructor(config) {
     super(config);
 
-    // register event listeners to something awesome
-    //this.registerListener('newImage', () => this.logger.warn('New image arrived.'));
-};
+    // register event listeners to do something awesome
+    //this.registerListener('newImage', () => this.logger.info('New image arrived.'));
+  }
+}
 
-/*************** DO NOT EDIT THE LINE BELOW ***************/
 if (typeof module !== 'undefined') {
   module.exports = MyExampleAddonClass;
 }
@@ -94,12 +193,38 @@ if (typeof module !== 'undefined') {
 </details>
 
 
+## Configure addons
+
+To enable and disable addons and set simple configuration options, the command-line `~/TeleFrame/tool/addon_control.sh` is available.
+
+The following syntax is used:
+
+`~/TeleFrame/tool/addon_control.sh <command> <addon-folder> <value>`
+
+
+
+Example: Suppose the addon `addons/newImageLED` was installed.
+```sh
+# enable addon
+`~/TeleFrame/tool/addon-control.sh enable newImageLED enable`
+
+# configure an option.
+# For the <value> only a simple string (without quotes and whitespace),
+# a number or a boolean is possible.
+# If more complex values are required e.g. an object, use an editor for configuration
+`~/TeleFrame/tool/addon-control.sh config newImageLED newLedPin 27`
+
+# disable addon
+`~/TeleFrame/tool/addon-control.sh enable newImageLED disable`
+
+```
+
 ## Addon examples
 
 The examples are available in both class and function versions.
 **Please use only the class or function version at the same time, otherwise you will go crazy with all the log entries:-)**
 
-To try an addon, copy the example addon folder from `examples` one level up to `addons`. See [Example walkthrough](###-Walkthrough-to-install-an-addon-example).
+To try an addon, copy the example addon folder from `examples` one level up to `addons`. See [Example walkthrough](#walkthrough-to-install-an-addon-example).
 
 ### Event monitoring example
 
@@ -112,9 +237,10 @@ This addon listens for all available events and logs them.
 [`addons/examples/classExampleMonitor`](examples/classExampleMonitor/index.js)
 
 
-### Event monitoring example
+### Auto control example
 
-This addon listens for all available events and logs them.
+This addon takes control of TeleFrame. Activate 'pause' and randomly send the commands 'next'|'previous' for 5-10 images.
+Return control for 17-23 seconds and then start again.
 
 - Function example:
 [`addons/examples/functionExampleMonitor`](examples/functionExampleAutoControl/index.js)
@@ -125,13 +251,43 @@ This addon listens for all available events and logs them.
 
 #### Walkthrough to install an addon example
 
+To install the **functionExampleMonitor**, copy the folder `addons/examples/functionExampleMonitor` to `TeleFrame/addons` and call `tools/addon_control.sh enable functionExampleMonitor`.
+
 ```sh
 cd ~/TeleFrame
 cp -R addons/examples/functionExampleMonitor addons/functionExampleMonitor
-./tools/addon_control.sh enable functionExampleMonitor
+tools/addon_control.sh enable functionExampleMonitor
 ```
 
-## Installing existing addons
+## Installing existing addons from **github**
 
+Navigate to the folder `TeleFrame/addons` and execute `git clone https://github.com/<user>/<addon-repo>`.
+If the addon requires installation, change to the new addon directory and execute `npm install`.
 
-Create a new folder under `TeleFrame/addon`.
+While the addon interface was developed, the addons [**newImageLED**](.) and [**webRemote**](.) were created for testing and demonstration purposes.
+[**webRemote**](.) represents a more advanced example which make use of some objects of TeleFrame.
+
+### Walkthrough
+
+To install the **newImageLED** addon.
+```sh
+cd ~/TeleFrame/addons
+git clone https://github.com/gegu/TeleFrame-newImageLED
+npm install
+tools/addon_control.sh enable TeleFrame-newImageLED
+```
+
+The addon needs to configure the GPIO to use under `addonInterface.addons.newLedPin`
+```json
+{
+  ...,
+  "addonInterface": {
+    "addons": {
+      "TeleFrame-webRemote": {
+        "enabled": true,
+        "newLedpin": 27,
+      }
+    }
+  }
+}
+```
