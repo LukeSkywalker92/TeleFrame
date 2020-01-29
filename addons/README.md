@@ -62,7 +62,7 @@ The base class from which addons are inherited. If you use the function interfac
    **Arguments**
 
    | Name                  | Type             | Description                         |
-   ------------------------|------------------|-------------------------------------|
+   |-----------------------|------------------|-------------------------------------|
    | `addonConfig`         | {Object}         | configuration object for the addon  |
 
 -  **registerListener(eventName, callbacks)**
@@ -72,17 +72,17 @@ The base class from which addons are inherited. If you use the function interfac
    **Arguments**
 
    | Name                  | Type             | Description                                                            |
-   ------------------------|------------------|------------------------------------------------------------------------|
+   |-----------------------|------------------|------------------------------------------------------------------------|
    | `eventName`           | {string\|Array}   | name or array of names for the event to listen to                     |
    | `callbacks`           | {Function\|Array} | function/array of functions to execute when the event was fired       |
    | `once`                | {boolean}         | The callbacks are only executed on the first occurrence of the event  |
 
    **Available listeners that can be registered**
-
    <details>
    <summary>Click to show the events</summary>
+
    | Name                  | Description                                                                                 |
-   ------------------------|---------------------------------------------------------------------------------------------|
+   |-----------------------|---------------------------------------------------------------------------------------------|
    | `renderer-ready`      | Renderer was initialized                                                                    |
    | `images-loaded`       | Fired only once when the images object was initialized                                      |
    | `teleFrame-ready`     | Fired only once when TeleFrame has initialized the objects. *Arguments*: prepared and running TeleFrame objects { config, imageWatchdog, bot, voiceReply}  |
@@ -109,7 +109,7 @@ The base class from which addons are inherited. If you use the function interfac
    **Arguments**
 
    | Name              | Type             | Description                                                       |
-   --------------------|------------------|-------------------------------------------------------------------|
+   |-------------------|------------------|-------------------------------------------------------------------|
    | `eventName`       | {string}         | name of the event to send to the TeleFrame renderer               |
    | `args`            | {Array}          | optional arguments to send                                        |
 
@@ -118,7 +118,7 @@ The base class from which addons are inherited. If you use the function interfac
    <summary>Click to show the events</summary>
 
    | Name              | Description                                                       |
-   --------------------|-------------------------------------------------------------------|
+   |-------------------|-------------------------------------------------------------------|
    | `next`            | Show the next image/video                                         |
    | `previous`        | Show the previous image/video                                     |
    | `pause`           | Enter pause mode                                                  |
@@ -152,8 +152,7 @@ The base class from which addons are inherited. If you use the function interfac
 
   <details>
   <summary>Click to show the code</summary>
-
-  ```js
+```js
 // function interface
 interface.logger.info('Info from addon');
 interface.logger.warn('Warning from addon');
@@ -243,9 +242,11 @@ commands:
   status             - list addons of 'TeleFrame/addons' and the enabled status
   help, --help, -h   - outputs this page
 ```
+
 </details>
 
 ### Example addon configurations
+
 Suppose the addon `addons/newImageLED` was installed.
 ```sh
 # enable addon
