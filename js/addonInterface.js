@@ -37,9 +37,9 @@ const validListenEvents = [
   'newImage',           // New image notification
   'paused',             // Notification that the pause status has changed. Arguments: paused true|false
   'muted',              // Notification that the mute status has changed. Arguments: paused true|false
-  'recordStarted',
-  'recordStopped',
-  'recordError',
+  'recordStarted',      // Notification that a recording started
+  'recordStopped',      // Notification that a recording stopped
+  'recordError',        // Notification that a recording failed
   'changingActiveImage',  // before changing. arguments: currentImageIndex, fadeTime
   'changedActiveImage',   // after changed. arguments: currentImageIndex
 ];
@@ -98,8 +98,7 @@ class AddonInterface {
     this.emitter = emitter;
     this.ipcMain = ipcMain;
     this.images = images;
-    // registered addon event listener names
-    this.listeners = [];
+    // create logger instance
     this.logger = getClassLogger(this.constructor.name, logger, config.addonInterface.logging);
 
     // load configured addons
@@ -153,12 +152,6 @@ class AddonInterface {
           // validate base class of the new addon instance
           if (newAddon instanceof AddonBase) {
             this.addons.push(newAddon);
-            // get wanted event listeners
-            Object.keys(newAddon.listeners).forEach(eventName => {
-              if (this.listeners.indexOf(eventName) === -1) {
-                  this.listeners.push(eventName);
-              }
-            });
           } else {
             throw new AddonError(`Invalid class declaration for addon '${addonName}'! The class must extend the AddonBase class.`);
           }
@@ -170,20 +163,15 @@ class AddonInterface {
     });
 
     // initialize the requested addon isteners
-    this.logger.info('Initialize addons...');
-    this.listeners.forEach(eventName => {
-      if (validListenEvents.indexOf(eventName) > -1) {
-        // install listener
-        ipcMain.on(eventName, (event, ...args) => {
-          this.executeEventCallbacks(eventName, ...args);
-        });
-        this.logger.info(`Installed listener '${eventName}'`);
-      } else {
-        this.logger.warn(`Ignore definition for unknown event listener: '${eventName}'! Use one of '${validListenEvents}'`);
-      }
+    this.logger.info('Initialize listeners...');
+    validListenEvents.forEach(eventName => {
+      // install listener
+      ipcMain.on(eventName, (event, ...args) => {
+        this.executeEventCallbacks(eventName, ...args);
+      });
     });
 
-    this.logger.info('Addons loaded and initialized');
+    this.logger.info('Addons loaded');
   }
 
   /**
@@ -193,17 +181,21 @@ class AddonInterface {
    * @param  {any} args      [description]
    */
   executeEventCallbacks(eventName, ...args) {
-    if (this.listeners.indexOf(eventName) > - 1) {
-      this.addons.forEach(addon => {
-        if (Array.isArray(addon.listeners[eventName])) {
+    this.addons.forEach(addon => {
+      ['callbacksOnce', 'callbacks'].forEach(callbackKey => {
+        if (addon._listeners[eventName] && Array.isArray(addon._listeners[eventName][callbackKey])) {
           try {
-            addon.listeners[eventName].forEach(callback => callback(...args));
+            addon._listeners[eventName][callbackKey].forEach(callback => callback(...args));
+            // remove executed callbacksOnce
+            if (callbackKey === 'callbacksOnce') {
+              delete addon._listeners[eventName][callbackKey];
+            }
           } catch(error) {
             this.logger.error(`Error execute callback for addon ${addon.name} event ${eventName}!\n`, error.stack);
           }
         }
       });
-    }
+    });
   }
 
   /**
@@ -266,6 +258,7 @@ Addon                                              | enabled
           let updateConfig = !config.addonInterface.addons[addonName];
           if (config.addonInterface.addons[addonName] && config.addonInterface.addons[addonName].enabled === false) {
              config.addonInterface.addons[addonName].enabled = true;
+             updateConfig = true;
           } else if (updateConfig) {
             config.addonInterface.addons[addonName] = { enabled: true};
           }
@@ -346,8 +339,7 @@ Addon                                              | enabled
           console.error(`Error updating config for addon '${addonName}'!\n`, error.stack);
         }
         break;
-    }
-
+    } // switch (command)
   };  // addonControl
 
 };   // end class AddonInterface
@@ -389,9 +381,9 @@ class AddonBase {
 
     /**
      * Event listener callbacks
-     * @type {Array} each entry contains an object {<eventName>: [array of callbacks to execute]}
+     * @type {object} each member contains an object {<eventName>: { callbacks: [array of callbacks to execute], once: true|false}
      */
-    this.listeners = [];
+    this._listeners = {};
 
     /**
      * The config section from TeleFrame.config.addonInterface.addons['addonName'] for this addon
@@ -447,19 +439,27 @@ class AddonBase {
    * Register listeners for events sent from the TeleFrame renderer
    * @param  {string|Array}   eventName  name or array of names for the event to listen to
    * @param  {Function|Array} callbacks  function/array of functions to execute when the event was fired
+   * @param  {boolean}        once   The callbacks are only executed on the first occurrence of the event
    */
-  registerListener(eventName, callbacks) {
+  registerListener(eventName, callbacks, once) {
     if (!Array.isArray(eventName)) {
       eventName = [eventName];
     }
-    eventName.forEach(name => {
-      if (!this.listeners[name]) {
-        this.listeners[name] = [];
+    eventName.forEach(eventName => {
+      if (validListenEvents.indexOf(eventName) > -1) {
+        if (!this._listeners[eventName]) {
+          this._listeners[eventName] = {
+            callbacks: [],
+            callbacksOnce: []
+          };
+        }
+        if (!Array.isArray(callbacks)) {
+          callbacks = [callbacks];
+        }
+        this._listeners[eventName][(once ? 'callbacksOnce' : 'callbacks')].push(...callbacks);
+      } else {
+        this.logger.warn(`Ignored unknown event name ${eventName}`);
       }
-      if (!Array.isArray(callbacks)) {
-        callbacks = [callbacks];
-      }
-      this.listeners[name].push(...callbacks);
     });
   }
 

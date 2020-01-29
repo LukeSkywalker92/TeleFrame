@@ -1,6 +1,11 @@
 # TeleFrame addon interface
 
-The addon interface is provided for easy implementation of extensions without having to deal with too many internas of the TeleFrame code.
+The addon interface is provided for easy implementation of extensions without having to deal with too many internals of the TeleFrame code. For example to control a hardware extension like LED's and buttons or whatever.
+
+If the addon is used, you can listen to events from TeleFrame and execute your own code when the event was fired.
+It is also possible to send input commands to control the TeleFrame.
+
+If someone wants to implement more complex scenarios, all required objects of TeleFrame are also available when they are needed.
 
 A useful addon would be for example to switch an LED when new images arrive or display a notifications on the TeleFrame screen. The newImageLED and the webRemote demo addons are available to download. See [Installing existing addons](#installing-existing-addons-from-github).
 
@@ -23,6 +28,8 @@ A useful addon would be for example to switch an LED when new images arrive or d
 ## How does it work
 
 An addon can register and listen to events from TeleFrame - for example `newIndex`, `imageDeleted`, and counting and execute its own code in the context of the TeleFrame main process and also send input events like `prev`, `next` to the renderer process.
+
+Addons run within the main process of TeleFrame and communicate with the renderer process via IPC.
 
 ### How TeleFrame addons loads
 
@@ -51,10 +58,11 @@ The base class from which addons are inherited. If you use the function interfac
 #### Methods
 
 -  **constructor(config)**
+
    **Arguments**
    | Name                  | Type             | Description
    ------------------------|------------------|----------------------
-   | addonConfig           | {Object}         | configuration object for the addon
+   | `addonConfig`         | {Object}         | configuration object for the addon
 
 -  **registerListener(eventName, callbacks)**
 
@@ -63,8 +71,10 @@ The base class from which addons are inherited. If you use the function interfac
    **Arguments**
    | Name                  | Type             | Description
    ------------------------|------------------|----------------------
-   | **eventName**         | {string\|Array}   | name or array of names for the event to listen to
-   | **callbacks**         | {Function\|Array} | function/array of functions to execute when the event was fired
+   | `eventName`           | {string\|Array}   | name or array of names for the event to listen to
+   | `callbacks`           | {Function\|Array} | function/array of functions to execute when the event was fired
+   | `once`                | {boolean}         | The callbacks are only executed on the first occurrence of the event
+
 
    **Available listeners that can be registered**
    <details>
@@ -97,8 +107,8 @@ The base class from which addons are inherited. If you use the function interfac
    **Arguments**
    | Name              | Type             | Description
    --------------------|------------------|----------------------
-   | **eventName**     | {string}         | name of the event to send to the TeleFrame renderer
-   | **args**          | {Array}          | optional arguments to send
+   | `eventName`       | {string}         | name of the event to send to the TeleFrame renderer
+   | `args`            | {Array}          | optional arguments to send
 
    **Available Input events that can be sent**
    <details>
@@ -125,12 +135,14 @@ The base class from which addons are inherited. If you use the function interfac
 
    </details>
 
+---
+
 #### Properties
 
-- **config**
-  The configuration options for the addon.
+- **.config**
+  A copy of the configuration options for the addon.
 
-- **logger**
+- **.logger**
   The logger object supports the methods `.info`, `.warn` and `.error` to output messages and supports multiple arguments.
 
   *exmaple write log output*
@@ -149,6 +161,13 @@ this.logger.warn('Warning from addon');
 this.logger.error('Error from addon');
 ```  
   </details>
+
+- **.images**
+  The images array from TeleFrame.
+
+  ***WARNING:  This is the same object that is used by TeleFrame. Changes also affect TeleFrame***
+
+---
 
 ### Skeleton for the **function interface**
 <details>
@@ -201,16 +220,13 @@ The following syntax is used:
 
 `~/TeleFrame/tools/addon_control.sh <command> <addon-folder> <value>`
 
-
-
 Example: Suppose the addon `addons/newImageLED` was installed.
 ```sh
 # enable addon
 `~/TeleFrame/tools/addon_control.sh enable newImageLED enable`
 
 # configure an option.
-# For the <value> only a simple string (without quotes and whitespace),
-# a number or a boolean is possible.
+# For the <value> only a quoted string, a number or a boolean is possible.
 # If more complex values are required e.g. an object, use an editor for configuration
 `~/TeleFrame/tools/addon_control.sh config newImageLED newLedPin 27`
 
@@ -225,6 +241,8 @@ The examples are available in both class and function versions.
 **Please use only the class or function version at the same time, otherwise you will go crazy with all the log entries:-)**
 
 To try an addon, copy the example addon folder from `examples` one level up to `addons`. See [Example walkthrough](#walkthrough-to-install-an-addon-example).
+
+After that you can change the `index.js` in the folder and do your own experiments.
 
 ### Event monitoring example
 
@@ -265,7 +283,7 @@ Navigate to the folder `TeleFrame/addons` and execute `git clone https://github.
 If the addon requires installation, change to the new addon directory and execute `npm install`.
 
 While the addon interface was developed, the addons [**newImageLED**](.) and [**webRemote**](.) were created for testing and demonstration purposes.
-[**webRemote**](.) represents a more advanced example which make use of some objects of TeleFrame.
+[**webRemote**](.) presents a more advanced example which make direct use of some objects of TeleFrame.
 
 ### Walkthrough
 

@@ -133,7 +133,7 @@ var ImageWatchdog = class {
 
   getOldestUnstarredImageIndex() {
     for (var i = this.images.length-1; i > 0; i--) {
-      console.log(!this.images[i].starred);
+      //console.log(!this.images[i].starred);
        if (!this.images[i].starred) {
          return i;
        }
