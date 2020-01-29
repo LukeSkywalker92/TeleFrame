@@ -195,27 +195,27 @@ if (typeof module !== 'undefined') {
 
 ## Configure addons
 
-To enable and disable addons and set simple configuration options, the command-line `~/TeleFrame/tool/addon_control.sh` is available.
+To enable and disable addons and set simple configuration options, the command-line `~/TeleFrame/tools/addon_control.sh` is available.
 
 The following syntax is used:
 
-`~/TeleFrame/tool/addon_control.sh <command> <addon-folder> <value>`
+`~/TeleFrame/tools/addon_control.sh <command> <addon-folder> <value>`
 
 
 
 Example: Suppose the addon `addons/newImageLED` was installed.
 ```sh
 # enable addon
-`~/TeleFrame/tool/addon-control.sh enable newImageLED enable`
+`~/TeleFrame/tools/addon_control.sh enable newImageLED enable`
 
 # configure an option.
 # For the <value> only a simple string (without quotes and whitespace),
 # a number or a boolean is possible.
 # If more complex values are required e.g. an object, use an editor for configuration
-`~/TeleFrame/tool/addon-control.sh config newImageLED newLedPin 27`
+`~/TeleFrame/tools/addon_control.sh config newImageLED newLedPin 27`
 
 # disable addon
-`~/TeleFrame/tool/addon-control.sh enable newImageLED disable`
+`~/TeleFrame/tools/addon_control.sh enable newImageLED disable`
 
 ```
 
