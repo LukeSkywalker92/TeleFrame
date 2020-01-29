@@ -225,7 +225,24 @@ class AddonInterface {
       || ['help', '--help', '-h'].indexOf(command) > -1
       || (command !== 'status' && !addonName)) {
 
-      console.info(`\nUsage: node ${__filename} <command> <addonName> [...arguments]\n`);
+      console.info(`
+Usage: addon_control.sh <command> [addonDir] [...arguments]
+
+commands:
+
+  enable  <addondir>  - enables the addon for the specified directory
+  disable <addondir> - disables the addon for the specified directory.
+                       This command does not remove the config
+  remove  <addondir>  - disables the addon for the specified directory and
+                       remove the config.
+  config <addondir> <key> <value> -
+
+    <key>     - of the configuration option to change
+    <value>   - new value for option.key.
+              <value> can be a number, boolean or quoted string
+  status             - list addons of 'TeleFrame/addons' and the enabled status
+  help, --help, -h   - outputs this page`);
+      return;
     }
 
     // remove invald characters from addon name
@@ -339,6 +356,8 @@ Addon                                              | enabled
           console.error(`Error updating config for addon '${addonName}'!\n`, error.stack);
         }
         break;
+      default:
+        console.error(`Invalid command '${command}'!`);
     } // switch (command)
   };  // addonControl
 

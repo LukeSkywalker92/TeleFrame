@@ -75,7 +75,6 @@ The base class from which addons are inherited. If you use the function interfac
    | `callbacks`           | {Function\|Array} | function/array of functions to execute when the event was fired
    | `once`                | {boolean}         | The callbacks are only executed on the first occurrence of the event
 
-
    **Available listeners that can be registered**
    <details>
    <summary>Click to show the events</summary>
@@ -98,7 +97,7 @@ The base class from which addons are inherited. If you use the function interfac
    | `recordError`         | Notification that a recording failed
    | `changingActiveImage` | Notification before changing the current image. *Argument*: currentImageIndex, fadeTime
    | `changedActiveImage`  | Notification that the current image has been changed. *Argument*: currentImageIndex
-    </details>
+       </details>
 
 -  **sendEvent(eventName, ...args)**
 
@@ -214,25 +213,44 @@ if (typeof module !== 'undefined') {
 
 ## Configure addons
 
-To enable and disable addons and set simple configuration options, the command-line `~/TeleFrame/tools/addon_control.sh` is available.
+To enable and disable addons and set simple configuration options, the command-line tool `~/TeleFrame/tools/addon_control.sh` is available.
 
-The following syntax is used:
+<details>
+<summary>Click to show syntax</summary>
 
-`~/TeleFrame/tools/addon_control.sh <command> <addon-folder> <value>`
+```
+Usage: addon_control.sh <command> [addonDir] [...arguments]
 
-Example: Suppose the addon `addons/newImageLED` was installed.
+commands:
+
+  enable  <addondir>  - enables the addon for the specified directory
+  disable <addondir> - disables the addon for the specified directory.
+                       This command does not remove the config
+  remove  <addondir>  - disables the addon for the specified directory and
+                       remove the config.
+  config <addondir> <key> <value> -
+
+    <key>     - of the configuration option to change
+    <value>   - new value for option.key.
+              <value> can be a number, boolean or quoted string
+  status             - list addons of 'TeleFrame/addons' and the enabled status
+  help, --help, -h   - outputs this page
+```
+</details>
+
+### Example addon configurations
+Suppose the addon `addons/newImageLED` was installed.
 ```sh
 # enable addon
-`~/TeleFrame/tools/addon_control.sh enable newImageLED enable`
+`~/TeleFrame/tools/addon_control.sh enable newImageLED`
 
 # configure an option.
-# For the <value> only a quoted string, a number or a boolean is possible.
+# For the <value> can be a number, boolean or quoted string.
 # If more complex values are required e.g. an object, use an editor for configuration
 `~/TeleFrame/tools/addon_control.sh config newImageLED newLedPin 27`
 
 # disable addon
-`~/TeleFrame/tools/addon_control.sh enable newImageLED disable`
-
+`~/TeleFrame/tools/addon_control.sh disable newImageLED`
 ```
 
 ## Addon examples
