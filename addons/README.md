@@ -60,77 +60,81 @@ The base class from which addons are inherited. If you use the function interfac
 -  **constructor(config)**
 
    **Arguments**
-   | Name                  | Type             | Description
-   ------------------------|------------------|----------------------
-   | `addonConfig`         | {Object}         | configuration object for the addon
+
+   | Name                  | Type             | Description                         |
+   ------------------------|------------------|-------------------------------------|
+   | `addonConfig`         | {Object}         | configuration object for the addon  |
 
 -  **registerListener(eventName, callbacks)**
 
    Register listeners for events sent from the TeleFrame renderer
 
    **Arguments**
-   | Name                  | Type             | Description
-   ------------------------|------------------|----------------------
-   | `eventName`           | {string\|Array}   | name or array of names for the event to listen to
-   | `callbacks`           | {Function\|Array} | function/array of functions to execute when the event was fired
-   | `once`                | {boolean}         | The callbacks are only executed on the first occurrence of the event
+
+   | Name                  | Type             | Description                                                            |
+   ------------------------|------------------|------------------------------------------------------------------------|
+   | `eventName`           | {string\|Array}   | name or array of names for the event to listen to                     |
+   | `callbacks`           | {Function\|Array} | function/array of functions to execute when the event was fired       |
+   | `once`                | {boolean}         | The callbacks are only executed on the first occurrence of the event  |
 
    **Available listeners that can be registered**
+   
    <details>
    <summary>Click to show the events</summary>
+   | Name                  | Description                                                                                 |
+   ------------------------|---------------------------------------------------------------------------------------------|
+   | `renderer-ready`      | Renderer was initialized                                                                    |
+   | `images-loaded`       | Fired only once when the images object was initialized                                      |
+   | `teleFrame-ready`     | Fired only once when TeleFrame has initialized the objects. *Arguments*: prepared and running TeleFrame objects { config, imageWatchdog, bot, voiceReply}  |
+   | `starImage`           | Request to star an image. *Argument*: currentImageIndex                                     |
+   | `unstarImage`         | Request to unstar an image. *Argument*: currentImageIndex                                   |
+   | `deleteImage`         | Request to delete an image. *Argument*: currentImageIndex                                   |
+   | `deleteImage`         | Notification that an image has been deleted. *Argument*: currentImageIndex                  |
+   | `removeImageUnseen`   | Request to remove the unseen status of all images                                           |
+   | `newImage`            | New image notification                                                                      |
+   | `paused`              | Notification that the pause status has changed. *Argument*: paused true|false               |
+   | `muted`               | Notification that the mute status has changed. *Argument*: paused true|false                |
+   | `recordStarted`       | Notification that a recording started                                                       |
+   | `recordStopped`       | Notification that a recording stopped                                                       |
+   | `recordError`         | Notification that a recording failed                                                        |
+   | `changingActiveImage` | Notification before changing the current image. *Argument*: currentImageIndex, fadeTime     |
+   | `changedActiveImage`  | Notification that the current image has been changed. *Argument*: currentImageIndex         |
 
-   | Name                  | Description
-   ------------------------|----------------------
-   | `renderer-ready`      | Renderer was initialized
-   | `images-loaded`       | Fired only once when the images object was initialized
-   | `teleFrame-ready`     | Fired only once when TeleFrame has initialized the objects. *Arguments*: prepared and running TeleFrame objects { config, imageWatchdog, bot, voiceReply}
-   | `starImage`           | Request to star an image. *Argument*: currentImageIndex
-   | `unstarImage`         | Request to unstar an image. *Argument*: currentImageIndex
-   | `deleteImage`         | Request to delete an image. *Argument*: currentImageIndex
-   | `deleteImage`         | Notification that an image has been deleted. *Argument*: currentImageIndex
-   | `removeImageUnseen`   | Request to remove the unseen status of all images
-   | `newImage`            | New image notification
-   | `paused`              | Notification that the pause status has changed. *Argument*: paused true|false
-   | `muted`               | Notification that the mute status has changed. *Argument*: paused true|false
-   | `recordStarted`       | Notification that a recording started
-   | `recordStopped`       | Notification that a recording stopped
-   | `recordError`         | Notification that a recording failed
-   | `changingActiveImage` | Notification before changing the current image. *Argument*: currentImageIndex, fadeTime
-   | `changedActiveImage`  | Notification that the current image has been changed. *Argument*: currentImageIndex
-       </details>
+   </details>
 
 -  **sendEvent(eventName, ...args)**
 
    Send an input event to the TeleFrame renderer
 
    **Arguments**
-   | Name              | Type             | Description
-   --------------------|------------------|----------------------
-   | `eventName`       | {string}         | name of the event to send to the TeleFrame renderer
-   | `args`            | {Array}          | optional arguments to send
+
+   | Name              | Type             | Description                                                       |
+   --------------------|------------------|-------------------------------------------------------------------|
+   | `eventName`       | {string}         | name of the event to send to the TeleFrame renderer               |
+   | `args`            | {Array}          | optional arguments to send                                        |
 
    **Available Input events that can be sent**
    <details>
    <summary>Click to show the events</summary>
 
-   | Name              | Description
-   --------------------|----------------------
-   | `next`            | Show the next image/video
-   | `previous`        | Show the previous image/video
-   | `pause`           | Enter pause mode
-   | `play`            | Ends  pause mode
-   | `playPause`       | Toggle play/pause
-   | `newest`          | Show the newest image and terminate notification
-   | `delete`          | Delete an image/video
-   | `star`            | Toggle starring status of an image/video
-   | `mute`            | Toggle mute status
-   | `reboot`          | Reboot the system
-   | `shutdown`        | Shutdown the system
-   | `askConfirm`      | Executes the confirm button of a question dialogue
-   | `askCancel`       | Executes the cancel button of a question dialogue
-   | `messageBox`      | Send info to the renderer. *Argument*: config object for sweetalert2. Requires to define 'title' or 'html' { title: 'info to display' }
-   | `imagesUpdated`   | Send the updated images array to the renderer. *Argument*: the updated images object
-   | `reloadRenderer`  | Restart the renderer
+   | Name              | Description                                                       |
+   --------------------|-------------------------------------------------------------------|
+   | `next`            | Show the next image/video                                         |
+   | `previous`        | Show the previous image/video                                     |
+   | `pause`           | Enter pause mode                                                  |
+   | `play`            | Ends  pause mode                                                  |
+   | `playPause`       | Toggle play/pause                                                 |
+   | `newest`          | Show the newest image and terminate notification                  |
+   | `delete`          | Delete an image/video                                             |
+   | `star`            | Toggle starring status of an image/video                          |
+   | `mute`            | Toggle mute status                                                |
+   | `reboot`          | Reboot the system                                                 |
+   | `shutdown`        | Shutdown the system                                               |
+   | `askConfirm`      | Executes the confirm button of a question dialogue                |
+   | `askCancel`       | Executes the cancel button of a question dialogue                 |
+   | `messageBox`      | Send info to the renderer. *Argument*: config object for sweetalert2. Requires to define 'title' or 'html' { title: 'info to display' }  |
+   | `imagesUpdated`   | Send the updated images array to the renderer. *Argument*: the updated images object  |
+   | `reloadRenderer`  | Restart the renderer                                              |
 
    </details>
 
@@ -145,6 +149,7 @@ The base class from which addons are inherited. If you use the function interfac
   The logger object supports the methods `.info`, `.warn` and `.error` to output messages and supports multiple arguments.
 
   *exmaple write log output*
+
   <details>
   <summary>Click to show the code</summary>
 
@@ -186,6 +191,7 @@ if (typeof module !== 'undefined') {
   module.exports = MyExampleAddonFunction;
 }
 ```
+
 </details>
 
 ### Skeleton for the **class interface**
@@ -208,6 +214,7 @@ if (typeof module !== 'undefined') {
   module.exports = MyExampleAddonClass;
 }
 ```
+
 </details>
 
 
