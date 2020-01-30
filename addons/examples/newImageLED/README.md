@@ -23,9 +23,10 @@ To install the **newImageLED**  addon example open a terminal and execute:
 cd ~/TeleFrame
 cp -R addons/examples/newImageLED addons/newImageLED
 tools/addon_control.sh enable newImageLED
-tools/addon_control.sh config newLedPin <your LED GPIO port number>
+tools/addon_control.sh config newImageLED newLedGPIO <your LED GPIO port number>
 ```
 
+Then Restart TeleFrame.
 
 ### Configuration options
 

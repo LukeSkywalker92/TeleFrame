@@ -10,7 +10,6 @@ For example, it would be possible to run TeleFrame without an internet connectio
 
 A useful addon would be for example to switch an LED when new images arrive or display a notifications on the TeleFrame screen. The newImageLED and the webRemote demo addons are available to download. See [Installing existing addons](#installing-existing-addons-from-github).
 
-
 ## Contents
 
 - [How does it work](#how-does-it-work)
@@ -19,21 +18,18 @@ A useful addon would be for example to switch an LED when new images arrive or d
 - [Addon examples](#addon-examples)
   - **Examples to understand the addon interface**
 
-     The provided example addons should demonstrate how the addon interface works.
-     They should show what is possible and to illustrate the process. The examples are not useful in normal operation.
+    The following listed example addons should demonstrate how the addon interface works.
     - [Event monitoring example](#event-monitoring-example)
     - [Auto control example](#auto-control-example)
 
-  - [New image notification LED](#new-image-notification-led)
+  - [New image notification LED](#new-image-notification-led), a useful addon
 
     Example to switch an LED when new images arrive.
-
 - [Installing existing addons](#installing-existing-addons-from-github)
-
 
 ## How does it work
 
-An addon can register and listen to events from TeleFrame - for example `newIndex`, `imageDeleted`, and counting and execute its own code in the context of the TeleFrame main process and also send input events like `prev`, `next` to the renderer process.
+An addon can register and listen to events from TeleFrame - for example `newIndex`, `imageDeleted`, and counting and then execute its own code in the context of the TeleFrame main process and also send input events like `prev`, `next` to the renderer process to change te current image.
 
 Addons run within the main process of TeleFrame and communicate with the renderer process via IPC.
 
@@ -85,7 +81,7 @@ The base class from which addons are inherited. If you use the function interfac
 
    **Available listeners that can be registered**
    <details>
-   <summary>Click to show the events</summary>
+   <summary>Click to show/hide the events</summary>
 
    | Name                  | Description                                                                                 |
    |-----------------------|---------------------------------------------------------------------------------------------|
@@ -122,7 +118,7 @@ The base class from which addons are inherited. If you use the function interfac
 
    **Available Input events that can be sent**
    <details>
-   <summary>Click to show the events</summary>
+   <summary>Click to show/hide the events</summary>
 
    | Name              | Description                                                       |
    |-------------------|-------------------------------------------------------------------|
@@ -177,7 +173,7 @@ this.logger.error('Error from addon');
 
 ### Skeleton for the **function interface**
 <details>
-<summary>click to show the code</summary>
+<summary>click to show/hide the code</summary>
 
 ```js
 /**
@@ -198,7 +194,7 @@ if (typeof module !== 'undefined') {
 
 ### Skeleton for the **class interface**
 <details>
-<summary>click to show the code</summary>
+<summary>click to show/hide the code</summary>
 
 ```js
 const {AddonBase} = require('${__dirname}/../../js/addonInterface');
@@ -225,7 +221,7 @@ if (typeof module !== 'undefined') {
 To enable and disable addons and set simple configuration options, the command-line tool `~/TeleFrame/tools/addon_control.sh` is available.
 
 <details>
-<summary>Click to show syntax</summary>
+<summary>Click to show/hide syntax</summary>
 
 ```
 Usage: addon_control.sh <command> [addonDir] [...arguments]
@@ -265,6 +261,9 @@ Suppose the addon `addons/newImageLED` was installed.
 ```
 
 ## Addon examples
+
+The following two addons examples should show what is possible and to illustrate the process.
+These examples are not useful in normal operation.
 
 To try an addon, copy the example addon folder from `examples` one level up to `addons`. See [Example walkthrough](#walkthrough-to-install-an-addon-example).
 
@@ -316,6 +315,8 @@ cd ~/TeleFrame
 cp -R addons/examples/functionExampleMonitor addons/functionExampleMonitor
 tools/addon_control.sh enable functionExampleMonitor
 ```
+
+Then Restart TeleFrame.
 
 ## Installing existing addons from **github**
 
