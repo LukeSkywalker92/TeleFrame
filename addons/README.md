@@ -17,11 +17,16 @@ A useful addon would be for example to switch an LED when new images arrive or d
 - [API](#api)
 - [Configure addons](#configure-addons)
 - [Addon examples](#addon-examples)
+  - **Examples to understand the addon interface**
 
-  The provided example addons should demonstrate how the addon interface works. They should show what is possible and to illustrate the process. The examples are not useful in normal operation.
+     The provided example addons should demonstrate how the addon interface works.
+     They should show what is possible and to illustrate the process. The examples are not useful in normal operation.
+    - [Event monitoring example](#event-monitoring-example)
+    - [Auto control example](#auto-control-example)
 
-  - [Event monitoring example](#event-monitoring-example)
-  - [Auto control example](#auto-control-example)
+  - [New image notification LED](#new-image-notification-led)
+
+    Example to switch an LED when new images arrive.
 
 - [Installing existing addons](#installing-existing-addons-from-github)
 
@@ -86,7 +91,7 @@ The base class from which addons are inherited. If you use the function interfac
    |-----------------------|---------------------------------------------------------------------------------------------|
    | `renderer-ready`      | Renderer was initialized                                                                    |
    | `images-loaded`       | Fired only once when the images object was initialized                                      |
-   | `teleFrame-ready`     | Fired only once when TeleFrame has initialized the objects. *Arguments*: prepared and running TeleFrame objects { config, imageWatchdog, bot, voiceReply}  |
+   | `teleFrame-ready`     | Fired only once when TeleFrame has initialized the objects. *Arguments*: prepared and running TeleFrame objects { config, imageWatchdog, bot, voiceReply}  **CAUTION: If you use these objects, you should really know what you are doing!**|
    | `starImage`           | Request to star an image. *Argument*: currentImageIndex                                     |
    | `unstarImage`         | Request to unstar an image. *Argument*: currentImageIndex                                   |
    | `deleteImage`         | Request to delete an image. *Argument*: currentImageIndex                                   |
@@ -261,9 +266,6 @@ Suppose the addon `addons/newImageLED` was installed.
 
 ## Addon examples
 
-The examples are available in both class and function versions.
-**Please use only the class or function version at the same time, otherwise you will go crazy with all the log entries:-)**
-
 To try an addon, copy the example addon folder from `examples` one level up to `addons`. See [Example walkthrough](#walkthrough-to-install-an-addon-example).
 
 After that you can change the `index.js` in the folder and do your own experiments.
@@ -272,23 +274,37 @@ After that you can change the `index.js` in the folder and do your own experimen
 
 This addon listens for all available events and logs them.
 
+The example is available in both class and function versions.
+**Please use only the class or function version at the same time, otherwise you will go crazy with all the log entries:-)**
+
 - Function example:
 [`addons/examples/functionExampleMonitor`](examples/functionExampleMonitor/index.js)
 
 - class example:
 [`addons/examples/classExampleMonitor`](examples/classExampleMonitor/index.js)
 
-
 ### Auto control example
 
 This addon takes control of TeleFrame. Activate 'pause' and randomly send the commands 'next'|'previous' for 5-10 images.
 Return control for 17-23 seconds and then start again.
+
+The example is available in both class and function versions.
+**Please use only the class or function version at the same time, otherwise you'll go crazy if the images change all the time:-)**
 
 - Function example:
 [`addons/examples/functionExampleMonitor`](examples/functionExampleAutoControl/index.js)
 
 - class example:
 [`addons/examples/classExampleMonitor`](examples/classExampleAutoControl/index.js)
+
+
+### New image notification LED
+
+This addon switches an LED when new images arriveand can be used in normal operation, but there are better solutions to implement it if a GPIO package is also installed.
+
+See addon documentation: [TeleFrame addon - New image notification led](examples/newImageLED/README.md)
+
+This example is only delivered using the function interface.
 
 
 #### Walkthrough to install an addon example
@@ -306,30 +322,15 @@ tools/addon_control.sh enable functionExampleMonitor
 Navigate to the folder `TeleFrame/addons` and execute `git clone https://github.com/<user>/<addon-repo>`.
 If the addon requires installation, change to the new addon directory and execute `npm install`.
 
-While the addon interface was developed, the addons [**newImageLED**](.) and [**webRemote**](.) were created for testing and demonstration purposes.
+While the addon interface was developed, the addon [**webRemote**](.) was created for testing and demonstration purposes.
 [**webRemote**](.) presents a more advanced example which make direct use of some objects of TeleFrame.
 
 ### Walkthrough
 
-To install the **newImageLED** addon.
+To install the [**TeleFrame-webRemote**](https://github.com/gegu/TeleFrame-webRemote) addon.
 ```sh
 cd ~/TeleFrame/addons
-git clone https://github.com/gegu/TeleFrame-newImageLED
+git clone https://github.com/gegu/TeleFrame-webRemote
 npm install
-tools/addon_control.sh enable TeleFrame-newImageLED
-```
-
-The addon needs to configure the GPIO to use under `addonInterface.addons.newLedPin`
-```json
-{
-  ...,
-  "addonInterface": {
-    "addons": {
-      "TeleFrame-webRemote": {
-        "enabled": true,
-        "newLedpin": 27,
-      }
-    }
-  }
-}
+tools/addon_control.sh enable TeleFrame-rebRemote
 ```
