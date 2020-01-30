@@ -6,11 +6,7 @@ Unfortunately, the available GPIO packages all have dependencies where problems 
 Therefore the switching of the LED was implemented via executing a system command using the `gpio` utility.
 This should work on all Raspberry PI's. It is not very efficiently, but should be sufficient for demonstration purposes.
 
-## Contents
-
-- [Installation](#installation)
-- [Configuration options](#configuration-options)
-
+---
 ### Installation
 
 **You must define the GPIO port for the LED to be switched in the configuration. Otherwise the addon will not be executed.**
@@ -34,5 +30,5 @@ The following configuration options are available.
 
 | Name          | Type   | Description                                                      |
 | ------------- | ------ | ---------------------------------------------------------------- |
-| newLedGPIO    | number | **required**: GPIO port to use to switche the LED                |
+| newLedGPIO    | number | **required**: GPIO port to use to switch the LED                |
 | blinkInterval | number | _optional_: duration in milliseconds during the LED is on or off |
