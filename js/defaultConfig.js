@@ -1,6 +1,8 @@
 var defaultConfig = {
   // The token of the Telegram Bot, which will recieve the images.
   // How to create a bot and get the token is explained [here](https://core.telegram.org/bots#6-botfather)
+  // If you want to disable the bot because you might use an addon that updates the images, use
+  //   botToken: 'bot-disabled',
   //botToken: '<your bot token>',
 
   // Use this to only allow certain users to send photos to your TeleFrame. See hints in README.md

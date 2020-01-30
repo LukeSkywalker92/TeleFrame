@@ -6,6 +6,7 @@ If the addon is used, you can listen to events from TeleFrame and execute your o
 It is also possible to send input commands to control the TeleFrame.
 
 If someone wants to implement more complex scenarios, all required objects of TeleFrame are also available when they are needed.
+For example, it would be possible to run TeleFrame without an internet connection and provide an addon that updates the images from a locally available drive.
 
 A useful addon would be for example to switch an LED when new images arrive or display a notifications on the TeleFrame screen. The newImageLED and the webRemote demo addons are available to download. See [Installing existing addons](#installing-existing-addons-from-github).
 

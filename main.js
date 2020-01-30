@@ -66,20 +66,23 @@ function createWindow() {
   );
   imageWatchdog.init()
 
-  var bot = new telebot(
-    config.botToken,
-    config.imageFolder,
-    imageWatchdog,
-    config.showVideos,
-    config.whitelistChats,
-    config.whitelistAdmins,
-    config.voiceReply,
-    logger,
-    emitter,
-    ipcMain,
-    config
-  );
-
+  var bot = null;
+  if (config.botToken !== 'bot-disabled') {
+    bot = new telebot(
+      config.botToken,
+      config.imageFolder,
+      imageWatchdog,
+      config.showVideos,
+      config.whitelistChats,
+      config.whitelistAdmins,
+      config.voiceReply,
+      logger,
+      emitter,
+      ipcMain,
+      config
+    );
+  }
+  
   var inputHandler = new inputhandler(config, emitter, bot, logger);
   inputHandler.init();
 
@@ -101,7 +104,10 @@ function createWindow() {
   if (config.develop) {
     win.webContents.openDevTools()
   }
-  bot.startBot();
+
+  if (config.botToken !== 'bot-disabled') {
+    bot.startBot();
+  }
 
   addonInterface.executeEventCallbacks('teleFrame-ready', {
     config: config,

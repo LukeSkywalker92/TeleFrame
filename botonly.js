@@ -11,6 +11,11 @@ const config = require('./config/config')
 const telebot = require('./js/bot')
 const fs = require('fs');
 
+if (config.botToken === 'bot-disabled') {
+  logger.error('Error running bot only version of TeleFrame! No valid botToken is configured.');
+  return;
+}
+
 
 logger.info('Running bot only version of TeleFrame ...');
 
