@@ -34,6 +34,7 @@ const validListenEvents = [
   'deleteImage',        // arguments: currentImageIndex
   'imageDeleted',       // an image was deleted and the images array is up to date now
   'removeImageUnseen',  // Request to remove the unseen status of all images
+  'imageUnseenRemoved', // Notification that the  unseen status of all images has been removed
   'newImage',           // New image notification
   'paused',             // Notification that the pause status has changed. Arguments: paused true|false
   'muted',              // Notification that the mute status has changed. Arguments: paused true|false

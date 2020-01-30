@@ -39,6 +39,7 @@ class ClassExampleMonitor  extends AddonBase {
     });
 
     this.registerListener('removeImageUnseen', () => this.logger.info('removeImageUnseen'));
+    this.registerListener('imageUnseenRemoved', () => this.logger.info('imageUnseenRemoved'));
   }
 };
 

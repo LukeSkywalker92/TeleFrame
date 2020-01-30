@@ -73,6 +73,7 @@ var ImageWatchdog = class {
         }
       }
       this.saveImageArray();
+      this.addonHandler.executeEventCallbacks('imageUnseenRemoved');
     })
   }
 

@@ -89,8 +89,9 @@ The base class from which addons are inherited. If you use the function interfac
    | `starImage`           | Request to star an image. *Argument*: currentImageIndex                                     |
    | `unstarImage`         | Request to unstar an image. *Argument*: currentImageIndex                                   |
    | `deleteImage`         | Request to delete an image. *Argument*: currentImageIndex                                   |
-   | `deleteImage`         | Notification that an image has been deleted. *Argument*: currentImageIndex                  |
+   | `imageDeleted`        | Notification that an image has been deleted. *Argument*: currentImageIndex                  |
    | `removeImageUnseen`   | Request to remove the unseen status of all images                                           |
+   | `imageUnseenRemoved`  | Notification that the  unseen status of all images has been removed                         |
    | `newImage`            | New image notification                                                                      |
    | `paused`              | Notification that the pause status has changed. *Argument*: paused true|false               |
    | `muted`               | Notification that the mute status has changed. *Argument*: paused true|false                |
@@ -148,11 +149,12 @@ The base class from which addons are inherited. If you use the function interfac
 - **.logger**
   The logger object supports the methods `.info`, `.warn` and `.error` to output messages and supports multiple arguments.
 
-  *exmaple write log output*
+  **exmaple write log output**
 
   <details>
   <summary>Click to show the code</summary>
-```js
+
+  ```js
 // function interface
 interface.logger.info('Info from addon');
 interface.logger.warn('Warning from addon');
@@ -162,7 +164,8 @@ interface.logger.error('Error from addon');
 this.logger.info('Info from addon');
 this.logger.warn('Warning from addon');
 this.logger.error('Error from addon');
-```  
+  ```  
+
   </details>
 
 - **.images**
@@ -250,15 +253,15 @@ commands:
 Suppose the addon `addons/newImageLED` was installed.
 ```sh
 # enable addon
-`~/TeleFrame/tools/addon_control.sh enable newImageLED`
+~/TeleFrame/tools/addon_control.sh enable newImageLED
 
 # configure an option.
 # For the <value> can be a number, boolean or quoted string.
 # If more complex values are required e.g. an object, use an editor for configuration
-`~/TeleFrame/tools/addon_control.sh config newImageLED newLedPin 27`
+~/TeleFrame/tools/addon_control.sh config newImageLED newLedPin 27
 
 # disable addon
-`~/TeleFrame/tools/addon_control.sh disable newImageLED`
+~/TeleFrame/tools/addon_control.sh disable newImageLED
 ```
 
 ## Addon examples
