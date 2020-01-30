@@ -150,10 +150,6 @@ The base class from which addons are inherited. If you use the function interfac
   The logger object supports the methods `.info`, `.warn` and `.error` to output messages and supports multiple arguments.
 
   **exmaple write log output**
-
-  <details>
-  <summary>Click to show the code</summary>
-
   ```js
 // function interface
 interface.logger.info('Info from addon');
@@ -166,12 +162,10 @@ this.logger.warn('Warning from addon');
 this.logger.error('Error from addon');
   ```  
 
-  </details>
-
 - **.images**
   The images array from TeleFrame.
 
-  ***WARNING:  This is the same object that is used by TeleFrame. Changes also affect TeleFrame***
+  ***WARNING:  This is the same object that is used by TeleFrame. Changes also affect the TeleFrame images object!***
 
 ---
 
