@@ -15,7 +15,7 @@
 
 You can write the required environment variable once into your `.profile` to update as usual:
 ```bash
- [ -z "$npm_config_arch" ] && (echo -e "# npm archive configuration\nexport npm_config_arch=\$(uname -m)" >> ~/.profile)`
+ [ -z "$npm_config_arch" ] && (export npm_config_arch=$(uname -m) && echo -e "# npm archive configuration\nexport npm_config_arch=\$(uname -m)" >> ~/.profile)
 ```
 
 **Before updating to 2.0.0, please read the release notes of release 2.0.0**
