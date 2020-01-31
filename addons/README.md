@@ -338,6 +338,7 @@ To install the [**TeleFrame-webRemote**](https://github.com/gegu/TeleFrame-webRe
 ```sh
 cd ~/TeleFrame/addons
 git clone https://github.com/gegu/TeleFrame-webRemote
+cd TeleFrame-webRemote
 npm install
--../tools/addon_control.sh enable TeleFrame-rebRemote
+../../tools/addon_control.sh enable TeleFrame-webRemote
 ```
