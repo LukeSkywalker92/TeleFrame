@@ -8,7 +8,8 @@ It is also possible to send input commands to control the TeleFrame.
 If someone wants to implement more complex scenarios, all required objects of TeleFrame are also available when they are needed.
 For example, it would be possible to run TeleFrame without an internet connection and provide an addon that updates the images from a locally available drive.
 
-A useful addon would be for example to switch an LED when new images arrive or display a notifications on the TeleFrame screen. The newImageLED and the webRemote demo addons are available to download. See [Installing existing addons](#installing-existing-addons-from-github).
+A useful addon would be for example to switch an LED when new images arrive or display a notifications on the TeleFrame screen. The [newImageLED](#new-image-notification-led) addon is available as an example.
+With the [webRemote demo addon](https://github.com/gegu/TeleFrame-webRemote) there is also a more advanced example available, which you can clone. See [Installing existing addons](#installing-existing-addons-from-github).
 
 ## Contents
 
