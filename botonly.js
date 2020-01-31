@@ -7,7 +7,7 @@ const {
   logger,
   rendererLogger
 } = require('./js/logger')
-const config = require('./config/config')
+const {config} = require('./js/configuration')
 const telebot = require('./js/bot')
 const fs = require('fs');
 
@@ -76,6 +76,7 @@ var ImageWatchdog = class {
 
 // create imageWatchdog and bot
 const imageWatchdog = new ImageWatchdog(config.imageFolder, config.imageCount, logger);
-var bot = new telebot(config.botToken, config.imageFolder, imageWatchdog, config.showVideos, logger);
+var bot = new telebot(imageWatchdog, logger, config
+);
 
 bot.startBot()

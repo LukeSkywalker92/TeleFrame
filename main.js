@@ -69,20 +69,12 @@ function createWindow() {
   var bot = null;
   if (config.botToken !== 'bot-disabled') {
     bot = new telebot(
-      config.botToken,
-      config.imageFolder,
       imageWatchdog,
-      config.showVideos,
-      config.whitelistChats,
-      config.whitelistAdmins,
-      config.voiceReply,
       logger,
-      emitter,
-      ipcMain,
       config
     );
   }
-  
+
   var inputHandler = new inputhandler(config, emitter, bot, logger);
   inputHandler.init();
 
