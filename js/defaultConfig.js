@@ -151,8 +151,8 @@ var defaultConfig = {
 	//Global Switch to enable the Admin-Actions
     allowAdminAction: true,
 
-	//Defines an array of action-objects
-	actions: [
+	  //Defines an array of action-objects
+	  actions: [
 		// Example Admin-Action:
 		{
 			// Name of the action

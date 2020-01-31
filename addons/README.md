@@ -39,7 +39,7 @@ At the start of TeleFrame addons are loaded like `node modules` using `require('
 
 Therefore it is required that an addon provide an `addons/<addonFolder>/index.js` to be able to load.
 
-Addon can have their own GIT repo and also a `packages.json` to install additional needed node packages without affecting the TeleFrame installation.
+Addons can have their own GIT repository and also a `packages.json` to install additional needed node packages without affecting the TeleFrame installation.
 
 ## API
 
@@ -50,7 +50,7 @@ An addon *function* gets a preconfigured interface object to access the required
 A _class_ derived from `AddonBase` itself has the required methods and properties.
 
 Below you will find skeletons that can be used as starting point for coding your addons `addon/<myAddon>/index.js`.
-**Skeletons** are available to use the [function interface](#skeleton-for-the-function-interface) and the [class interface](#skeleton-for-the-class-interface).
+Skeletons are available to use the **[function interface](#skeleton-for-the-function-interface)** or the **[class interface](#skeleton-for-the-class-interface)**.
 
 
 ### Class AddonBase
@@ -178,11 +178,14 @@ this.logger.error('Error from addon');
 ```js
 /**
  * Listen to all available events and output to the logger
- * @param  {AddonBase inherited} interface   object to register and send events
+ * @param  {object} interface   object inherited from class AddonBase to register and send events
  */
 const MyExampleAddonFunction = (interface) => {
   // register event listeners to do something awesome
   //interface.registerListener('newImage', () => interface.logger.info('New image arrived.'));
+
+  // send an input event
+  //interface.sendEvent('next');
 };
 
 if (typeof module !== 'undefined') {
@@ -205,6 +208,9 @@ class MyExampleAddonClass  extends AddonBase {
 
     // register event listeners to do something awesome
     //this.registerListener('newImage', () => this.logger.info('New image arrived.'));
+
+    // send an input event
+    //this.sendEvent('next');
   }
 }
 
