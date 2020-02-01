@@ -20,7 +20,7 @@ sudo npm install npm@latest -g
 [ -z "$npm_config_arch" ] && (echo -e "# npm archive configuration\nexport npm_config_arch=\$(uname -m)" >> ~/.profile)
 export npm_config_arch=$(uname -m)
 cd ~/TeleFrame
-rm -rf node_modules/electron
+rm -rf node_modules/
 npm install --arch=$(uname -m)
 ```
 
