@@ -76,7 +76,6 @@ var ImageWatchdog = class {
 
 // create imageWatchdog and bot
 const imageWatchdog = new ImageWatchdog(config.imageFolder, config.imageCount, logger);
-var bot = new telebot(imageWatchdog, logger, config
-);
+var bot = new telebot(imageWatchdog, logger, config);
 
 bot.startBot()

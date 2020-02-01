@@ -12,17 +12,17 @@
 
 ## !!! IMPORTANT !!!
 **To update TeleFrame on a Raspberry PI, it is required to remove the electron folder and an additional parameter for `npm` to define the processor architecture!**
+**Also, make sure that you have the latest version of `npm`.**
 
-Execute the following command in a terminal
+Execute the following commands in a terminal to do all this and be prepared for future updates, where again `npm install` is enough to update.
 ```sh
-export npm_config_arch=$(uname -m)
+sudo npm install npm@latest -g
 [ -z "$npm_config_arch" ] && (echo -e "# npm archive configuration\nexport npm_config_arch=\$(uname -m)" >> ~/.profile)
+export npm_config_arch=$(uname -m)
 cd ~/TeleFrame
 rm -rf node_modules/electron
 npm install --arch=$(uname -m)
 ```
-
-**Before updating to 2.0.0, please read the release notes of release 2.0.0**
 
 ## Table Of Contents
 

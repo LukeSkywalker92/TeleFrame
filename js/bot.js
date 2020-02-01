@@ -132,18 +132,18 @@ var Bot = class {
               );
             })
             .catch((err) => {
-              this.logger.error(err);
+              this.logger.error(err.stack);
             });
           }
         })
         .catch((err) => {
-          this.logger.error('Download: ' + err.toString());
+          this.logger.error('Download: ' + err.stack);
           ctx.reply('Sorry: ' + err.toString());
         });
     });
 
     this.bot.catch((err) => {
-      this.logger.error(err);
+      this.logger.error(err.stack);
     });
 
     //Some small conversation
