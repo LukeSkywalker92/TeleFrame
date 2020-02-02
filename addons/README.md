@@ -88,7 +88,7 @@ The base class from which addons are inherited. If you use the function interfac
    |-----------------------|---------------------------------------------------------------------------------------------|
    | `renderer-ready`      | Renderer was initialized                                                                    |
    | `images-loaded`       | Fired only once when the images object was initialized                                      |
-   | `teleFrame-ready`     | Fired only once when TeleFrame has initialized the objects. *Arguments*: prepared and running TeleFrame objects { config, imageWatchdog, bot, voiceReply}  **CAUTION: If you use these objects, you should really know what you are doing!**|
+   | `teleFrame-ready`     | Fired only once when TeleFrame has initialized the objects. *Arguments*: prepared and running TeleFrame objects { config, sceen, imageWatchdog, bot, voiceReply, scheduler}  **CAUTION: If you use these objects, you should really know what you are doing!** |
    | `starImage`           | Request to star an image. *Argument*: currentImageIndex                                     |
    | `unstarImage`         | Request to unstar an image. *Argument*: currentImageIndex                                   |
    | `deleteImage`         | Request to delete an image. *Argument*: currentImageIndex                                   |
@@ -98,6 +98,7 @@ The base class from which addons are inherited. If you use the function interfac
    | `newImage`            | New image notification                                                                      |
    | `paused`              | Notification that the pause status has changed. *Argument*: paused true|false               |
    | `muted`               | Notification that the mute status has changed. *Argument*: paused true|false                |
+   | `screenOn`            | Notification that the screenOn status has changed. *Argument*: screenOn true|false          |
    | `recordStarted`       | Notification that a recording started                                                       |
    | `recordStopped`       | Notification that a recording stopped                                                       |
    | `recordError`         | Notification that a recording failed                                                        |

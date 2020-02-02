@@ -2,11 +2,13 @@ var schedule = require('node-schedule');
 const exec = require("child_process").exec;
 
 var schedules = class {
-    constructor(config, screen, logger) {
+    constructor(config, screen, logger, addonInterface) {
     this.turnOnHour = config.turnOnHour;
     this.turnOffHour = config.turnOffHour;
     this.screen = screen;
+    this.screen.screenOn = true;
     this.logger = logger;
+    this.addonInterface = addonInterface;
     this.opts = {timeout: 15000};
     var self = this;
 
@@ -40,6 +42,10 @@ var schedules = class {
   turnMonitorOn() {
     var self = this;
     exec(self.screen.cmdBacklightOn, self.opts, function(error, stdout, stderr) {
+      if (!error) {
+        self.screen.screenOn = true;
+        self.addonInterface.executeEventCallbacks('screenOn', true)
+      }
       self.checkForExecError(error, stdout, stderr);
     });
   }
@@ -48,16 +54,19 @@ var schedules = class {
   turnMonitorOff() {
     var self = this;
     exec(self.screen.cmdBacklightOff, self.opts, function(error, stdout, stderr) {
+      if (!error) {
+        self.screen.screenOn = false;
+        self.addonInterface.executeEventCallbacks('screenOn', false)
+      }
       self.checkForExecError(error, stdout, stderr);
     });
   }
 
   //check for execution error
   checkForExecError(error, stdout, stderr, res) {
-		console.log(stdout);
-		console.log(stderr);
+    this.logger.info(stdout);
 		if (error) {
-			console.log(error);
+			this.logger.error(error);
 			return;
 		}
 	}

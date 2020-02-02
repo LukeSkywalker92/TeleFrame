@@ -89,7 +89,7 @@ function createWindow() {
   // generate scheduler, when times for turning monitor off and on
   // are given in the config file
   if (config.toggleMonitor) {
-    var scheduler = new schedules(config, screen, logger);
+    var scheduler = new schedules(config, screen, logger, addonInterface);
   }
 
   // Open the DevTools.
@@ -103,9 +103,11 @@ function createWindow() {
 
   addonInterface.executeEventCallbacks('teleFrame-ready', {
     config: config,
+    screen: screen,
     imageWatchdog: imageWatchdog,
     bot: bot,
-    voiceReply: voiceReply
+    voiceReply: voiceReply,
+    scheduler: scheduler
   });
 
   // Emitted when the window is closed.

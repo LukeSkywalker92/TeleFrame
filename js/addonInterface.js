@@ -38,6 +38,7 @@ const validListenEvents = [
   'newImage',           // New image notification
   'paused',             // Notification that the pause status has changed. Arguments: paused true|false
   'muted',              // Notification that the mute status has changed. Arguments: paused true|false
+  'screenOn',           // Notification that the screenOn status has changed. Arguments: screenOn true|false
   'recordStarted',      // Notification that a recording started
   'recordStopped',      // Notification that a recording stopped
   'recordError',        // Notification that a recording failed
@@ -61,7 +62,7 @@ const getClassLogger = (name, logger, enabledTypes) => {
       }
     }
   });
-  loggerObj.log = logger.info
+  loggerObj.log = loggerObj.info
   return loggerObj;
 }
 
@@ -137,13 +138,24 @@ class AddonInterface {
             newAddon = new AddonClass(addonConfig);
           } catch(loadErr) {
             if (loadErr instanceof TypeError) {
+              const loadLogger = this.logger;
               // create instance of AddoBase and execute the exported addon init function
               // within in the constructor
               newAddon = new (class extends AddonBase {
                 constructor(config, loggerName) {
                   super(config, loggerName);
-                  // execute exported addon function
-                  AddonClass(this);
+
+                  // try to execute exported addon function
+                  try {
+                    AddonClass(this);
+                  } catch(LoadFuncErr) {
+                    // if the executing AddonClass() hase failed output the <loadErr>,
+                    // because this could be thrown by an error in the class contructor from new AddonClass()
+                    if (LoadFuncErr instanceof TypeError) {
+                      loadLogger.error(loadErr.stack);
+                      throw LoadFuncErr;
+                    }
+                  }
                 }
               })(addonConfig, AddonClass.name || addonName);
             } else {
