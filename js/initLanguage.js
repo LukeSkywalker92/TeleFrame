@@ -1,9 +1,8 @@
 const fs = require('fs');
 
-module.exports = (config) => {
+module.exports = (config, configPath = __dirname + '/../config') => {
   // initialize localized texts
-  const configPath = __dirname + '/../config/';
-  const langPath =  configPath + 'i18n/';
+  const langPath =  configPath + '/i18n/';
   const defaultLangFile = langPath + 'en.js';
   let langFile = configPath + 'texts.js';
   let mergeCurrentConfigTexts = false;
@@ -21,7 +20,8 @@ module.exports = (config) => {
       langFile = langPath + `${envLang.substr(0, envLang.indexOf('.'))}.js`;
       if(!fs.existsSync(langFile)) {
         // whithout country - 'en'
-        langFile =  langPath + `${envLang.substr(0, envLang.indexOf('_'))}.js`;
+        envLang = envLang.substr(0, envLang.indexOf('_'));
+        langFile =  langPath + `${envLang}.js`;
         if(!fs.existsSync(langFile)) {
           langFile = defaultLangFile;
         }
@@ -38,7 +38,7 @@ module.exports = (config) => {
     if (mergeCurrentConfigTexts && typeof config[phraseKey] === 'string') {
       config.phrases[phraseKey] = config[phraseKey];
     }
-    if (config.voiceReply !== null && typeof config.voiceReply[phraseKey] === 'string') {
+    if (config.voiceReply && typeof config.voiceReply[phraseKey] === 'string') {
       if (mergeCurrentConfigTexts) {
         config.phrases[phraseKey] = config.voiceReply[phraseKey];
       }

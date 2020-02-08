@@ -149,7 +149,7 @@ class AddonInterface {
                   try {
                     AddonClass(this);
                   } catch(LoadFuncErr) {
-                    // if the executing AddonClass() hase failed output the <loadErr>,
+                    // if the executing AddonClass() has failed, output the <loadErr>,
                     // because this could be thrown by an error in the class contructor from new AddonClass()
                     if (LoadFuncErr instanceof TypeError) {
                       loadLogger.error(loadErr.stack);
