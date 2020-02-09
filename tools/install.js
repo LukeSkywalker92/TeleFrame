@@ -1,6 +1,6 @@
 // TeleFrame install script
 
-const {exec} = require('child_process');
+const fs = require('fs');
 
-const cmd = `chmod 755 ${__dirname}/addon_control.sh >/dev/null 2>&1) || echo chmod failed for ${__dirname}/addon_control.sh`;
-exec(cmd);
+// set addon_control.sh executable
+fs.chmodSync(`${__dirname}/addon_control.sh`, 0755);
