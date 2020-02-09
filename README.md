@@ -35,6 +35,7 @@ npm install --arch=$(uname -m)
 - [Voice Replies using TeleFrame](#voice-replies-using-teleframe)
 - [Touchscreen support](#touchscreen-support)
 - [Updating](#updating)
+- [Addon interface](#addon-interface)
 - [Bot only mode (no GUI)](#bot-only-mode-no-gui)
 - [Building a TeleFrame](#building-a-teleframe)
 
@@ -197,6 +198,10 @@ git pull && npm install
 
 If you changed nothing more than the config, this should work without any problems.
 Type `git status` to see your changes, if there are any, you can reset them with `git reset --hard`. After that, git pull should be possible.
+
+## Addon interace
+
+TeleFrame provides an addon interface to implement own extensions. See [documentation addon interface](addons/README.md).
 
 ## Bot only mode (no GUI)
 
