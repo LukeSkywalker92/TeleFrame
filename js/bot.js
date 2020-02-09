@@ -9,31 +9,16 @@ const botReply = require('./botReply');
 
 var Bot = class {
   constructor(
-    botToken,
-    imageFolder,
     imageWatchdog,
-    showVideo,
-    whitelistChats,
-    whitelistAdmins,
-    voiceReply,
     logger,
-    emitter,
-    ipcMain,
     config
   ) {
     var self = this;
-    this.bot = new Telegraf(botToken);
-    this.telegram = new Telegram(botToken);
+    this.bot = new Telegraf(config.botToken);
+    this.telegram = new Telegram(config.botToken);
     this.logger = logger;
-    this.imageFolder = imageFolder;
     this.imageWatchdog = imageWatchdog;
-    this.showVideo = showVideo;
-    this.whitelistChats = whitelistChats;
-    this.whitelistAdmins = whitelistAdmins;
-    this.voiceReply = voiceReply;
     this.config = config;
-    this.emitter = emitter;
-    this.ipcMain = ipcMain;
 
     //get bot name
     this.bot.telegram.getMe().then((botInfo) => {
@@ -54,15 +39,15 @@ var Bot = class {
     const isChatWhitelisted = (ctx, next) => {
       if (
         (
-          this.whitelistChats.length > 0 &&
-          this.whitelistChats.indexOf(ctx.message.chat.id) == -1
+          config.whitelistChats.length > 0 &&
+          config.whitelistChats.indexOf(ctx.message.chat.id) == -1
         )
       ){
         this.logger.info(
           "Whitelist triggered:",
           ctx.message.chat.id,
-          this.whitelistChats,
-          this.whitelistChats.indexOf(ctx.message.chat.id)
+          config.whitelistChats,
+          config.whitelistChats.indexOf(ctx.message.chat.id)
         );
         botReply(ctx, 'whitelistInfo');
 
@@ -77,13 +62,13 @@ var Bot = class {
     //Middleware Check for whitelisted  ChatID
     const isAdminWhitelisted = (ctx, next) => {
       if (
-          this.whitelistAdmins.indexOf(ctx.message.chat.id) == -1
+          config.whitelistAdmins.indexOf(ctx.message.chat.id) == -1
       ){
         this.logger.info(
           "Admin-Whitelist triggered:",
           ctx.message.chat.id,
-          this.whitelistAdmins,
-          this.whitelistAdmins.indexOf(ctx.message.chat.id)
+          config.whitelistAdmins,
+          config.whitelistAdmins.indexOf(ctx.message.chat.id)
         );
         botReply(ctx, 'whitelistAdminInfo');
 
@@ -124,11 +109,11 @@ var Bot = class {
               botReply(ctx, 'imageReceived');
             }
         }
-        if (fileExtension !== '.mp4' || this.showVideo) {
+        if (fileExtension !== '.mp4' || config.showVideo) {
           download
             .image({
               url: link,
-              dest: this.imageFolder + "/" + moment().format("x") + fileExtension
+              dest: config.imageFolder + "/" + moment().format("x") + fileExtension
             })
             .then(({ filename, image }) => {
               var chatName = ''
@@ -147,18 +132,18 @@ var Bot = class {
               );
             })
             .catch((err) => {
-              this.logger.error(err);
+              this.logger.error(err.stack);
             });
           }
         })
         .catch((err) => {
-          this.logger.error('Download: ' + err.toString());
+          this.logger.error('Download: ' + err.stack);
           ctx.reply('Sorry: ' + err.toString());
         });
     });
 
     this.bot.catch((err) => {
-      this.logger.error(err);
+      this.logger.error(err.stack);
     });
 
     //Some small conversation
@@ -219,7 +204,7 @@ var Bot = class {
 
   sendMessage(message) {
     // function to send messages, used for whitlist handling
-    return this.bot.telegram.sendMessage(this.whitelistChats[0], message);
+    return this.bot.telegram.sendMessage(config.whitelistChats[0], message);
   }
 
   sendAudio(filename, chatId, messageId) {

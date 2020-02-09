@@ -70,6 +70,12 @@ config/texts.js
 images/*
 !images/.gitkeep
 
+addons/*
+!addons/.gitkeep
+!addons/examples
+!addons/README.md
+
+
 audiofiles/*
 !audiofiles/.gitkeep
 

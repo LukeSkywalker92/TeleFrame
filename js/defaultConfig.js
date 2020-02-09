@@ -1,6 +1,8 @@
 var defaultConfig = {
   // The token of the Telegram Bot, which will recieve the images.
   // How to create a bot and get the token is explained [here](https://core.telegram.org/bots#6-botfather)
+  // If you want to disable the bot because you might use an addon that updates the images, use
+  //   botToken: 'bot-disabled',
   //botToken: '<your bot token>',
 
   // Use this to only allow certain users to send photos to your TeleFrame. See hints in README.md
@@ -149,8 +151,8 @@ var defaultConfig = {
 	//Global Switch to enable the Admin-Actions
     allowAdminAction: true,
 
-	//Defines an array of action-objects
-	actions: [
+	  //Defines an array of action-objects
+	  actions: [
 		// Example Admin-Action:
 		{
 			// Name of the action
@@ -172,6 +174,18 @@ var defaultConfig = {
 		// Admin-Action for stoping the OpenVPN-Client
 		{name: "stopOpenvpn", command: "systemctl openvpn stop", enable: true}
     ]
+  },
+
+  // options for the addonHandler class
+  addonInterface: {
+    // configure which types should be logged
+    logging: ['info', 'warn', 'error'],
+    // The AddonInterface will try to load all configured addons.
+    // To enable an addon it requires at least the directory name from
+    // the addons folder as the key and an empty config object.
+    // for example: "testAddon": {}
+    addons: {
+    }
   }
 };
 

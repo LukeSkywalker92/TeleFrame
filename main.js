@@ -8,6 +8,7 @@ const voicerecorder = require("./js/voiceRecorder");
 const schedules = require("./js/schedules");
 const CommandExecutor = require("./js/systemCommands");
 const {config, screen} = require("./js/configuration");
+const initAddonInterface = require('./js/addonInterface').initAddonInterface;
 
 logger.info("Configuring for: " +  screen.name);
 
@@ -48,6 +49,9 @@ function createWindow() {
   // get instance of webContents for sending messages to the frontend
   const emitter = win.webContents;
 
+  // initialize the addon handler
+  const addonInterface = initAddonInterface(global.images, logger, emitter, ipcMain, config);
+
   // create imageWatchdog and bot
   var imageWatchdog = new imagewatcher(
     config.imageFolder,
@@ -56,23 +60,20 @@ function createWindow() {
     global.images,
     emitter,
     logger,
-    ipcMain
+    ipcMain,
+    // load addons
+    addonInterface
   );
   imageWatchdog.init()
 
-  var bot = new telebot(
-    config.botToken,
-    config.imageFolder,
-    imageWatchdog,
-    config.showVideos,
-    config.whitelistChats,
-    config.whitelistAdmins,
-    config.voiceReply,
-    logger,
-    emitter,
-    ipcMain,
-    config
-  );
+  var bot = null;
+  if (config.botToken !== 'bot-disabled') {
+    bot = new telebot(
+      imageWatchdog,
+      logger,
+      config
+    );
+  }
 
   var inputHandler = new inputhandler(config, emitter, bot, logger);
   inputHandler.init();
@@ -81,21 +82,32 @@ function createWindow() {
   commandExecutor.init();
 
   if (config.voiceReply !== null) {
-    var voiceReply = new voicerecorder(config, emitter, bot, logger, ipcMain);
+    var voiceReply = new voicerecorder(config, emitter, bot, logger, ipcMain, addonInterface);
     voiceReply.init();
   }
 
   // generate scheduler, when times for turning monitor off and on
   // are given in the config file
-  if (config.toggleMonitor) {
-    var scheduler = new schedules(config, screen, logger);
-  }
+  var scheduler = new schedules(config, screen, logger, addonInterface);
+
 
   // Open the DevTools.
   if (config.develop) {
     win.webContents.openDevTools()
   }
-  bot.startBot();
+
+  if (config.botToken !== 'bot-disabled') {
+    bot.startBot();
+  }
+
+  addonInterface.executeEventCallbacks('teleFrame-ready', {
+    config: config,
+    screen: screen,
+    imageWatchdog: imageWatchdog,
+    bot: bot,
+    voiceReply: voiceReply,
+    scheduler: scheduler
+  });
 
   // Emitted when the window is closed.
   win.on("closed", () => {

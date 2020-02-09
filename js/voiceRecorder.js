@@ -22,12 +22,13 @@ const options = {
 };
 
 var VoiceRecorder = class {
-  constructor(config, emitter, bot, logger, ipcMain) {
+  constructor(config, emitter, bot, logger, ipcMain, addonHandler) {
     this.config = config;
     this.logger = logger;
     this.emitter = emitter;
     this.bot = bot;
     this.ipcMain = ipcMain;
+    this.addonHandler = addonHandler;
   }
 
   init() {
@@ -52,7 +53,14 @@ var VoiceRecorder = class {
     const logger = console;
     let maxRecTime;
 
+    if (!chatId || !messageId) {
+      this.emitter.send("recordError");
+      this.addonHandler.executeEventCallbacks('recordError');
+      return logger.warn(`Can'! reply! chatId or messageId is empty`);
+    }
+
     this.emitter.send("recordStarted");
+    this.addonHandler.executeEventCallbacks('recordStarted');
 
     let audioRecorder = new AudioRecorder(options, logger);
     logger.log("Start recording");
@@ -89,6 +97,8 @@ var VoiceRecorder = class {
       function() {
         logger.warn(`Recording ended.`);
         this.emitter.send("recordStopped");
+        this.addonHandler.executeEventCallbacks('recordStopped');
+
         clearInterval(maxRecTime);
       }.bind(this)
     );
@@ -98,6 +108,7 @@ var VoiceRecorder = class {
       function() {
         logger.warn(`Recording error.`);
         this.emitter.send("recordError");
+        this.addonHandler.executeEventCallbacks('recordError');
         clearInterval(maxRecTime);
       }.bind(this)
     );
@@ -107,6 +118,7 @@ var VoiceRecorder = class {
         logger.log("MAX Stop recording");
         audioRecorder.stop();
         this.emitter.send("recordStopped");
+        this.addonHandler.executeEventCallbacks('recordStopped');
       }.bind(this),
       config.voiceReply.maxRecordTime
     );
