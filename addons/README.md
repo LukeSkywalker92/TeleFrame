@@ -88,22 +88,32 @@ The base class from which addons are inherited. If you use the function interfac
    |-----------------------|---------------------------------------------------------------------------------------------|
    | `renderer-ready`      | Renderer was initialized                                                                    |
    | `images-loaded`       | Fired only once when the images object was initialized                                      |
-   | `teleFrame-ready`     | Fired only once when TeleFrame has initialized the objects. *Arguments*: prepared and running TeleFrame objects { config, sceen, imageWatchdog, bot, voiceReply, scheduler}  **CAUTION: If you use these objects, you should really know what you are doing!** |
-   | `starImage`           | Request to star an image. *Argument*: currentImageIndex                                     |
-   | `unstarImage`         | Request to unstar an image. *Argument*: currentImageIndex                                   |
-   | `deleteImage`         | Request to delete an image. *Argument*: currentImageIndex                                   |
-   | `imageDeleted`        | Notification that an image has been deleted. *Argument*: currentImageIndex                  |
+   | `teleFrame-ready`     | Fired only once when TeleFrame has initialized the objects.                                 |
+   |                       | *Arguments*: prepared and running TeleFrame objects { config, sceen, imageWatchdog, bot, voiceReply, scheduler}  **CAUTION: If you use these objects, you should really know what you are doing!** |
+   | `starImage`           | Request to star an image.                                                                   |
+   |                       | *Argument*: currentImageIndex                                                               |
+   | `unstarImage`         | Request to unstar an image.                                                                 |
+   |                       | *Argument*: currentImageIndex                                                               |
+   | `deleteImage`         | Request to delete an image.                                                                 |
+   |                       | *Argument*: currentImageIndex                                                               |
+   | `imageDeleted`        | Notification that an image has been deleted.                                                |
+   |                       | *Argument*: currentImageIndex                                                               |
    | `removeImageUnseen`   | Request to remove the unseen status of all images                                           |
    | `imageUnseenRemoved`  | Notification that the  unseen status of all images has been removed                         |
    | `newImage`            | New image notification                                                                      |
-   | `paused`              | Notification that the pause status has changed. *Argument*: paused true|false               |
-   | `muted`               | Notification that the mute status has changed. *Argument*: paused true|false                |
-   | `screenOn`            | Notification that the screenOn status has changed. *Argument*: screenOn true|false          |
+   | `paused`              | Notification that the pause status has changed.                                             |
+   |                       | *Argument*: paused true|false                                                               |
+   | `muted`               | Notification that the mute status has changed.                                              |
+   |                       | *Argument*: paused true|false                                                               |
+   | `screenOn`            | Notification that the screenOn status has changed.                                          |
+   |                       | *Argument*: screenOn true|false                                                             |
    | `recordStarted`       | Notification that a recording started                                                       |
    | `recordStopped`       | Notification that a recording stopped                                                       |
    | `recordError`         | Notification that a recording failed                                                        |
-   | `changingActiveImage` | Notification before changing the current image. *Argument*: currentImageIndex, fadeTime     |
-   | `changedActiveImage`  | Notification that the current image has been changed. *Argument*: currentImageIndex         |
+   | `changingActiveImage` | Notification before changing the current image.                                             |
+   |                       | *Argument*: currentImageIndex, fadeTime                                                     |
+   | `changedActiveImage`  | Notification that the current image has been changed.                                       |
+   |                       | *Argument*: currentImageIndex                                                               |
 
    </details>
 
@@ -137,8 +147,10 @@ The base class from which addons are inherited. If you use the function interfac
    | `shutdown`        | Shutdown the system                                               |
    | `askConfirm`      | Executes the confirm button of a question dialogue                |
    | `askCancel`       | Executes the cancel button of a question dialogue                 |
-   | `messageBox`      | Send info to the renderer. *Argument*: config object for sweetalert2. Requires to define 'title' or 'html' { title: 'info to display' }  |
-   | `imagesUpdated`   | Send the updated images array to the renderer. *Argument*: the updated images object  |
+   | `messageBox`      | Send info to the renderer.                                        |
+   |                   | *Argument*: config object for sweetalert2. Requires to define 'title' or 'html' { title: 'info to display' }  |
+   | `imagesUpdated`   | Send the updated images array to the renderer.                    |
+   |                   | *Argument*: the updated images object                             |
    | `reloadRenderer`  | Restart the renderer                                              |
 
    </details>
@@ -331,8 +343,8 @@ Then Restart TeleFrame.
 Navigate to the folder `TeleFrame/addons` and execute `git clone https://github.com/<user>/<addon-repo>`.
 If the addon requires installation, change to the new addon directory and execute `npm install`.
 
-While the addon interface was developed, the addon [**webRemote**](.) was created for testing and demonstration purposes.
-[**webRemote**](.) presents a more advanced example which make direct use of some objects of TeleFrame.
+While the addon interface was developed, the addon [**TeleFrame-webRemote**](https://github.com/gegu/TeleFrame-webRemote) was created for testing and demonstration purposes.
+**TeleFrame-webRemote** presents a more advanced example which make direct use of some objects of TeleFrame.
 
 ### Walkthrough
 
