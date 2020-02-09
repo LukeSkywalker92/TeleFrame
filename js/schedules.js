@@ -24,18 +24,19 @@ var schedules = class {
       });
     }
 
-    //generate schedule for turning the monitor on
-    this.monitorOnSchedule = schedule.scheduleJob('0 0 ' + this.turnOnHour.toString() + ' * * *', function() {
-      self.turnMonitorOn();
-    });
+    if (parseInt(this.turnOnHour) >= 0 && parseInt(this.turnOffHour) <= 24)
+    {
+      //generate schedule for turning the monitor on
+      this.monitorOnSchedule = schedule.scheduleJob('0 0 ' + this.turnOnHour.toString() + ' * * *', function() {
+        self.turnMonitorOn();
+      });
+      //generate schedule for turning the monitor off
+      this.monitorOffSchedule = schedule.scheduleJob('0 0 ' + this.turnOffHour.toString() + ' * * *', function() {
+        self.turnMonitorOff();
+      });
 
-    //generate schedule for turning the monitor off
-    this.monitorOffSchedule = schedule.scheduleJob('0 0 ' + this.turnOffHour.toString() + ' * * *', function() {
-      self.turnMonitorOff();
-    });
-
-    this.logger.info('Scheduler started ...')
-
+      this.logger.info('Scheduler started ...')
+    }
   }
 
   //execute command for turning the monitor on

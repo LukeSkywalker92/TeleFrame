@@ -88,9 +88,8 @@ function createWindow() {
 
   // generate scheduler, when times for turning monitor off and on
   // are given in the config file
-  if (config.toggleMonitor) {
-    var scheduler = new schedules(config, screen, logger, addonInterface);
-  }
+  var scheduler = new schedules(config, screen, logger, addonInterface);
+
 
   // Open the DevTools.
   if (config.develop) {
