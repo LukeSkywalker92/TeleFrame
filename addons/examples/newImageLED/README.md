@@ -22,7 +22,19 @@ tools/addon_control.sh enable newImageLED
 tools/addon_control.sh config newImageLED newLedGPIO <your LED GPIO port number>
 ```
 
-Then Restart TeleFrame.
+Then restart TeleFrame.
+
+
+**If you are using an Raspberry Pi 4B and want to try this example, make sure you have at least wiringPi version 2.52 installed.**
+To check the version use `gpio -v`.
+
+You can use the following commands to update wiringPi:
+```sh
+WPI_DEB="$(mktemp)" &&
+wget -O "$WPI_DEB" 'https://project-downloads.drogon.net/wiringpi-latest.deb' && sudo dpkg -i "$WPI_DEB"
+rm -f "$WPI_DEB"
+```
+
 
 ### Configuration options
 
