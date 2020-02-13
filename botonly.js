@@ -7,9 +7,14 @@ const {
   logger,
   rendererLogger
 } = require('./js/logger')
-const config = require('./config/config')
+const {config} = require('./js/configuration')
 const telebot = require('./js/bot')
 const fs = require('fs');
+
+if (config.botToken === 'bot-disabled') {
+  logger.error('Error running bot only version of TeleFrame! No valid botToken is configured.');
+  return;
+}
 
 
 logger.info('Running bot only version of TeleFrame ...');
@@ -71,6 +76,6 @@ var ImageWatchdog = class {
 
 // create imageWatchdog and bot
 const imageWatchdog = new ImageWatchdog(config.imageFolder, config.imageCount, logger);
-var bot = new telebot(config.botToken, config.imageFolder, imageWatchdog, config.showVideos, logger);
+var bot = new telebot(imageWatchdog, logger, config);
 
 bot.startBot()

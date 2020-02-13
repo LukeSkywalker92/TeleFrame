@@ -2,6 +2,6 @@
   "apps": [{
     "name": "TeleFrame",
     "script": "/home/pi/TeleFrame/tools/tf_wfi.sh",
-    "watch": ["/home/pi/TeleFrame/config/config.js"]
+    "watch": ["/home/pi/TeleFrame/config/config.json"]
   }]
 }

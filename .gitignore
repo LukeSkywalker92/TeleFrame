@@ -42,6 +42,9 @@ typings/
 # Optional npm cache directory
 .npm
 
+#  Optional npm configuration
+.npmrc
+
 # Optional eslint cache
 .eslintcache
 
@@ -60,10 +63,18 @@ typings/
 # next.js build output
 .next
 
-config/config.js
+config/config.js*
+config/config.backup.*
+config/texts.js
 
 images/*
 !images/.gitkeep
+
+addons/*
+!addons/.gitkeep
+!addons/examples
+!addons/README.md
+
 
 audiofiles/*
 !audiofiles/.gitkeep

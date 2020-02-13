@@ -1,0 +1,47 @@
+{
+  "botToken": "<your bot token>",
+  "whitelistChats": [],
+  "screenConfig": "./config/screens/hdmi_default.js",
+  "playSoundOnRecieve": "sound1.mp3",
+  "showVideos": true,
+  "playVideoAudio": false,
+  "imageFolder": "images",
+  "fullscreen": true,
+  "fadeTime": 1500,
+  "interval": 10000,
+  "imageCount": 30,
+  "autoDeleteImages": true,
+  "showSender": true,
+  "showCaption": true,
+  "senderAndCaptionDuration": 50,
+  "useFullscreenForCaptionAndSender": true,
+  "toggleMonitor": false,
+  "turnOnHour": 9,
+  "turnOffHour": 22,
+  "switchLedsOff": false,
+  "touchBar": {
+    "height": "75px",
+    "autoHideTimeout": 30000,
+    "elements": [
+      "previousImage",
+      "nextImage",
+      "playPause",
+      "record",
+      "starImage",
+      "deleteImage",
+      "mute",
+      "shutdown",
+      "reboot"
+    ]
+  },
+  "keys": {
+    "next": "right",
+    "previous": "left",
+    "play": "l",
+    "pause": "k"
+  },
+  "voiceReply": {
+    "key": "a",
+    "maxRecordTime": 60000
+  }
+}

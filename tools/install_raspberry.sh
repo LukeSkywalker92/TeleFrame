@@ -16,7 +16,7 @@ echo '   )_(   (_______/(_______/(_______/|/       |/   \__/|/     \||/     \|(_
 echo -e "\e[0m"
 
 # Define the tested version of Node.js.
-NODE_TESTED="v6.9.1"
+NODE_TESTED="v10.15.2"
 
 # Determine which Pi is running.
 ARM=$(uname -m)
@@ -91,9 +91,9 @@ if $NODE_INSTALL; then
 	# The NODE_STABLE_BRANCH variable will need to be manually adjusted when a new branch is released. (e.g. 7.x)
 	# Only tested (stable) versions are recommended as newer versions could break TeleFrame.
 
-	NODE_STABLE_BRANCH="9.x"
+	NODE_STABLE_BRANCH="10.x"
 	curl -sL https://deb.nodesource.com/setup_$NODE_STABLE_BRANCH | sudo -E bash -
-	sudo apt-get install -y nodejs npm
+	sudo apt-get install -y nodejs
 	echo -e "\e[92mNode.js installation Done!\e[0m"
 fi
 
@@ -119,7 +119,9 @@ fi
 
 cd ~/TeleFrame  || exit
 echo -e "\e[96mInstalling dependencies ...\e[90m"
-if npm install; then
+# if npm_config_arch is'nt set add it to users .profile
+[ -z "$npm_config_arch" ] && (echo -e "# npm archive configuration\nexport npm_config_arch=\$(uname -m)" >> ~/.profile)
+if npm install --arch=$ARM; then
 	echo -e "\e[92mDependencies installation Done!\e[0m"
 else
 	echo -e "\e[91mUnable to install dependencies!"
@@ -127,17 +129,15 @@ else
 fi
 
 echo -e "\e[96mInstalling electron globally ...\e[90m"
-if sudo npm install -g electron --unsafe-perm=true --allow-root; then
+if sudo npm install --arch=$ARM -g electron --unsafe-perm=true --allow-root; then
 	echo -e "\e[92mElectron installation Done!\e[0m"
 else
 	echo -e "\e[91mUnable to install electron!"
 	exit;
 fi
 
-# Use sample config for start TeleFrame
-cp config/config.example.js config/config.js
-# Put token into config
-sed -i "s/\(botToken *: *\).*/\1'$token',/" config/config.js
+# Create config for start TeleFrame containing the token
+echo -e "{\n  \"botToken\": \"$token\"\n}" > config/config.json
 
 # Create image directory
 echo -e "\e[96mCreating image directory ...\e[90m"
