@@ -28,6 +28,8 @@ With the [webRemote demo addon](https://github.com/gegu/TeleFrame-webRemote) the
     Example to switch an LED when new images arrive.
 - [Installing existing addons](#installing-existing-addons-from-github)
 
+- Wiki: [Available TeleFrame addons](https://github.com/LukeSkywalker92/TeleFrame/wiki/Available-TeleFrame-addons)
+
 ## How does it work
 
 An addon can register and listen to events from TeleFrame - for example `newIndex`, `imageDeleted`, and counting and then execute its own code in the context of the TeleFrame main process and also send input events like `prev`, `next` to the renderer process to change te current image.

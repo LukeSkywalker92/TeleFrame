@@ -79,4 +79,6 @@ var screen = {
 /*************** DO NOT EDIT THE LINE BELOW ***************/
 if (typeof module !== "undefined") {
   module.exports = screen;
-}```
+}
+```
+ See also the wiki page [How to switch off the Sunfounder 10.1 inch HDMI display via the toggleMonitor function](https://github.com/LukeSkywalker92/TeleFrame/wiki/How-to-switch-off-the-Sunfounder-10.1-inch-HDMI-display-via-the-toggleMonitor-function) for this example.
