@@ -28,11 +28,11 @@ var schedules = class {
     if (config.toggleMonitor && parseInt(this.turnOnHour) >= 0 && parseInt(this.turnOffHour) <= 24)
     {
       //generate schedule for turning the monitor on
-      this.monitorOnSchedule = schedule.scheduleJob('0 18 ' + this.turnOnHour.toString() + ' * * *', function() {
+      this.monitorOnSchedule = schedule.scheduleJob('0 0 ' + this.turnOnHour.toString() + ' * * *', function() {
         self.turnMonitorOn();
       });
       //generate schedule for turning the monitor off
-      this.monitorOffSchedule = schedule.scheduleJob('0 17 ' + this.turnOffHour.toString() + ' * * *', function() {
+      this.monitorOffSchedule = schedule.scheduleJob('0 0 ' + this.turnOffHour.toString() + ' * * *', function() {
         self.turnMonitorOff();
       });
 
