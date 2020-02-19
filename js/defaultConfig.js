@@ -30,7 +30,7 @@ var defaultConfig = {
   playSoundOnRecieve: "sound1.mp3",
 
   // When set to true, videos that are send to the bot are also shown
-  showVideos: true,
+  showVideo: true,
 
   // If recieved videos should be played with sound or not
   playVideoAudio: false,
