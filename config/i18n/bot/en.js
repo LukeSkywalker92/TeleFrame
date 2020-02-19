@@ -35,6 +35,9 @@ var i18n = {
   // image received
   imageReceived: '\u{1F44D}\u{1F4F8}',
 
+  // image received
+  videoReceivedError: '\u{274C}\u{1F3A5}',
+
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/

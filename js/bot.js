@@ -135,7 +135,11 @@ var Bot = class {
             .catch((err) => {
               this.logger.error(err.stack);
             });
-          }
+          }else{
+            if (config.botReply) {
+              botReply(ctx, 'videoReceivedError');
+			}
+		  }
         })
         .catch((err) => {
           this.logger.error('Download: ' + err.stack);
