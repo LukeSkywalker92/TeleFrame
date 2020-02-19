@@ -101,14 +101,7 @@ var Bot = class {
         }
 
         let fileExtension = '.' + link.split('.').pop();
-        // let bot reply, if wanted
-        if (config.botReply) {
-            if (fileExtension.match(/\.(mp4|gif)$/)){
-              botReply(ctx, 'videoReceived');
-            } else if (fileExtension.match(/\.(jpg|png)$/)){
-              botReply(ctx, 'imageReceived');
-            }
-        }
+
         if (fileExtension !== '.mp4' || config.showVideo) {
           download
             .image({
@@ -130,6 +123,14 @@ var Bot = class {
                 chatName,
                 ctx.message.message_id
               );
+              // let bot reply, if wanted and Download was successful
+              if (config.botReply) {
+                if (fileExtension.match(/\.(mp4|gif)$/)){
+                  botReply(ctx, 'videoReceived');
+                } else if (fileExtension.match(/\.(jpg|png)$/)){
+                  botReply(ctx, 'imageReceived');
+                }
+              }
             })
             .catch((err) => {
               this.logger.error(err.stack);
