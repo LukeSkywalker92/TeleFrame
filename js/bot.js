@@ -109,7 +109,7 @@ var Bot = class {
               botReply(ctx, 'imageReceived');
             }
         }
-        if (fileExtension !== '.mp4' || config.showVideo) {
+        if (fileExtension !== '.mp4' || config.showVideos) {
           download
             .image({
               url: link,
