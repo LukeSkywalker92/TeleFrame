@@ -24,7 +24,7 @@ const prepareUserConfig = (conf, defConf, userConf, key, value) => {
     if ((!Array.isArray(defConf[key])
       || value.length !== defConf[key].length
       || JSON.stringify(defConf[key]) !== JSON.stringify(value))) {
-        
+
       userConf[key] = value;
     }
   } else if (value instanceof Object) {
