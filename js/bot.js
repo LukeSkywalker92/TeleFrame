@@ -102,7 +102,7 @@ var Bot = class {
 
         let fileExtension = '.' + link.split('.').pop();
 
-        if (fileExtension !== '.mp4' || config.showVideo) {
+        if (fileExtension !== '.mp4' || config.showVideos) {
           download
             .image({
               url: link,
