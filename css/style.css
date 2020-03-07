@@ -145,6 +145,12 @@ h1 {
   color: white;
 }
 
+.touch-bar:hover,
+.touchBarElement:hover {
+  cursor: pointer;
+}
+
+
 .disabled-icon {
   color: #333;
 }
