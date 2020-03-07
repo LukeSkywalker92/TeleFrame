@@ -6,6 +6,7 @@ const Swal = require("sweetalert2");
 const randomColor = require("randomcolor");
 const chroma = require("chroma-js");
 const velocity = require("velocity-animate");
+const Hammer = require('hammerjs');
 const logger = remote.getGlobal("rendererLogger");
 const config = remote.getGlobal("config");
 const {TouchBar, TouchBarElement} = require("./js/touchBar.js")
@@ -49,6 +50,48 @@ if (config.playSoundOnRecieve !== false) {
 
 if (config.touchBar) {
   touchBar = new TouchBar(touchBarElements, config.touchBar)
+  // initialize swipe/pinch gestures
+  new Hammer.Manager(document.getElementById('touch-container'), {
+    recognizers: [
+      [Hammer.Swipe, { direction: Hammer.DIRECTION_HORIZONTAL }],
+      [Hammer.Pinch]
+    ]
+  })
+  // Subscribe to the desired events
+  .on('swipe pinch', function(event) {
+    switch(event.type) {
+      case 'swipe':
+        $('.imgcontainer').animate({ left: (event.offsetDirection === Hammer.DIRECTION_LEFT ? '-=' : '+=') + '100%'}, 50,
+          () => $(event.offsetDirection === Hammer.DIRECTION_LEFT ? '.nextImage' : '.previousImage').trigger('click')
+        );
+        break;
+      case 'pinch':
+        if (event.scale) {
+          const MAX_SCALE_FACTOR = 5;
+          const ZOOM_FACTOR = 1;
+          const $assetContainer = $container.find('.imgcontainer');
+          if (!isPaused) {
+            pause();
+          }
+
+          if ($assetContainer.length > 0) {
+            let attrib = 'height';
+            // get the current zomm (starts with '100%')
+            let currentZoom = $assetContainer[0].style.width;
+            if (currentZoom) {
+              attrib = 'width';
+            } else {
+              currentZoom = $assetContainer[0].style.height;
+            }
+            currentZoom = parseInt(currentZoom.replace('%', '')) || 100;
+            $assetContainer.css(`max-${attrib}`, '');
+            $assetContainer[attrib](Math.min((100 * MAX_SCALE_FACTOR), Math.max((100 / MAX_SCALE_FACTOR), currentZoom + (event.scale > 1.0 ? ZOOM_FACTOR : -ZOOM_FACTOR))) + '%');
+          }
+        }
+        break;
+    }
+  });
+
 } else {
   // handle touch events for navigation and voice reply
   $("body").on('touchstart', function() {
