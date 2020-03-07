@@ -113,9 +113,9 @@ The base class from which addons are inherited. If you use the function interfac
    | `recordStopped`       | Notification that a recording stopped                                                       |
    | `recordError`         | Notification that a recording failed                                                        |
    | `changingActiveImage` | Notification before changing the current image.                                             |
-   |                       | *Argument*: currentImageIndex, fadeTime                                                     |
+   |                       | *Argument*: currentImageIndex, fadeTime (ms)                                                |
    | `changedActiveImage`  | Notification that the current image has been changed.                                       |
-   |                       | *Argument*: currentImageIndex                                                               |
+   |                       | *Argument*: currentImageIndex (ms)                                                          |
 
    </details>
 
@@ -137,7 +137,9 @@ The base class from which addons are inherited. If you use the function interfac
    | Name              | Description                                                       |
    |-------------------|-------------------------------------------------------------------|
    | `next`            | Show the next image/video                                         |
+   |                   | *Argument*: optional fadeTime (ms)                                |
    | `previous`        | Show the previous image/video                                     |
+   |                   | *Argument*: optional fadeTime (ms)                                |
    | `pause`           | Enter pause mode                                                  |
    | `play`            | Ends  pause mode                                                  |
    | `playPause`       | Toggle play/pause                                                 |
