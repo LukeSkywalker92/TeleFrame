@@ -67,8 +67,7 @@ if (config.touchBar) {
         break;
       case 'pinch':
         if (event.scale) {
-          const MAX_SCALE_FACTOR = 5;
-          const ZOOM_FACTOR = 1;
+          const MAX_SCALE_FACTOR = config.gestures.maxScalePercent;
           const $assetContainer = $container.find('.imgcontainer');
           if (!isPaused) {
             pause();
@@ -85,7 +84,7 @@ if (config.touchBar) {
             }
             currentZoom = parseInt(currentZoom.replace('%', '')) || 100;
             $assetContainer.css(`max-${attrib}`, '');
-            $assetContainer[attrib](Math.min((100 * MAX_SCALE_FACTOR), Math.max((100 / MAX_SCALE_FACTOR), currentZoom + (event.scale > 1.0 ? ZOOM_FACTOR : -ZOOM_FACTOR))) + '%');
+            $assetContainer[attrib](Math.min((100 * MAX_SCALE_FACTOR), Math.max((100 / MAX_SCALE_FACTOR), currentZoom + (event.scale > 1.0 ? 1 : -1))) + '%');
           }
         }
         break;

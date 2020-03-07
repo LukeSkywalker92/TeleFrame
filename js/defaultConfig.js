@@ -176,6 +176,11 @@ var defaultConfig = {
     ]
   },
 
+  gestures: {
+      // max percent per event for pinch/zoom gestures
+      maxScalePercent: 15
+  },
+
   // options for the addonHandler class
   addonInterface: {
     // configure which types should be logged
