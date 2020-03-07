@@ -177,8 +177,12 @@ var defaultConfig = {
   },
 
   gestures: {
-      // max percent per event for pinch/zoom gestures
-      maxScalePercent: 15
+      // enable gesture support
+      enabled: true,
+      // percent per event for pinch/zoom gestures
+      zoomPercentPerEvent: 1.5,
+      // maximum factor to zoom/shrink
+      maxScaleFactor: 5
   },
 
   // options for the addonHandler class
