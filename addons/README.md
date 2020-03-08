@@ -115,7 +115,7 @@ The base class from which addons are inherited. If you use the function interfac
    | `changingActiveImage` | Notification before changing the current image.                                             |
    |                       | *Argument*: currentImageIndex, fadeTime (ms)                                                |
    | `changedActiveImage`  | Notification that the current image has been changed.                                       |
-   |                       | *Argument*: currentImageIndex (ms)                                                          |
+   |                       | *Argument*: currentImageIndex                                                               |
 
    </details>
 

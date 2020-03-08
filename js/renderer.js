@@ -710,10 +710,12 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
       cleanUp();
     } else {
       $assetDiv.velocity("fadeIn", {
-        duration: fadeTime
+        duration: fadeTime,
+        queue: false
       });
       $currentAsset.velocity("fadeOut", {
         duration: fadeTime,
+        queue: false,
         complete: function() {
           $(this).remove();
           cleanUp();
