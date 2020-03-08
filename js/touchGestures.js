@@ -29,8 +29,8 @@ const initGestures = (config, options) => {
             () => $(event.offsetDirection === Hammer.DIRECTION_LEFT ? '.nextImage' : '.previousImage').trigger('click')
           );
         } else {
-          $('.imgcontainer').animate({ left: (event.offsetDirection === Hammer.DIRECTION_LEFT ? '-=' : '+=') + '100%'}, 50);
-          options.loadImage(event.offsetDirection === Hammer.DIRECTION_LEFT, Math.max(config.fadeTime, 500) / 3);
+          $('.imgcontainer').animate({ left: (event.offsetDirection === Hammer.DIRECTION_LEFT ? '-=' : '+=') + '100%'}, config.gestures.swipeAnimationDuration);
+          options.loadImage(event.offsetDirection === Hammer.DIRECTION_LEFT, config.gestures.swipeFadeInImgDuration);
         }
         break;
       case 'pinch':

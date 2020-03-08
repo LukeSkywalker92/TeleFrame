@@ -179,9 +179,13 @@ var defaultConfig = {
   gestures: {
       // enable gesture support
       enabled: true,
+      // swipe image out duration
+      swipeAnimationDuration: 400,
+      // fade in duration for the loading image
+      swipeFadeInImgDuration: 600,
       // percent per event for pinch/zoom gestures
       zoomPercentPerEvent: 1.5,
-      // maximum factor to zoom/shrink
+      // maximum factor for zoom/shrink operations
       maxScaleFactor: 5
   },
 
