@@ -1,6 +1,4 @@
 const Hammer = require('hammerjs');
-const $ = require('jquery');
-
 
 /**
  * Initialize touch gesture handling
@@ -29,7 +27,7 @@ const initGestures = (config, options) => {
             () => $(event.offsetDirection === Hammer.DIRECTION_LEFT ? '.nextImage' : '.previousImage').trigger('click')
           );
         } else {
-          $('.imgcontainer').animate({ left: (event.offsetDirection === Hammer.DIRECTION_LEFT ? '-=' : '+=') + '100%'}, config.gestures.swipeAnimationDuration);
+          $('.imgcontainer').animate({ left: (event.offsetDirection === Hammer.DIRECTION_LEFT ? '-=' : '+=') + '110%'}, config.gestures.swipeAnimationDuration);
           options.loadImage(event.offsetDirection === Hammer.DIRECTION_LEFT, config.gestures.swipeFadeInImgDuration);
         }
         break;

@@ -182,7 +182,7 @@ var defaultConfig = {
       // swipe image out duration
       swipeAnimationDuration: 400,
       // fade in duration for the loading image
-      swipeFadeInImgDuration: 600,
+      swipeFadeInImgDuration: 800,
       // percent per event for pinch/zoom gestures
       zoomPercentPerEvent: 1.5,
       // maximum factor for zoom/shrink operations
