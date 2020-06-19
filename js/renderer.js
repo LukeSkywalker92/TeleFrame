@@ -681,11 +681,26 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     //fade in new image while fading out the old image as soon as
     //the new image is loaded
     let css;
-    if (assetAspectRatio > screenAspectRatio) {
-      css = { width: "100%" };
-    } else {
-      css = { height: "100%" };
+
+    switch (config.cropZoomImages) {
+        case true:
+            // zoom to the max, no borders
+            if (assetAspectRatio > screenAspectRatio) {
+                css = { height: "100%" };
+            } else {
+                css = { width: "100%" };
+            }
+            break;
+        default:
+        case false:
+            // show complete image, has borders if ratios don't match
+            if (assetAspectRatio > screenAspectRatio) {
+                css = { width: "100%" };
+            } else {
+                css = { height: "100%" };
+            }
     }
+
     $([$asset, $asset.closest('.imgcontainer')]).each( function(){
         $(this).css(css);
     });
