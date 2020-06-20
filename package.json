@@ -24,7 +24,7 @@
     "dotenv": "^8.2.0",
     "electron": "^7.1.10",
     "image-downloader": "^3.5.0",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "moment": "^2.24.0",
     "node-audiorecorder": "^1.4.2",
     "node-schedule": "^1.3.2",
