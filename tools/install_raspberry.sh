@@ -31,8 +31,8 @@ fi
 
 # Get user wishes
 read -p "Do you want to disable the screensaver (y/N)? " screensaverchoice
-read -p "Do you want to your mouse pointer do be autohided (y/N)? " mousechoice
-read -p "Do you want use pm2 for auto starting of your TeleFrame (y/N)? " pmchoice
+read -p "Do you want your mouse pointer to be autohided (y/N)? " mousechoice
+read -p "Do you want to use pm2 for auto starting of your TeleFrame (y/N)? " pmchoice
 if [[ $pmchoice =~ ^[Yy]$ ]]; then
     read -p "Do you want pm2 to wait for internet connection before auto starting your TeleFrame (y/N)? " pmchoiceInternet
 fi
