@@ -21,6 +21,13 @@ NODE_TESTED="v10.15.2"
 # Determine which Pi is running.
 ARM=$(uname -m)
 
+# Installation as root account is not supported
+if [ "$EUID" == "0" ]; then
+	echo -e "\e[91mSorry, automated installation as user root is not supported."
+	echo -e "\e[91mPlease run TeleFrame install script as user pi."
+	exit;
+fi
+
 # Check the Raspberry Pi version.
 if [ "$ARM" != "armv7l" ]; then
 	echo -e "\e[91mSorry, your Raspberry Pi is not supported."

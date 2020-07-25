@@ -59,6 +59,9 @@ var defaultConfig = {
   // When set to true, TeleFrame will show the caption of the image when the image is shown.
   showCaption: true,
 
+  // When set to true, TeleFrame will crop and zoom images so there is no black border.
+  cropZoomImages: false,
+
   // Defines the percentage of the duration of <interval> to show sender and caption.
   // minimum value: 10  = fade out after 10% of <interval>
   // maximum value: 100 = full time. sender and caption does not fade out
