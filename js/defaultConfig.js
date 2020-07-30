@@ -50,6 +50,9 @@ var defaultConfig = {
   // Defines how many different images are shown in the slideshow.
   imageCount: 30,
 
+  // When set to true, Teleframe will show pictures in random order.
+  randomOrder: true,
+
   // Defines if old images are deleted, when they are no longer used in the slideshow (see 'imageCount'). Starred images will not be deleted.
   autoDeleteImages: true,
 
