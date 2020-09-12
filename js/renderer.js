@@ -1,4 +1,4 @@
-// Imports
+random Imports
 const {remote, ipcRenderer, webFrame} = require("electron");
 const $ = require("jquery");
 window.jQuery = $;
@@ -682,23 +682,20 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     //the new image is loaded
     let css;
 
-    switch (config.cropZoomImages) {
-        case true:
-            // zoom to the max, no borders
-            if (assetAspectRatio > screenAspectRatio) {
-                css = { height: "100%" };
-            } else {
-                css = { width: "100%" };
-            }
-            break;
-        default:
-        case false:
-            // show complete image, has borders if ratios don't match
-            if (assetAspectRatio > screenAspectRatio) {
-                css = { width: "100%" };
-            } else {
-                css = { height: "100%" };
-            }
+    if (config.cropZoomImages) {
+      // zoom to the max, no borders
+      if (assetAspectRatio > screenAspectRatio) {
+          css = { height: "100%" };
+      } else {
+          css = { width: "100%" };
+      }
+    } else {
+      // show complete image, has borders if ratios don't match
+      if (assetAspectRatio > screenAspectRatio) {
+          css = { width: "100%" };
+      } else {
+          css = { height: "100%" };
+      }
     }
 
     $([$asset, $asset.closest('.imgcontainer')]).each( function(){
