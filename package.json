@@ -25,7 +25,7 @@
     "electron": "^8.1.0",
     "hammerjs": "^2.0.8",
     "image-downloader": "^3.5.0",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "moment": "^2.24.0",
     "node-audiorecorder": "^1.4.2",
     "node-schedule": "^1.3.2",

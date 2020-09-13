@@ -42,6 +42,9 @@ var touchBarElements = {
   "reboot": new TouchBarElement("fas fa-redo-alt", reboot),
 }
 
+// keep track of shown images per sequence for no repeat in random order
+var shownSequence = [];
+
 
 // configure sound notification sound
 if (config.playSoundOnRecieve !== false) {
@@ -618,13 +621,27 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   }
 
   // get image path and increase currentImageIndex for next image
+
   if (goToLatest) {
     currentImageIndex = 0;
   } else if (isNext) {
-    if (currentImageIndex >= images.length - 1) {
-      currentImageIndex = 0;
+    if (!config.randomOrder) {
+    // select next picture
+        if (currentImageIndex >= images.length - 1) {
+          currentImageIndex = 0;
+        } else {
+          currentImageIndex++;
+        }
     } else {
-      currentImageIndex++;
+    // select random picture
+        if (shownSequence.length >= images.length) {
+            shownSequence = [];
+        }
+        do {
+            next = Math.floor(Math.random() * images.length);
+        } while  (shownSequence.includes(next));
+        shownSequence.push(next);
+        currentImageIndex = next;
     }
   } else {
     currentImageIndex--;
@@ -693,11 +710,23 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     //fade in new image while fading out the old image as soon as
     //the new image is loaded
     let css;
-    if (assetAspectRatio > screenAspectRatio) {
-      css = { width: "100%" };
+
+    if (config.cropZoomImages) {
+      // zoom to the max, no borders
+      if (assetAspectRatio > screenAspectRatio) {
+          css = { height: "100%" };
+      } else {
+          css = { width: "100%" };
+      }
     } else {
-      css = { height: "100%" };
+      // show complete image, has borders if ratios don't match
+      if (assetAspectRatio > screenAspectRatio) {
+          css = { width: "100%" };
+      } else {
+          css = { height: "100%" };
+      }
     }
+
     $([$asset, $asset.closest('.imgcontainer')]).each( function(){
         $(this).css(css);
     });
@@ -763,8 +792,8 @@ function newImage(sender, type, newImageArray) {
     timer: 5000,
     icon: "success"
   }).then((value) => {
-    currentImageIndex = images.length;
-    loadImage(true, 0);
+    currentImageIndex = 0;
+    loadImage(false, 0, true);
   });
 }
 

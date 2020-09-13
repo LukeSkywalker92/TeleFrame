@@ -21,6 +21,13 @@ NODE_TESTED="v10.15.2"
 # Determine which Pi is running.
 ARM=$(uname -m)
 
+# Installation as root account is not supported
+if [ "$EUID" == "0" ]; then
+	echo -e "\e[91mSorry, automated installation as user root is not supported."
+	echo -e "\e[91mPlease run TeleFrame install script as user pi."
+	exit;
+fi
+
 # Check the Raspberry Pi version.
 if [ "$ARM" != "armv7l" ]; then
 	echo -e "\e[91mSorry, your Raspberry Pi is not supported."
@@ -31,8 +38,8 @@ fi
 
 # Get user wishes
 read -p "Do you want to disable the screensaver (y/N)? " screensaverchoice
-read -p "Do you want to your mouse pointer do be autohided (y/N)? " mousechoice
-read -p "Do you want use pm2 for auto starting of your TeleFrame (y/N)? " pmchoice
+read -p "Do you want your mouse pointer to be autohided (y/N)? " mousechoice
+read -p "Do you want to use pm2 for auto starting of your TeleFrame (y/N)? " pmchoice
 if [[ $pmchoice =~ ^[Yy]$ ]]; then
     read -p "Do you want pm2 to wait for internet connection before auto starting your TeleFrame (y/N)? " pmchoiceInternet
 fi

@@ -50,6 +50,9 @@ var defaultConfig = {
   // Defines how many different images are shown in the slideshow.
   imageCount: 30,
 
+  // When set to true, Teleframe will show pictures in random order.
+  randomOrder: true,
+
   // Defines if old images are deleted, when they are no longer used in the slideshow (see 'imageCount'). Starred images will not be deleted.
   autoDeleteImages: true,
 
@@ -58,6 +61,9 @@ var defaultConfig = {
 
   // When set to true, TeleFrame will show the caption of the image when the image is shown.
   showCaption: true,
+
+  // When set to true, TeleFrame will crop and zoom images so there is no black border.
+  cropZoomImages: false,
 
   // Defines the percentage of the duration of <interval> to show sender and caption.
   // minimum value: 10  = fade out after 10% of <interval>
