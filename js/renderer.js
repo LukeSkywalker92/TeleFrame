@@ -1,4 +1,4 @@
-random Imports
+// Imports
 const {remote, ipcRenderer, webFrame} = require("electron");
 const $ = require("jquery");
 window.jQuery = $;
