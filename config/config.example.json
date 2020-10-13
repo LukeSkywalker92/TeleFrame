@@ -47,7 +47,7 @@
   "adminAction": {
     "allowAdminAction": true,
 	  "actions": [
-      {"name": "echo", "command": "echo test", "enable: true},
+      {"name": "echo", "command": "echo test", "enable": true},
       {"name": "reboot", "command": "sudo reboot", "enable": true},
       {"name": "shutdown", "command": "sudo shutdown -h now ", "enable": true},
       {"name": "restart", "command": "pm2 restart all", "enable": true},
