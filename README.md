@@ -83,8 +83,8 @@ The following properties can be configured:
 | **Option**	| **Type** | **Description** | **Default Value** |
 | ----------	| -------- | --------------- | ----------------- |
 | `botToken`	| {string} | The token of the Telegram Bot, which will recieve the images. How to create a bot and get the token is explained [here](https://core.telegram.org/bots#6-botfather).	|  |
-| `whitelistChats`	| {array-of-string} | Use this to only allow certain users to send photos to your TeleFrame. See [hints](#whitelist-chats) below. | empty |
-| `whitelistAdmins`	| {array-of-string} | Use this to increase individual users as admin. | empty |
+| `whitelistChats`	| {array-of-string} | Use this to only allow certain users to send photos to your TeleFrame. See [hints](#whitelist-chats) below. |  |
+| `whitelistAdmins`	| {array-of-string} | Use this to increase individual users as admin. |  |
 | `screenConfig`		| {string} | Defines the configuration file of your screen, see folder TeleFrame/config/screens/ and [README-File](config/screens/README.md) for possible configurations.	| hdmi_default.js.	|
 | `playSoundOnRecieve`	| {string} | Play a sound on recieving a message, set `false` to turn off.	| "sound1.mp3" |
 | `showVideos`	| {boolean} | When set to true, videos that are send to the bot are also shown.	| True |
