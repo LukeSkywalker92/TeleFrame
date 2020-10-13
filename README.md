@@ -80,38 +80,38 @@ Also note that:
 
 The following properties can be configured:
 
-| **Option**           | **Description**                                                                                                                                                      |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `botToken`           | The token of the Telegram Bot, which will recieve the images. How to create a bot and get the token is explained [here](https://core.telegram.org/bots#6-botfather). |
-| `whitelistChats`     | Use this to only allow certain users to send photos to your TeleFrame. See hints below.                                                                              |
-| `whitelistAdmins`    | Use this to increase individual users as admin.                                                                                                                      |
-| `screenConfig`       | Defines the configuration file of your screen, see folder TeleFrame/config/screens/ for possible configurations. Default value is hdmi_default.js.                   |
-| `playSoundOnRecieve` | Play a sound on recieving a message, set `false` to turn off.                                                                                                        |
-| `showVideos`         | When set to true, videos that are send to the bot are also shown.                                                                                                    |
-| `playVideoAudio`     | If recieved videos should be played with sound or not.                                                                                                               |
-| `imageFolder`        | The folder where the images are stored.                                                                                                                              |
-| `fullscreen`         | When set to true, TeleFrame will run in fullscreen mode.                                                                                                             |
-| `fadeTime`           | The fading time between two images.                                                                                                                                  |
-| `interval`           | The time that an image is shown.                                                                                                                                     |
-| `imageCount`         | Defines how many different images are shown in the slideshow.                                                                                                        |
-| `randomOrder`        | When set to true, Teleframe will show pictures in random order.                                                                                                      |
-| `autoDeleteImages`   | Defines if old images should be deleted, when they are no longer used in the slideshow (see 'imageCount'). Starred images will not be deleted.                       |
-| `showSender`         | When set to true, TeleFrame will show the name of the sender when the image is shown.                                                                                |
-| `showCaption`        | When set to true, TeleFrame will show the caption of the image when the image is shown.                                                                              |
-| `cropZoomImages`     | When set to true, TeleFrame will crop and zoom images so there is no black border.                                                                                   |
-| `toggleMonitor`      | When set to true, TeleFrame will switch the monitor off and on at the defined hours.                                                                                 |
-| `turnOnHour`         | Defines when the monitor should be turned on.                                                                                                                        |
-| `turnOffHour`        | Defines when the monitor should be turned off.                                                                                                                       |
-| `switchLedsOff`      | Defines if the 2 LEDs on the RaspberryPi should be switched off.                                                                                                     |
-| `botReply`           | Defines if the bot should answer on images or videos with a short reply (:+1: :camera_flash: for images, :+1: :movie_camera: for movies). Also throws a warning on receiving unknown file extensions. |
-| `confirmDeleteImage` | Defines if to show a confirm message before delete an image `true` or `false`                                                                                        |
-| `confirmShutdown`    | Defines if to show a confirm message before shutdown the system `true` or `false`                                                                                    |
-| `confirmReboot`      | Defines if to show a confirm message before rebooting the system `true` or `false`                                                                                   |
-| `keys`               | Defines an object with 4 strings specifying the keyboard shortcuts for play, next, previous and pause. Set to null for no controls                                   |
-| `voiceReply`         | Defines an object with the config for sending voicemessages with TeleFrame, see info bellow                                                                          |
-| `touchBar`           | Defines an object with the config for using a touch bar for executing commands instead of the default touch gestures.                                                |
-| `language`           | Defines the language to use.  See `config.example.js` 'Language configuration' for details                                                                           |
-| `adminAction`        | Defines an object with the config for sending Admin-Commands to the TeleFrame, see info bellow                                                                          |
+| **Option**	| **Description** | **Default Value** |
+| ----------	| --------------- | ----------------- |
+| `botToken`	| The token of the Telegram Bot, which will recieve the images. How to create a bot and get the token is explained [here](https://core.telegram.org/bots#6-botfather).	| empty |
+| `whitelistChats`	| Use this to only allow certain users to send photos to your TeleFrame. See [hints](#whitelist-chats) below. | empty |
+| `whitelistAdmins`	| Use this to increase individual users as admin. | empty |
+| `screenConfig`		| Defines the configuration file of your screen, see folder TeleFrame/config/screens/ and [README-File](config/screens/README.md) for possible configurations.	| hdmi_default.js.	|
+| `playSoundOnRecieve`	| Play a sound on recieving a message, set `false` to turn off.	| "sound1.mp3" |
+| `showVideos`	| When set to true, videos that are send to the bot are also shown.	| True |
+| `playVideoAudio`	| If recieved videos should be played with sound or not.	| False |
+| `imageFolder`	| The folder where the images are stored.	| "images" |
+| `fullscreen`	| When set to true, TeleFrame will run in fullscreen mode.	| True |
+| `fadeTime`	| The fading time between two images. [Milliseconds]	| 1500 |
+| `interval`	| The time that an image is shown. [Milliseconds]	| 10000 |
+| `imageCount`	| Defines how many different images are shown in the slideshow.	| 30 |
+| `randomOrder`	| When set to true, Teleframe will show pictures in random order.	| True |
+| `autoDeleteImages`	| Defines if old images should be deleted, when they are no longer used in the slideshow (see 'imageCount'). Starred images will not be deleted.	| True |
+| `showSender`	| When set to true, TeleFrame will show the name of the sender when the image is shown.	| True |
+| `showCaption`	| When set to true, TeleFrame will show the caption of the image when the image is shown.	| True |
+| `cropZoomImages`	| When set to true, TeleFrame will crop and zoom images so there is no black border.	| False |
+| `toggleMonitor`	| When set to true, TeleFrame will switch the monitor off and on at the defined hours.	| False |
+| `turnOnHour`	| Defines when the monitor should be turned on.	| 9 |
+| `turnOffHour`	| Defines when the monitor should be turned off.	| 22 |
+| `switchLedsOff`	| Defines if the 2 LEDs on the RaspberryPi should be switched off.	| False |
+| `botReply`	| Defines if the bot should answer on images or videos with a short reply (:+1: :camera_flash: for images, :+1: :movie_camera: for movies). Also throws a warning on receiving unknown file extensions.	| True |
+| `confirmDeleteImage`	| Defines if to show a confirm message before delete an image `true` or `false`	|  |
+| `confirmShutdown`	| Defines if to show a confirm message before shutdown the system `true` or `false`	|  |
+| `confirmReboot`	| Defines if to show a confirm message before rebooting the system `true` or `false`	|  |
+| `keys`	| Defines an object with 4 strings specifying the keyboard shortcuts for play, next, previous and pause. Set to null for no controls	|  |
+| `voiceReply`	| Defines an object with the config for sending voicemessages with TeleFrame, see [info](#voice-replies-using-teleframe) below	|  |
+| `touchBar`	| Defines an object with the config for using a touch bar for executing commands instead of the default touch gestures, see [info](#using-the-touch-bar) below	|  |
+| `language`	| Defines the language to use.  See `config.example.js` 'Language configuration' for details	|  |
+| `adminAction` | Defines an object with the config for sending Admin-Commands to the TeleFrame, see [info](#sending-admin-commands-to-the-teleframe) below	|  |
 
 
 ## Whitelist Chats
