@@ -1,6 +1,7 @@
 {
   "botToken": "<your bot token>",
   "whitelistChats": [],
+  "whitelistAdmins": [],
   "screenConfig": "./config/screens/hdmi_default.js",
   "playSoundOnRecieve": "sound1.mp3",
   "showVideos": true,
