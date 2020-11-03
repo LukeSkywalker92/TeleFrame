@@ -11,7 +11,11 @@ botPhrases[langDefault] = require(langPath + langDefault);
  * @param  {array} args     [optional] Additional arguments to pass when the constant returns a function
  */
 const botReply = (ctx, constant, ...args) => {
-  const langSender = ctx.from.language_code.substr(0, 2).toLowerCase();
+  let langSender = langDefault;
+  try {
+    langSender = ctx.from.language_code.substr(0, 2).toLowerCase();
+  }
+  catch (_) {}
   if (!botPhrases[langSender]) {
     try {
       botPhrases[langSender] = Object.assign({}, botPhrases[langDefault], require(langPath + langSender));
