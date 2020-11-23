@@ -14,7 +14,6 @@ botPhrases[langDefault] = require(langPath + langDefault);
  */
 const botSendMessage = (telegram, ctx, constant, chatId, ...args) => {
   const langSender = ctx.from.language_code.substr(0, 2).toLowerCase();
-  console.log(langSender);
   if (!botPhrases[langSender]) {
     try {
       botPhrases[langSender] = Object.assign({}, botPhrases[langDefault], require(langPath + langSender));

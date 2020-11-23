@@ -1,12 +1,14 @@
 const Telegraf = require("telegraf");
 const Telegram = require("telegraf/telegram");
 const Extra = require('telegraf/extra')
+const {MenuMiddleware} = require('telegraf-inline-menu')
 const download = require("image-downloader");
 const moment = require("moment");
 const exec = require("child_process").exec;
 const fs = require(`fs`);
 const botReply = require('./botReply');
 const botSendMessage = require('./botSendMessage');
+const botConfigMenu = require('./botConfigMenu');
 
 var Bot = class {
   constructor(
@@ -185,6 +187,11 @@ var Bot = class {
       });
 
     }
+
+    //Menu
+    const menuMiddleware = new MenuMiddleware('/', botConfigMenu)
+    this.bot.command('settings', isAdminWhitelisted, async ctx => menuMiddleware.replyToContext(ctx))
+    this.bot.use(menuMiddleware.middleware())
 
     this.logger.info("Bot created!");
   }
