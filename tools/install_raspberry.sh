@@ -144,7 +144,8 @@ else
 fi
 
 # Create config for start TeleFrame containing the token
-echo -e "{\n  \"botToken\": \"$token\"\n}" > config/config.json
+cp config.example.json config.json
+sed -i "s/<your bot token>/$token/g" config.json
 
 # Create image directory
 echo -e "\e[96mCreating image directory ...\e[90m"
