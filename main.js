@@ -28,6 +28,8 @@ if(config.switchLedsOff){
 }
 
 app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
+// avoid deprecation warning from electron 8
+app.allowRendererProcessReuse = true;
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;

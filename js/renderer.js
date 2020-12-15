@@ -9,6 +9,7 @@ const velocity = require("velocity-animate");
 const logger = remote.getGlobal("rendererLogger");
 const config = remote.getGlobal("config");
 const {TouchBar, TouchBarElement} = require("./js/touchBar.js")
+const initGestures = require('./js/touchGestures.js');
 
 // Inform that Renderer started
 logger.info("Renderer started ...");
@@ -52,6 +53,17 @@ if (config.playSoundOnRecieve !== false) {
 
 if (config.touchBar) {
   touchBar = new TouchBar(touchBarElements, config.touchBar)
+  // initialize swipe/pinch gestures
+  if (config.gestures.enabled) {
+    initGestures(config, {
+      pauseCallback: () => {
+        if (!isPaused) {
+          pause();
+        }
+      },
+      loadImage: loadImage
+    });
+  }
 } else {
   // handle touch events for navigation and voice reply
   $("body").on('touchstart', function() {
@@ -727,10 +739,12 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
       cleanUp();
     } else {
       $assetDiv.velocity("fadeIn", {
-        duration: fadeTime
+        duration: fadeTime,
+        queue: false
       });
       $currentAsset.velocity("fadeOut", {
         duration: fadeTime,
+        queue: false,
         complete: function() {
           $(this).remove();
           cleanUp();

@@ -19,10 +19,11 @@
   },
   "homepage": "https://github.com/LukeSkywalker92/teleframe#readme",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.12.0",
+    "@fortawesome/fontawesome-free": "^5.12.1",
     "chroma-js": "^2.1.0",
     "dotenv": "^8.2.0",
-    "electron": "^7.2.4",
+    "electron": "^8.1.0",
+    "hammerjs": "^2.0.8",
     "image-downloader": "^3.5.0",
     "jquery": "^3.5.0",
     "moment": "^2.24.0",
@@ -30,8 +31,8 @@
     "node-schedule": "^1.3.2",
     "randomcolor": "^0.5.4",
     "sweetalert": "^2.1.2",
-    "sweetalert2": "^9.5.4",
-    "telegraf": "^3.35.0",
+    "sweetalert2": "^9.10.1",
+    "telegraf": "^3.36.0",
     "velocity-animate": "^1.5.2",
     "winston": "^3.2.1"
   }

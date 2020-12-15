@@ -31,7 +31,7 @@ class TouchBar {
         el.classList = name + " touchBarElement";
         el.style.lineHeight = self.height;
         el.style.fontSize = ($('#touch-bar-container').height()*0.8) + 'px';
-        $(el).on('touchend', function(event) {
+        $(el).on('click', function(event) {
           // don't bubble up events to prevent disappearing sweetalert messages
           event.preventDefault();
           clearTimeout(self.autoHideTimerId);
@@ -47,7 +47,7 @@ class TouchBar {
 
     touchBarContainer.appendChild(touchBarBlur);
     touchBarContainer.appendChild(touchBar);
-    $("#touch-container").on('touchend', function(event) {
+    $("#touch-container").on('click', function(event) {
       self.toggle()
     });
   }
