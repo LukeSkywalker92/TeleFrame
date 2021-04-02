@@ -4,6 +4,7 @@ class TouchBar {
     this.elements = elements;
     this.height = config.height;
     this.hidden = true;
+    this.lastTouchEvent = 0;
     this.autHideTimerId = 0;
     this.startAutoHideTimer = () => {
       if (parseInt(config.autoHideTimeout) > 0) {
@@ -21,6 +22,7 @@ class TouchBar {
     touchBarBlur.classList = "touch-bar-blur";
     const touchBar = document.createElement('div');
     touchBar.classList = "touch-bar";
+    const TouchClickTimeout = 200;
     if (config.elements == undefined) {
       config.elements = Object.keys(elements)
     }
@@ -31,9 +33,13 @@ class TouchBar {
         el.classList = name + " touchBarElement";
         el.style.lineHeight = self.height;
         el.style.fontSize = ($('#touch-bar-container').height()*0.8) + 'px';
-        $(el).on('click', function(event) {
+        $(el).on('touchend click', function(event) {
           // don't bubble up events to prevent disappearing sweetalert messages
           event.preventDefault();
+          if (event.type === 'click' && new Date().getTime() - self.lastTouchEvent < TouchClickTimeout) {
+            return false;
+          }
+          self.lastTouchEvent = new Date().getTime();
           clearTimeout(self.autoHideTimerId);
           self.startAutoHideTimer();
           element.callback();
@@ -47,7 +53,12 @@ class TouchBar {
 
     touchBarContainer.appendChild(touchBarBlur);
     touchBarContainer.appendChild(touchBar);
-    $("#touch-container").on('click', function(event) {
+    $("#touch-container").on('touchend click', function(event) {
+      event.preventDefault();
+      if (event.type === 'click' && new Date().getTime() - self.lastTouchEvent < TouchClickTimeout) {
+        return false;
+      }
+      self.lastTouchEvent = new Date().getTime();
       self.toggle()
     });
   }
