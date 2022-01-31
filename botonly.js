@@ -21,11 +21,14 @@ logger.info('Running bot only version of TeleFrame ...');
 
 
 var ImageWatchdog = class {
-  constructor(imageFolder, imageCount, logger) {
+  constructor(imageFolder, imageCount, autoDeleteImages, logger) {
     this.imageFolder = imageFolder;
     this.imageCount = imageCount;
+    this.autoDeleteImages = autoDeleteImages;
     this.logger = logger;
     this.images = []
+
+    console.log("")
 
     //get paths of already downloaded images
     if (fs.existsSync(this.imageFolder + '/' + "images.json")) {
@@ -35,7 +38,19 @@ var ImageWatchdog = class {
         for (var image in jsonData) {
           this.images.push(jsonData[image]);
         }
+        if (this.images.length >= this.imageCount) {
+          while (this.images.length > this.imageCount) {
+            //console.log("yay");
+            var idx2bedeleted = this.getOldestUnstarredImageIndex();
+            this.autoDeleteImage(idx2bedeleted);
+            //console.log(this.images.splice(idx2bedeleted, 1));
+            this.images.splice(idx2bedeleted, 1);
+          }
+          this.saveImageArray()
+        }
       });
+      
+      
     } else {
       this.saveImageArray()
     }
@@ -49,7 +64,13 @@ var ImageWatchdog = class {
       'caption': caption
     });
     if (this.images.length >= this.imageCount) {
-      this.images.pop();
+      while (this.images.length > this.imageCount) {
+        //console.log("yay");
+        var idx2bedeleted = this.getOldestUnstarredImageIndex();
+        this.autoDeleteImage(idx2bedeleted);
+        //console.log(this.images.splice(idx2bedeleted, 1));
+        this.images.splice(idx2bedeleted, 1);
+      }
     }
     var type;
     if (src.split('.').pop() == 'mp4') {
@@ -58,6 +79,15 @@ var ImageWatchdog = class {
       type = 'image';
     }
     this.saveImageArray();
+  }
+
+  getOldestUnstarredImageIndex() {
+    for (var i = this.images.length-1; i > 0; i--) {
+      //console.log(!this.images[i].starred);
+       if (!this.images[i].starred) {
+         return i;
+       }
+    }
   }
 
   saveImageArray() {
@@ -72,10 +102,23 @@ var ImageWatchdog = class {
     });
   }
 
+  autoDeleteImage(idx2bedeleted) {
+    var self = this;
+    if (self.autoDeleteImages) {
+      try {
+          var oldSrc = this.images[idx2bedeleted].src;
+          fs.unlinkSync(oldSrc);
+          self.logger.info("Deleted file " + oldSrc);
+      } catch(err) {
+          self.logger.error('An error occured while deleting the file ' + oldSrc + ':\n' + err);
+      }
+    }
+  }
+
 }
 
 // create imageWatchdog and bot
-const imageWatchdog = new ImageWatchdog(config.imageFolder, config.imageCount, logger);
+const imageWatchdog = new ImageWatchdog(config.imageFolder, config.imageCount, config.autoDeleteImages, logger);
 var bot = new telebot(imageWatchdog, logger, config);
 
 bot.startBot()
